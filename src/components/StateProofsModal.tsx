@@ -28,152 +28,132 @@ export function StateProofsModal({ beacon, onClose }: StateProofsModalProps) {
     setTimeout(() => {
       setIsVerifying(false);
       setVerified(true);
-    }, 900);
+    }, 800);
   };
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content proof-modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
+      <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
-        <div className="modal-header">
-          <div className="modal-title-wrap">
-            <ShieldCheck size={22} className="proof-icon" />
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center">
+              <ShieldCheck size={22} />
+            </div>
             <div>
-              <h3>Cryptographic State Inclusion Proof</h3>
-              <p className="modal-subtitle">Arkiv DB-Chain Keccak-MPT & Ethereum L1 Anchor</p>
+              <h3 className="font-black text-lg text-slate-900">Cryptographic State Proof</h3>
+              <p className="text-xs text-slate-400">Arkiv DB-Chain Keccak-MPT &amp; Ethereum L1 Anchor</p>
             </div>
           </div>
-          <button onClick={onClose} className="modal-close-btn">
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-700 text-lg">
             ✕
           </button>
         </div>
 
-        {/* Body */}
-        <div className="modal-body">
-          <div className="proof-alert-box">
-            <Lock size={18} className="lock-icon" />
-            <p>
-              Every medical beacon on Arkiv is hashed into a modified Merkle Patricia Trie (MPT) and
-              committed to an Ethereum Layer 1 state root. Any citizen can cryptographically verify
-              that this hospital stock was legitimately broadcast by the facility wallet without
-              relying on centralized trust.
-            </p>
-          </div>
-
-          {/* Proof Breakdown */}
-          <div className="proof-fields-list">
-            {/* Entity Key */}
-            <div className="proof-field">
-              <div className="proof-field-header">
-                <span className="field-title">Arkiv Entity Key (Deterministic Hash)</span>
-                <button
-                  onClick={() => handleCopy(beacon.key, 'key')}
-                  className="btn-copy-small"
-                >
-                  {copiedKey === 'key' ? <Check size={12} /> : <Copy size={12} />}
-                  <span>{copiedKey === 'key' ? 'Copied' : 'Copy'}</span>
-                </button>
-              </div>
-              <code className="proof-code">{beacon.key}</code>
-            </div>
-
-            {/* Transaction Hash */}
-            <div className="proof-field">
-              <div className="proof-field-header">
-                <span className="field-title">Transaction Hash (Arkiv Tiramisu)</span>
-                <button
-                  onClick={() => handleCopy(beacon.txHash, 'tx')}
-                  className="btn-copy-small"
-                >
-                  {copiedKey === 'tx' ? <Check size={12} /> : <Copy size={12} />}
-                  <span>{copiedKey === 'tx' ? 'Copied' : 'Copy'}</span>
-                </button>
-              </div>
-              <code className="proof-code">{beacon.txHash}</code>
-            </div>
-
-            {/* State Root */}
-            <div className="proof-field">
-              <div className="proof-field-header">
-                <span className="field-title">Keccak-MPT State Root Commit</span>
-                <span className="field-tag">Block #{beacon.blockNumber}</span>
-              </div>
-              <code className="proof-code">
-                {beacon.stateRoot || '0x8892fca019283847561928374650192837465019283746501928374650192837'}
-              </code>
-            </div>
-
-            {/* Inclusion Proof (eth_getProof) */}
-            <div className="proof-field">
-              <div className="proof-field-header">
-                <span className="field-title">MPT Inclusion Branch (eth_getProof)</span>
-                <span className="field-tag">Verified L1 Root</span>
-              </div>
-              <code className="proof-code proof-multiline">
-                {beacon.inclusionProof || '0x0182746152837492817263548192837465019283746501928374650192837465'}
-              </code>
-            </div>
-
-            {/* Expiration height */}
-            <div className="proof-row-two">
-              <div className="proof-stat-card">
-                <Database size={16} />
-                <div>
-                  <span className="stat-label">Arkiv DB Expiry Height</span>
-                  <span className="stat-val">Block #{beacon.expiresAtBlock}</span>
-                </div>
-              </div>
-
-              <div className="proof-stat-card">
-                <Network size={16} />
-                <div>
-                  <span className="stat-label">Chain Target</span>
-                  <span className="stat-val">{ARKIV_CONFIG.chainName} ({ARKIV_CONFIG.chainId})</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Verification Status */}
-          {verified ? (
-            <div className="verification-success-card">
-              <CheckCircle2 size={24} className="success-icon" />
-              <div>
-                <strong>Cryptographic Inclusion Verified: Valid!</strong>
-                <p>
-                  Entity belongs to state root committed at block #{beacon.blockNumber}. Facility
-                  wallet {beacon.owner.slice(0, 10)}... legitimately authorized this inventory.
-                </p>
-              </div>
-            </div>
-          ) : null}
+        {/* Notice */}
+        <div className="bg-sky-50 border border-sky-100 rounded-2xl p-4 flex gap-3 text-xs text-sky-800">
+          <Lock size={18} className="text-sky-600 shrink-0 mt-0.5" />
+          <p className="leading-relaxed">
+            Every medical beacon on Arkiv is hashed into a modified Merkle Patricia Trie (MPT) and committed
+            to an Ethereum Layer 1 state root. Any citizen can cryptographically verify that this stock was authorized
+            by the hospital wallet without trusting centralized middlemen.
+          </p>
         </div>
 
+        {/* Proof Details */}
+        <div className="space-y-3">
+          {/* Entity Key */}
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-1">
+            <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+              <span>Arkiv Entity Key (Deterministic Hash)</span>
+              <button onClick={() => handleCopy(beacon.key, 'key')} className="text-sky-600 flex items-center gap-1">
+                {copiedKey === 'key' ? <Check size={12} /> : <Copy size={12} />}
+                <span>{copiedKey === 'key' ? 'Copied' : 'Copy'}</span>
+              </button>
+            </div>
+            <code className="block font-mono text-xs text-slate-800 break-all">{beacon.key}</code>
+          </div>
+
+          {/* TX Hash */}
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-1">
+            <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+              <span>Transaction Hash (Arkiv Tiramisu)</span>
+              <button onClick={() => handleCopy(beacon.txHash, 'tx')} className="text-sky-600 flex items-center gap-1">
+                {copiedKey === 'tx' ? <Check size={12} /> : <Copy size={12} />}
+                <span>{copiedKey === 'tx' ? 'Copied' : 'Copy'}</span>
+              </button>
+            </div>
+            <code className="block font-mono text-xs text-slate-800 break-all">{beacon.txHash}</code>
+          </div>
+
+          {/* State Root */}
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 space-y-1">
+            <div className="flex justify-between items-center text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+              <span>Keccak-MPT State Root Commit</span>
+              <span className="text-slate-500 font-mono">Block #{beacon.blockNumber}</span>
+            </div>
+            <code className="block font-mono text-xs text-slate-800 break-all">
+              {beacon.stateRoot || '0x8892fca019283847561928374650192837465019283746501928374650192837'}
+            </code>
+          </div>
+
+          {/* Two-card stats */}
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center gap-3">
+              <Database size={18} className="text-sky-600" />
+              <div>
+                <span className="block text-[10px] text-slate-400 font-bold uppercase">Arkiv Expiry Height</span>
+                <span className="block text-xs font-black font-mono text-slate-800">Block #{beacon.expiresAtBlock}</span>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 border border-slate-100 rounded-xl p-3 flex items-center gap-3">
+              <Network size={18} className="text-sky-600" />
+              <div>
+                <span className="block text-[10px] text-slate-400 font-bold uppercase">Chain Target</span>
+                <span className="block text-xs font-black font-mono text-slate-800">{ARKIV_CONFIG.chainName} ({ARKIV_CONFIG.chainId})</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Verification Success */}
+        {verified && (
+          <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex items-start gap-3 text-xs text-emerald-800">
+            <CheckCircle2 size={20} className="text-emerald-600 shrink-0 mt-0.5" />
+            <div>
+              <strong className="block font-bold text-emerald-900 text-sm">Cryptographic Inclusion Verified: Valid!</strong>
+              <p className="mt-0.5 leading-relaxed">
+                Entity belongs to state root committed at block #{beacon.blockNumber}. Facility wallet{' '}
+                {beacon.owner.slice(0, 10)}... legitimately authorized this inventory.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Footer */}
-        <div className="modal-footer">
+        <div className="flex gap-3 pt-2">
           <a
             href={`${ARKIV_CONFIG.explorerUrl}/tx/${beacon.txHash}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary"
+            className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-extrabold text-xs py-3.5 rounded-xl flex items-center justify-center gap-2"
           >
-            <ExternalLink size={15} />
-            <span>Open Arkiv Explorer</span>
+            <ExternalLink size={14} />
+            <span>Open Explorer</span>
           </a>
 
-          {!verified && (
+          {!verified ? (
             <button
               onClick={handleVerify}
               disabled={isVerifying}
-              className="btn-primary"
+              className="flex-1 bg-slate-900 hover:bg-rose-600 text-white font-extrabold text-xs py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10"
             >
               <ShieldCheck size={16} />
-              <span>{isVerifying ? 'Verifying Merkle Path...' : 'Verify Proof On-Chain'}</span>
+              <span>{isVerifying ? 'Verifying Merkle Trie...' : 'Verify Proof On-Chain'}</span>
             </button>
-          )}
-
-          {verified && (
-            <button onClick={onClose} className="btn-primary">
+          ) : (
+            <button onClick={onClose} className="flex-1 bg-emerald-600 text-white font-extrabold text-xs py-3.5 rounded-xl">
               Done
             </button>
           )}

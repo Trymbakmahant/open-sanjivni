@@ -10,10 +10,6 @@ import {
   Trash2,
   Check,
   AlertCircle,
-  Radio,
-  ExternalLink,
-  ShieldAlert,
-  Flame,
   Activity,
   History,
   Send,
@@ -23,7 +19,6 @@ import { INDIAN_FACILITIES, AVAILABLE_ITEM_CODES } from '@/data/seedData';
 import { beaconStore, ArkivAuditLog } from '@/lib/beaconStore';
 import { broadcastMedicalStock } from '@/services/broadcastStock';
 import { dispenseUnits, extendStockBeacon, deleteStockBeacon } from '@/services/manageStock';
-import { ARKIV_CONFIG } from '@/lib/arkiv';
 import { playEmergencyChimeSound } from '@/lib/audioAlert';
 
 interface HospitalPortalProps {
@@ -153,32 +148,31 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
   };
 
   return (
-    <div className="portal-root">
-      {/* Top Banner */}
-      <section className="portal-header-card">
-        <div className="portal-header-left">
-          <div className="portal-title-row">
-            <Hospital className="portal-icon" size={28} />
-            <div>
-              <h2>Hospital & Jan Aushadhi Verified Desk Portal</h2>
-              <p>
-                Broadcast, dispense, and extend time-scoped inventory directly from verified medical
-                wallets to the Arkiv DB-Chain.
-              </p>
-            </div>
+    <div className="space-y-8">
+      {/* Top Banner Card */}
+      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+            <Hospital size={26} />
+          </div>
+          <div>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Hospital &amp; Jan Aushadhi Desk Portal</h2>
+            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+              Broadcast, dispense, and extend time-scoped inventory directly from verified medical wallets to Arkiv DB-Chain.
+            </p>
           </div>
         </div>
 
         {/* Facility Selector */}
-        <div className="facility-selector-box">
-          <label htmlFor="facility-dropdown" className="selector-label">
-            Switch Facility Desk:
+        <div className="w-full md:w-auto min-w-[280px] bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-1.5">
+          <label htmlFor="facility-dropdown" className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
+            Active Verified Desk
           </label>
           <select
             id="facility-dropdown"
             value={selectedFacilityId}
             onChange={(e) => setSelectedFacilityId(e.target.value)}
-            className="facility-dropdown"
+            className="w-full bg-transparent font-bold text-slate-800 text-xs focus:outline-none cursor-pointer"
           >
             {INDIAN_FACILITIES.map((f) => (
               <option key={f.id} value={f.id}>
@@ -186,51 +180,56 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
               </option>
             ))}
           </select>
-          <div className="facility-wallet-pill">
-            <span className="wallet-dot" />
-            <span className="wallet-addr">{currentFacility.walletAddress}</span>
+          <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 truncate">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+            <span className="truncate">{currentFacility.walletAddress}</span>
           </div>
         </div>
       </section>
 
       {/* Grid: Broadcast Form & Active Beacons */}
-      <div className="portal-layout-grid">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Broadcast Form */}
-        <div className="portal-column">
-          <div className="card-box">
-            <div className="card-box-header">
-              <div className="card-box-title">
-                <PlusCircle size={20} className="title-icon" />
-                <h3>1-Click Broadcast Medical Beacon</h3>
+        <div className="lg:col-span-5">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <PlusCircle size={20} className="text-rose-600" />
+                <h3 className="font-extrabold text-lg text-slate-900">1-Click Broadcast Medical Beacon</h3>
               </div>
-              <span className="arkiv-pill">createEntity()</span>
+              <span className="bg-sky-50 text-sky-600 text-[10px] font-extrabold px-2.5 py-1 rounded font-mono">
+                createEntity()
+              </span>
             </div>
 
-            <p className="card-box-desc">
-              Publishes real-time supply availability to Arkiv DB-Chain. Listings are signed with{' '}
-              <strong>ExpirationTime.fromHours(4)</strong> to mathematically eliminate phantom
-              stock.
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Publishes live availability directly to the Arkiv DB engine. Signed with{' '}
+              <strong className="text-slate-800">ExpirationTime.fromHours(4)</strong> to mathematically eliminate phantom stock.
             </p>
 
             {broadcastSuccess && (
-              <div className="alert-success-banner">
-                <Check size={18} />
+              <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-xs font-bold text-emerald-700 flex items-center gap-2">
+                <Check size={16} />
                 <span>{broadcastSuccess}</span>
               </div>
             )}
 
-            <form onSubmit={handleBroadcast} className="broadcast-form">
+            <form onSubmit={handleBroadcast} className="space-y-4">
               {/* Category */}
-              <div className="form-field">
-                <label className="form-label">Supply Category</label>
-                <div className="category-choice-grid">
+              <div className="space-y-1.5">
+                <label className="text-xs font-extrabold text-slate-700">Supply Category</label>
+                <div className="grid grid-cols-2 gap-2">
                   {(['BLOOD', 'ANTI_VENOM', 'RABIES_VACCINE', 'JAN_AUSHADHI'] as BeaconCategory[]).map(
                     (cat) => (
                       <button
                         type="button"
                         key={cat}
                         onClick={() => setFormCategory(cat)}
-                        className={`cat-choice-btn ${formCategory === cat ? 'selected' : ''}`}
+                        className={`p-2.5 rounded-xl text-xs font-bold transition-all ${
+                          formCategory === cat
+                            ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                            : 'bg-slate-50 text-slate-600 border border-slate-100 hover:bg-slate-100'
+                        }`}
                       >
                         {cat === 'BLOOD' && '🩸 Blood Group'}
                         {cat === 'ANTI_VENOM' && '🐍 Anti-Venom'}
@@ -243,15 +242,15 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
               </div>
 
               {/* Item Code */}
-              <div className="form-field">
-                <label htmlFor="form-item-code" className="form-label">
+              <div className="space-y-1.5">
+                <label htmlFor="form-item-code" className="text-xs font-extrabold text-slate-700">
                   Specific Item
                 </label>
                 <select
                   id="form-item-code"
                   value={formItemCode}
                   onChange={(e) => setFormItemCode(e.target.value)}
-                  className="form-input"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold text-slate-800 focus:outline-none"
                 >
                   {AVAILABLE_ITEM_CODES.filter((i) => i.category === formCategory).map((i) => (
                     <option key={i.code} value={i.code}>
@@ -262,9 +261,9 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
               </div>
 
               {/* Units & Price */}
-              <div className="form-row-two">
-                <div className="form-field">
-                  <label htmlFor="form-units" className="form-label">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label htmlFor="form-units" className="text-xs font-extrabold text-slate-700">
                     Units Available
                   </label>
                   <input
@@ -274,12 +273,12 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                     max={500}
                     value={formUnits}
                     onChange={(e) => setFormUnits(Number(e.target.value))}
-                    className="form-input"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-extrabold text-slate-800 focus:outline-none"
                   />
                 </div>
 
-                <div className="form-field">
-                  <label htmlFor="form-price" className="form-label">
+                <div className="space-y-1.5">
+                  <label htmlFor="form-price" className="text-xs font-extrabold text-slate-700">
                     Price (INR)
                   </label>
                   <input
@@ -287,49 +286,45 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                     type="text"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
-                    className="form-input"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-extrabold text-slate-800 focus:outline-none"
                     placeholder="0.00"
                   />
                 </div>
               </div>
 
-              {/* Emergency Notes */}
-              <div className="form-field">
-                <label htmlFor="form-notes" className="form-label">
-                  Desk Priority & Notes (No PHI)
+              {/* Notes */}
+              <div className="space-y-1.5">
+                <label htmlFor="form-notes" className="text-xs font-extrabold text-slate-700">
+                  Desk Priority &amp; Instructions (No PHI)
                 </label>
                 <textarea
                   id="form-notes"
                   rows={2}
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
-                  className="form-input"
-                  placeholder="e.g. ICU admissions prioritized. Replacement donor encouraged."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium text-slate-800 focus:outline-none resize-none"
                 />
               </div>
 
-              {/* Expiration Notice */}
-              <div className="expiration-guarantee-box">
-                <Clock size={16} className="clock-icon" />
-                <p>
-                  <strong>Arkiv Protocol Guarantee:</strong> This listing will automatically expire
-                  in <strong>4 Hours</strong> (block TTL) unless extended.
-                </p>
+              {/* Protocol Expiry Notice */}
+              <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 flex items-center gap-2.5 text-xs text-sky-800 font-semibold">
+                <Clock size={16} className="text-sky-600 shrink-0" />
+                <span>Arkiv Protocol: Listing automatically vanishes in 4 Hours unless extended.</span>
               </div>
 
               <button
                 type="submit"
                 disabled={isBroadcasting}
-                className="btn-primary btn-submit-broadcast"
+                className="w-full bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10 tracking-wider transition-all"
               >
                 {isBroadcasting ? (
                   <>
-                    <RefreshCw className="spinning-icon" size={18} />
+                    <RefreshCw className="animate-spin" size={16} />
                     <span>Signing Transaction on Arkiv...</span>
                   </>
                 ) : (
                   <>
-                    <Send size={18} />
+                    <Send size={16} />
                     <span>Broadcast Beacon to DB-Chain</span>
                   </>
                 )}
@@ -339,85 +334,88 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         </div>
 
         {/* Right: Active Beacons & Audit Log */}
-        <div className="portal-column">
-          {/* Active Beacons for Facility */}
-          <div className="card-box">
-            <div className="card-box-header">
-              <div className="card-box-title">
-                <Activity size={20} className="title-icon" />
-                <h3>Active Facility Beacons ({facilityBeacons.length})</h3>
+        <div className="lg:col-span-7 space-y-8">
+          {/* Active Beacons */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <Activity size={20} className="text-rose-600" />
+                <h3 className="font-extrabold text-lg text-slate-900">
+                  Active Facility Beacons ({facilityBeacons.length})
+                </h3>
               </div>
-              <span className="live-tag">Live State</span>
+              <span className="text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded">
+                Live State
+              </span>
             </div>
 
             {facilityBeacons.length === 0 ? (
-              <div className="no-beacons-notice">
-                <AlertCircle size={32} />
-                <p>No active beacons currently registered for {currentFacility.facilityName}.</p>
-                <p className="subtext">Use the broadcast form on the left to publish live stock.</p>
+              <div className="bg-slate-50 rounded-2xl p-8 text-center space-y-2 border border-slate-100">
+                <AlertCircle size={28} className="text-slate-400 mx-auto" />
+                <p className="text-xs font-bold text-slate-700">No active beacons registered for this desk.</p>
+                <p className="text-[11px] text-slate-400">Use the broadcast form on the left to publish live stock.</p>
               </div>
             ) : (
-              <div className="facility-beacons-list">
+              <div className="space-y-3">
                 {facilityBeacons.map((beacon) => {
-                  const isDepleted = beacon.attributes.status !== 'ACTIVE' || beacon.attributes.unitsAvailable <= 0;
                   const itemDef = AVAILABLE_ITEM_CODES.find((i) => i.code === beacon.attributes.itemCode);
 
                   return (
                     <div
                       key={beacon.key}
-                      className={`facility-beacon-item ${isDepleted ? 'item-depleted' : ''}`}
+                      className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                     >
-                      <div className="item-meta-row">
-                        <div>
-                          <h4 className="item-title">
-                            {itemDef ? itemDef.label : beacon.attributes.itemCode}
-                          </h4>
-                          <span className="item-key-sub">
-                            Key: {beacon.key.slice(0, 16)}...
-                          </span>
-                        </div>
-                        <div className="item-units-badge">
-                          <span className="badge-count">{beacon.attributes.unitsAvailable}</span>
-                          <span className="badge-unit">units left</span>
-                        </div>
+                      <div className="space-y-1">
+                        <strong className="block font-bold text-sm text-slate-900">
+                          {itemDef ? itemDef.label : beacon.attributes.itemCode}
+                        </strong>
+                        <span className="block font-mono text-[10px] text-slate-400 truncate max-w-xs">
+                          Key: {beacon.key}
+                        </span>
                       </div>
 
-                      <div className="item-actions-row">
-                        <button
-                          onClick={() => handleDispense(beacon)}
-                          disabled={beacon.attributes.unitsAvailable <= 0}
-                          className="btn-action-dispense"
-                          title="Dispense 1 Unit (-1 via patchEntity)"
-                        >
-                          <MinusCircle size={15} />
-                          <span>Dispense Unit (-1)</span>
-                        </button>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <span className="text-xl font-black font-mono text-slate-900">
+                            {beacon.attributes.unitsAvailable}
+                          </span>
+                          <span className="text-[10px] text-slate-400 block font-bold">units left</span>
+                        </div>
 
-                        <button
-                          onClick={() => handleExtend(beacon)}
-                          className="btn-action-extend"
-                          title="Extend TTL by 4 Hours (+4h via extendEntity)"
-                        >
-                          <RefreshCw size={15} />
-                          <span>Extend (+4h)</span>
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleDispense(beacon)}
+                            disabled={beacon.attributes.unitsAvailable <= 0}
+                            className="bg-white hover:bg-rose-50 text-rose-600 border border-slate-200 font-extrabold text-xs px-3 py-2 rounded-lg flex items-center gap-1 disabled:opacity-40"
+                            title="Dispense 1 Unit (-1 via patchEntity)"
+                          >
+                            <MinusCircle size={14} />
+                            <span>-1 Unit</span>
+                          </button>
 
-                        <button
-                          onClick={() => handleDelete(beacon)}
-                          className="btn-action-delete"
-                          title="Emergency Recall / Deplete"
-                        >
-                          <Trash2 size={15} />
-                          <span>Recall</span>
-                        </button>
+                          <button
+                            onClick={() => handleExtend(beacon)}
+                            className="bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 font-bold text-xs px-2.5 py-2 rounded-lg"
+                            title="Extend TTL by 4 Hours (+4h via extendEntity)"
+                          >
+                            <RefreshCw size={14} />
+                          </button>
 
-                        <button
-                          onClick={() => onInspectProof(beacon)}
-                          className="btn-action-proof"
-                          title="Inspect Proof on Arkiv"
-                        >
-                          Proof
-                        </button>
+                          <button
+                            onClick={() => handleDelete(beacon)}
+                            className="bg-white hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 p-2 rounded-lg"
+                            title="Recall / Purge"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+
+                          <button
+                            onClick={() => onInspectProof(beacon)}
+                            className="bg-sky-50 hover:bg-sky-100 text-sky-600 font-bold text-xs px-2.5 py-2 rounded-lg"
+                          >
+                            Proof
+                          </button>
+                        </div>
                       </div>
                     </div>
                   );
@@ -426,33 +424,33 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
             )}
           </div>
 
-          {/* Live Arkiv DB-Chain Audit Log Stream */}
-          <div className="card-box audit-box">
-            <div className="card-box-header">
-              <div className="card-box-title">
-                <History size={20} className="title-icon" />
-                <h3>Arkiv DB-Chain Mutation Audit Stream</h3>
+          {/* Mutation Audit Stream */}
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <History size={20} className="text-slate-700" />
+                <h3 className="font-extrabold text-lg text-slate-900">Arkiv DB-Chain Mutation Audit Stream</h3>
               </div>
-              <span className="audit-pulse-pill">
-                <span className="audit-dot" /> Live Events
+              <span className="flex items-center gap-1.5 text-[10px] font-extrabold text-sky-600 bg-sky-50 px-2.5 py-1 rounded">
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse" /> Live Stream
               </span>
             </div>
 
-            <div className="audit-events-stream">
+            <div className="space-y-2.5 max-h-80 overflow-y-auto">
               {auditLogs.slice(0, 8).map((log) => {
                 const dateStr = new Date(log.timestamp).toLocaleTimeString();
                 return (
-                  <div key={log.id} className="audit-log-row">
-                    <div className="log-action-tag">
-                      <span className={`action-badge action-${log.action.toLowerCase()}`}>
+                  <div key={log.id} className="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="font-extrabold text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200/60">
                         {log.action}
                       </span>
-                      <span className="log-time">{dateStr}</span>
+                      <span className="font-mono text-[10px] text-slate-400">{dateStr}</span>
                     </div>
-                    <p className="log-summary">{log.summary}</p>
-                    <div className="log-tx-row">
-                      <span className="log-tx">TX: {log.txHash.slice(0, 18)}...</span>
-                      <span className="log-block">Block #{log.blockNumber}</span>
+                    <p className="font-semibold text-slate-800">{log.summary}</p>
+                    <div className="flex justify-between text-[10px] font-mono text-slate-400 pt-0.5">
+                      <span className="truncate max-w-[200px]">TX: {log.txHash}</span>
+                      <span>Block #{log.blockNumber}</span>
                     </div>
                   </div>
                 );

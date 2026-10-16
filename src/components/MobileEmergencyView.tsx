@@ -7,18 +7,12 @@ import {
   PhoneCall,
   ShieldCheck,
   AlertTriangle,
-  Flame,
   Check,
-  Zap,
-  Navigation,
-  ChevronRight,
   Droplet,
   Hospital,
-  Heart,
-  Share2,
   Copy,
 } from 'lucide-react';
-import { MedicalBeacon, BeaconCategory } from '@/types/beacon';
+import { MedicalBeacon } from '@/types/beacon';
 import { AVAILABLE_ITEM_CODES, calculatePincodeDistance } from '@/data/seedData';
 import { playRadarPingSound, playEmergencyChimeSound } from '@/lib/audioAlert';
 
@@ -116,42 +110,41 @@ export function MobileEmergencyView({
   };
 
   return (
-    <div className="mobile-app-wrapper">
-      <div className="mobile-phone-frame">
-        {/* Phone Notch & Status Bar */}
-        <div className="mobile-status-bar">
-          <span className="mobile-time">9:41</span>
-          <div className="mobile-notch" />
-          <div className="mobile-indicators">
-            <span className="mobile-signal">●●●</span>
-            <span className="mobile-wifi">WiFi</span>
-            <span className="mobile-battery">100%</span>
-          </div>
-        </div>
+    <div className="w-full flex justify-center py-2 sm:py-6 px-0 sm:px-4">
+      <div className="w-full max-w-xl bg-white rounded-2xl sm:rounded-3xl shadow-xl border border-slate-100 overflow-hidden flex flex-col relative min-h-[750px]">
+        {/* Curved Crimson Emergency Header */}
+        <div className="bg-gradient-to-r from-rose-600 via-rose-600 to-rose-700 text-white p-5 sm:p-6 sm:rounded-t-3xl shadow-md space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-inner">
+                <Droplet size={20} className="fill-white text-white" />
+              </div>
+              <div>
+                <h3 className="font-extrabold text-lg leading-tight tracking-tight">Sanjeevani Pulse</h3>
+                <span className="text-xs text-rose-100 font-semibold flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-ping" />
+                  ICU Emergency Ward Corridor Radar
+                </span>
+              </div>
+            </div>
 
-        {/* Curved Red Emergency Header */}
-        <div className="mobile-curved-header">
-          <div className="mobile-header-nav">
-            <div className="mobile-brand-icon">
-              <Droplet size={18} className="drop-fill" />
-            </div>
-            <div className="mobile-header-titles">
-              <h3>Sanjeevani Pulse</h3>
-              <span className="mobile-header-sub">Emergency Corridor Radar</span>
-            </div>
-            <div className="mobile-header-badge">
-              <span className="tiramisu-mini-dot" />
-              <span>Arkiv DB</span>
+            <div className="flex items-center gap-1.5 bg-black/20 border border-white/10 px-3 py-1.5 rounded-full text-xs font-bold tracking-wide">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Arkiv Tiramisu</span>
             </div>
           </div>
 
           {/* Location Bar with 1-tap PIN switcher */}
-          <div className="mobile-location-card">
-            <div className="loc-left" onClick={() => setIsEditingLocation((prev) => !prev)}>
-              <MapPin size={16} className="loc-pin-icon" />
+          <div className="bg-white text-slate-800 rounded-2xl p-3 shadow-md flex items-center justify-between">
+            <div className="flex items-center gap-3 cursor-pointer flex-1" onClick={() => setIsEditingLocation((prev) => !prev)}>
+              <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
+                <MapPin size={16} />
+              </div>
               <div>
-                <span className="loc-caption">Emergency Location (Indian PIN)</span>
-                <span className="loc-val">
+                <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">
+                  Emergency Ward Location
+                </span>
+                <span className="block text-xs font-extrabold text-slate-900 truncate">
                   {mobilePincode === '492099' && 'AIIMS Raipur Corridor (492099)'}
                   {mobilePincode === '495001' && 'Bilaspur CIMS Hub (495001)'}
                   {mobilePincode === '492001' && 'Raipur Central / Katora (492001)'}
@@ -164,7 +157,7 @@ export function MobileEmergencyView({
             </div>
             <button
               onClick={() => setIsEditingLocation((prev) => !prev)}
-              className="loc-edit-btn"
+              className="bg-slate-100 hover:bg-slate-200 text-rose-600 font-extrabold text-xs px-3 py-1.5 rounded-lg shrink-0"
             >
               {isEditingLocation ? 'Done' : 'Change'}
             </button>
@@ -172,24 +165,25 @@ export function MobileEmergencyView({
 
           {/* Location Editor Drawer */}
           {isEditingLocation && (
-            <div className="mobile-location-drawer">
-              <div className="pin-input-row">
+            <div className="bg-white/15 backdrop-blur-md rounded-2xl p-3 space-y-2.5 animate-fadeIn">
+              <div className="flex gap-2">
                 <input
                   type="text"
                   maxLength={6}
                   value={mobilePincode}
                   onChange={(e) => setMobilePincode(e.target.value.replace(/\D/g, ''))}
-                  placeholder="Enter 6-digit PIN code"
-                  className="mobile-pin-input"
+                  placeholder="Enter 6-digit PIN"
+                  className="flex-1 bg-white text-slate-900 font-extrabold text-sm px-3 py-2 rounded-xl focus:outline-none"
                 />
                 <button
                   onClick={() => setIsEditingLocation(false)}
-                  className="btn-pin-confirm"
+                  className="bg-slate-900 text-white font-extrabold text-xs px-4 rounded-xl"
                 >
                   Locate
                 </button>
               </div>
-              <div className="quick-hubs-scroll">
+
+              <div className="flex gap-1.5 overflow-x-auto pb-1 text-xs">
                 {[
                   { code: '492099', label: 'AIIMS Raipur' },
                   { code: '495001', label: 'CIMS Bilaspur' },
@@ -204,7 +198,9 @@ export function MobileEmergencyView({
                       setIsEditingLocation(false);
                       if (soundEnabled) playRadarPingSound();
                     }}
-                    className={`hub-pill ${mobilePincode === h.code ? 'active' : ''}`}
+                    className={`px-2.5 py-1 rounded-full font-bold whitespace-nowrap text-[11px] ${
+                      mobilePincode === h.code ? 'bg-white text-rose-600' : 'bg-white/20 text-white'
+                    }`}
                   >
                     {h.label}
                   </button>
@@ -214,14 +210,16 @@ export function MobileEmergencyView({
           )}
         </div>
 
-        {/* Emergency Specialty Switcher */}
-        <div className="mobile-category-tabs">
+        {/* Emergency Category Tabs */}
+        <div className="flex gap-1.5 px-4 pt-3 overflow-x-auto">
           <button
             onClick={() => {
               setSelectedSpecialty('BLOOD');
               if (soundEnabled) playRadarPingSound();
             }}
-            className={`cat-tab ${selectedSpecialty === 'BLOOD' ? 'active' : ''}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+              selectedSpecialty === 'BLOOD' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600'
+            }`}
           >
             🩸 Blood Group
           </button>
@@ -230,7 +228,9 @@ export function MobileEmergencyView({
               setSelectedSpecialty('ANTI_VENOM');
               if (soundEnabled) playRadarPingSound();
             }}
-            className={`cat-tab ${selectedSpecialty === 'ANTI_VENOM' ? 'active' : ''}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+              selectedSpecialty === 'ANTI_VENOM' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600'
+            }`}
           >
             🐍 Anti-Venom
           </button>
@@ -239,7 +239,9 @@ export function MobileEmergencyView({
               setSelectedSpecialty('RABIES');
               if (soundEnabled) playRadarPingSound();
             }}
-            className={`cat-tab ${selectedSpecialty === 'RABIES' ? 'active' : ''}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+              selectedSpecialty === 'RABIES' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600'
+            }`}
           >
             💉 Rabies Vac
           </button>
@@ -248,35 +250,39 @@ export function MobileEmergencyView({
               setSelectedSpecialty('JAN_AUSHADHI');
               if (soundEnabled) playRadarPingSound();
             }}
-            className={`cat-tab ${selectedSpecialty === 'JAN_AUSHADHI' ? 'active' : ''}`}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+              selectedSpecialty === 'JAN_AUSHADHI' ? 'bg-slate-900 text-white shadow-sm' : 'bg-slate-100 text-slate-600'
+            }`}
           >
             💊 Jan Aushadhi
           </button>
         </div>
 
-        {/* 1-Tap Blood Type Selector Card (Directly from BloodConnect+ design!) */}
+        {/* 1-Tap Blood Type Selector (BloodConnect+ UX) */}
         {selectedSpecialty === 'BLOOD' && (
-          <div className="mobile-blood-selector-card">
-            <span className="selector-title">Select Needed Blood Group</span>
+          <div className="mx-4 my-3 bg-slate-50 border border-slate-100 rounded-3xl p-4 flex flex-col items-center space-y-3 shadow-inner">
+            <span className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400">
+              Select Needed Blood Type
+            </span>
 
-            {/* Visual Blood Bag Highlight */}
-            <div className="blood-bag-visual">
-              <div className="bag-container">
-                <div className="bag-tube" />
-                <div className="bag-body">
-                  <div className="bag-label-box">
-                    <span className="bag-blood-type">
-                      {selectedLetter}
-                      {selectedSign}
-                    </span>
-                    <span className="bag-subtitle">Arkiv Verified</span>
-                  </div>
+            {/* Visual Blood Bag Display */}
+            <div className="flex flex-col items-center py-1">
+              <div className="w-2 h-3 bg-slate-300 rounded-t" />
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-b from-rose-500 to-rose-600 shadow-xl shadow-rose-600/30 flex items-center justify-center p-2.5">
+                <div className="bg-white rounded-xl w-full h-full flex flex-col items-center justify-center">
+                  <span className="text-2xl font-black text-rose-600 leading-none">
+                    {selectedLetter}
+                    {selectedSign}
+                  </span>
+                  <span className="text-[9px] font-extrabold text-slate-400 uppercase mt-0.5">
+                    Arkiv Verified
+                  </span>
                 </div>
               </div>
             </div>
 
-            {/* A / B / AB / O Toggle Buttons */}
-            <div className="letter-toggle-row">
+            {/* Letter Toggles */}
+            <div className="grid grid-cols-4 gap-2 w-full">
               {(['A', 'B', 'AB', 'O'] as const).map((letter) => (
                 <button
                   key={letter}
@@ -284,21 +290,29 @@ export function MobileEmergencyView({
                     setSelectedLetter(letter);
                     if (soundEnabled) playRadarPingSound();
                   }}
-                  className={`letter-btn ${selectedLetter === letter ? 'active' : ''}`}
+                  className={`py-2 rounded-xl font-black text-sm transition-all ${
+                    selectedLetter === letter
+                      ? 'bg-slate-900 text-white shadow-md'
+                      : 'bg-white text-slate-700 border border-slate-200/80 hover:bg-slate-100'
+                  }`}
                 >
                   {letter}
                 </button>
               ))}
             </div>
 
-            {/* + / - Rh Factor Toggle */}
-            <div className="rh-toggle-row">
+            {/* Rh Toggles */}
+            <div className="grid grid-cols-2 gap-2 w-full">
               <button
                 onClick={() => {
                   setSelectedSign('+');
                   if (soundEnabled) playRadarPingSound();
                 }}
-                className={`rh-btn ${selectedSign === '+' ? 'active' : ''}`}
+                className={`py-2 rounded-xl font-bold text-xs transition-all ${
+                  selectedSign === '+'
+                    ? 'bg-rose-600 text-white shadow-md shadow-rose-600/25'
+                    : 'bg-white text-slate-700 border border-slate-200/80'
+                }`}
               >
                 + (Rh Positive)
               </button>
@@ -307,7 +321,11 @@ export function MobileEmergencyView({
                   setSelectedSign('-');
                   if (soundEnabled) playRadarPingSound();
                 }}
-                className={`rh-btn rh-rare ${selectedSign === '-' ? 'active' : ''}`}
+                className={`py-2 rounded-xl font-bold text-xs transition-all ${
+                  selectedSign === '-'
+                    ? 'bg-rose-600 text-white shadow-md shadow-rose-600/25'
+                    : 'bg-white text-slate-700 border border-slate-200/80'
+                }`}
               >
                 - (Rh Negative / Rare)
               </button>
@@ -316,25 +334,27 @@ export function MobileEmergencyView({
         )}
 
         {/* Results Header */}
-        <div className="mobile-results-header">
-          <div className="results-title-line">
-            <h4>Live Stock Near You</h4>
-            <span className="results-count-tag">{mobileResults.length} Available</span>
+        <div className="px-4 pt-2 pb-1 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h4 className="font-extrabold text-sm text-slate-900">Verified Stock Near You</h4>
+            <span className="text-[10px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">
+              {mobileResults.length} Available
+            </span>
           </div>
-          <span className="results-auto-purge-hint">
-            <Clock size={11} /> All results auto-purge in 4h via Arkiv protocol
+          <span className="text-[10px] font-bold text-sky-600 flex items-center gap-1">
+            <Clock size={10} /> Auto-purges in 4h
           </span>
         </div>
 
-        {/* Mobile Results List matching screenshot card layout */}
-        <div className="mobile-results-list">
+        {/* Results List */}
+        <div className="px-4 pb-20 space-y-3 flex-1 overflow-y-auto">
           {mobileResults.length === 0 ? (
-            <div className="mobile-empty-state">
-              <AlertTriangle size={32} className="empty-warn-icon" />
-              <h5>No Available Stock in Current Radius</h5>
-              <p>
-                Listings have <strong>auto-expired on Arkiv DB-Chain</strong> to prevent misleading
-                families. Try selecting another hospital hub or check district referral centers.
+            <div className="bg-slate-50 rounded-2xl p-6 text-center space-y-2 border border-slate-100 mt-2">
+              <AlertTriangle size={32} className="text-amber-500 mx-auto" />
+              <h5 className="font-bold text-sm text-slate-800">No Stock in Immediate Radius</h5>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Listings have <strong>auto-expired on Arkiv DB-Chain</strong> to protect families from
+                misleading stock. Try another hospital corridor.
               </p>
               <button
                 onClick={() => {
@@ -343,9 +363,9 @@ export function MobileEmergencyView({
                   setSelectedSign('-');
                   setMobilePincode('492099');
                 }}
-                className="btn-mobile-reset"
+                className="bg-slate-900 text-white font-extrabold text-xs px-4 py-2 rounded-lg mt-2"
               >
-                Reset to AIIMS Raipur Corridor
+                Reset to AIIMS Raipur Hub
               </button>
             </div>
           ) : (
@@ -354,76 +374,95 @@ export function MobileEmergencyView({
               const isUrgent = beacon.attributes.unitsAvailable <= 3 || beacon.attributes.itemCode.includes('NEGATIVE');
 
               return (
-                <div key={beacon.key} className="mobile-result-card">
+                <div
+                  key={beacon.key}
+                  className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-md transition-all space-y-3"
+                >
                   {/* Top Bar: Hospital & Distance */}
-                  <div className="card-top-row">
-                    <div className="hospital-avatar">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
                       <Hospital size={18} />
                     </div>
-                    <div className="hospital-details">
-                      <strong className="hospital-name">{beacon.payload.facilityName}</strong>
-                      <div className="distance-eta-row">
-                        <span className="loc-km">📍 {distanceKm} kms</span>
-                        <span className="dot-sep">•</span>
-                        <span className="loc-eta">⏱️ ~{etaMins} mins drive</span>
+                    <div className="flex-1 min-w-0">
+                      <strong className="block font-bold text-xs text-slate-900 truncate">
+                        {beacon.payload.facilityName}
+                      </strong>
+                      <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-semibold">
+                        <span className="text-slate-600 font-bold">📍 {distanceKm} kms</span>
+                        <span>•</span>
+                        <span>⏱️ ~{etaMins}m drive</span>
                         {beacon.attributes.isEmergency24x7 === 'YES' && (
                           <>
-                            <span className="dot-sep">•</span>
-                            <span className="twentyfour-tag">24x7 ICU</span>
+                            <span>•</span>
+                            <span className="text-emerald-600 font-bold">24x7 ICU</span>
                           </>
                         )}
                       </div>
                     </div>
-                    {isUrgent && <span className="urgent-badge">Urgent</span>}
-                  </div>
-
-                  {/* Stock count and supply label */}
-                  <div className="supply-stock-row">
-                    <div>
-                      <span className="supply-tag-label">
-                        {itemDef ? itemDef.label : beacon.attributes.itemCode}
+                    {isUrgent && (
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded bg-rose-50 text-rose-600 shrink-0">
+                        Urgent
                       </span>
-                      <span className="address-snippet">{beacon.payload.address}</span>
-                    </div>
-
-                    <div className="units-count-pill">
-                      <span className="num">{beacon.attributes.unitsAvailable}</span>
-                      <span className="lbl">{itemDef?.unitName || 'Units'}</span>
-                    </div>
-                  </div>
-
-                  {/* Arkiv TTL & Price line */}
-                  <div className="arkiv-meta-line">
-                    <span className="ttl-pill">
-                      <Clock size={11} /> Auto-purges in {formatCountdown(remainingSeconds)}
-                    </span>
-                    {beacon.attributes.priceInr === '0.00' ? (
-                      <span className="free-badge">Govt Free Supply</span>
-                    ) : (
-                      <span className="subsidized-badge">Jan Aushadhi ₹{beacon.attributes.priceInr}</span>
                     )}
                   </div>
 
-                  {/* Big Call Button & Proof */}
-                  <div className="mobile-action-buttons">
+                  {/* Stock Count and Supply */}
+                  <div className="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between">
+                    <div>
+                      <span className="block font-extrabold text-xs text-slate-800">
+                        {itemDef ? itemDef.label : beacon.attributes.itemCode}
+                      </span>
+                      <span className="block text-[10px] text-slate-400 truncate max-w-[200px]">
+                        {beacon.payload.address}
+                      </span>
+                    </div>
+
+                    <div className="text-right">
+                      <span className="block text-xl font-black font-mono text-rose-600 leading-none">
+                        {beacon.attributes.unitsAvailable}
+                      </span>
+                      <span className="block text-[10px] font-bold text-slate-400">
+                        {itemDef?.unitName || 'Units'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* TTL & Price Line */}
+                  <div className="flex items-center justify-between text-[11px]">
+                    <span className="text-sky-600 font-bold flex items-center gap-1">
+                      <Clock size={11} /> Purges in {formatCountdown(remainingSeconds)}
+                    </span>
+                    {beacon.attributes.priceInr === '0.00' ? (
+                      <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded">
+                        Govt Free Supply
+                      </span>
+                    ) : (
+                      <span className="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded">
+                        Jan Aushadhi ₹{beacon.attributes.priceInr}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Big Call Button & Proof Icon */}
+                  <div className="flex gap-2 pt-1">
                     <a
                       href={`tel:${beacon.payload.contactDesk}`}
                       onClick={() => {
                         setCallingBeacon(beacon);
                         if (soundEnabled) playEmergencyChimeSound();
                       }}
-                      className="btn-mobile-call"
+                      className="flex-1 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-black text-xs py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-md shadow-rose-600/25 tracking-wide"
                     >
-                      <PhoneCall size={16} />
+                      <PhoneCall size={15} />
                       <span>CALL 24x7 DESK NOW</span>
                     </a>
 
                     <button
                       onClick={() => onInspectProof(beacon)}
-                      className="btn-mobile-proof"
-                      title="View Arkiv Keccak-MPT Inclusion Proof"
+                      className="w-11 h-11 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center shrink-0"
+                      title="Inspect Arkiv Proof"
                     >
-                      <ShieldCheck size={16} />
+                      <ShieldCheck size={18} />
                     </button>
                   </div>
                 </div>
@@ -432,58 +471,53 @@ export function MobileEmergencyView({
           )}
         </div>
 
-        {/* Emergency Call Quick Modal for Mobile */}
+        {/* Hotline Drawer Modal */}
         {callingBeacon && (
-          <div className="mobile-modal-backdrop" onClick={() => setCallingBeacon(null)}>
-            <div className="mobile-modal-sheet" onClick={(e) => e.stopPropagation()}>
-              <div className="sheet-handle" />
-              <div className="sheet-header">
-                <h4>Direct Hospital Desk Hotline</h4>
-                <p>{callingBeacon.payload.facilityName}</p>
+          <div className="absolute inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end" onClick={() => setCallingBeacon(null)}>
+            <div className="bg-white rounded-t-3xl w-full p-6 space-y-4 shadow-2xl animate-slideUp" onClick={(e) => e.stopPropagation()}>
+              <div className="w-10 h-1 bg-slate-200 rounded-full mx-auto" />
+              <div>
+                <h4 className="font-black text-base text-slate-900">Hospital Casualty Desk</h4>
+                <p className="text-xs text-slate-500 mt-0.5">{callingBeacon.payload.facilityName}</p>
               </div>
 
-              <div className="sheet-body">
-                <span className="desk-caption">24x7 Emergency Contact Line</span>
-                <a href={`tel:${callingBeacon.payload.contactDesk}`} className="sheet-phone-number">
+              <div className="bg-rose-50 border border-rose-100 rounded-2xl p-4 text-center space-y-1">
+                <span className="text-[10px] font-extrabold uppercase text-rose-600 tracking-wider">
+                  24x7 Direct Hotline
+                </span>
+                <a href={`tel:${callingBeacon.payload.contactDesk}`} className="block text-2xl font-black font-mono text-slate-900">
                   {callingBeacon.payload.contactDesk}
                 </a>
-
-                <div className="sheet-stock-alert">
-                  <strong>Stock Reserved for Immediate Dispatch:</strong>
-                  <span>
-                    {callingBeacon.attributes.unitsAvailable} Units of {callingBeacon.attributes.itemCode}
-                  </span>
-                </div>
               </div>
 
-              <div className="sheet-footer">
+              <div className="flex gap-2.5">
                 <button
                   onClick={() => handleCopy(callingBeacon.payload.contactDesk)}
-                  className="btn-sheet-copy"
+                  className="flex-1 bg-slate-100 font-extrabold text-xs py-3.5 rounded-xl flex items-center justify-center gap-1.5"
                 >
-                  {copiedDesk ? <Check size={16} /> : <Copy size={16} />}
+                  {copiedDesk ? <Check size={14} /> : <Copy size={14} />}
                   <span>{copiedDesk ? 'Copied' : 'Copy Number'}</span>
                 </button>
                 <a
                   href={`tel:${callingBeacon.payload.contactDesk}`}
-                  className="btn-sheet-dial"
                   onClick={() => setCallingBeacon(null)}
+                  className="flex-1 bg-rose-600 text-white font-black text-xs py-3.5 rounded-xl flex items-center justify-center gap-1.5 shadow-lg shadow-rose-600/30"
                 >
-                  <PhoneCall size={16} />
-                  <span>Call Hospital Desk</span>
+                  <PhoneCall size={14} />
+                  <span>Call Hospital</span>
                 </a>
               </div>
             </div>
           </div>
         )}
 
-        {/* Mobile App Bottom Tab Bar (matching BloodConnect+ screenshot) */}
-        <div className="mobile-bottom-tabs">
-          <button className="tab-item active">
-            <Droplet size={18} />
+        {/* Bottom App Navigation Bar */}
+        <div className="sticky bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-100 flex py-2.5 px-4 shadow-lg z-20">
+          <button className="flex-1 flex flex-col items-center gap-1 text-rose-600 text-[10px] font-extrabold">
+            <Droplet size={18} className="fill-rose-600" />
             <span>Emergency</span>
           </button>
-          <button onClick={onNavigateToHospitalPortal} className="tab-item">
+          <button onClick={onNavigateToHospitalPortal} className="flex-1 flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 text-[10px] font-bold">
             <Hospital size={18} />
             <span>Hospital</span>
           </button>
@@ -491,7 +525,7 @@ export function MobileEmergencyView({
             onClick={() => {
               if (mobileResults.length > 0) onInspectProof(mobileResults[0].beacon);
             }}
-            className="tab-item"
+            className="flex-1 flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 text-[10px] font-bold"
           >
             <ShieldCheck size={18} />
             <span>Proofs</span>
