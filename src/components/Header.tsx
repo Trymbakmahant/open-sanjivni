@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Radio, ShieldCheck, Activity, FileText, Volume2, VolumeX, RotateCcw, Hospital } from 'lucide-react';
+import { ShieldCheck, Activity, FileText, Volume2, VolumeX, RotateCcw, Hospital, Droplet } from 'lucide-react';
 import { beaconStore } from '@/lib/beaconStore';
 
 export type ActiveTab = 'CITIZEN_RADAR' | 'HOSPITAL_PORTAL' | 'STATE_PROOFS' | 'ARCHITECTURE';
@@ -30,87 +30,79 @@ export function Header({
   };
 
   return (
-    <header className="header-root">
-      <div className="header-container">
-        {/* Brand */}
-        <div className="header-brand" onClick={() => setActiveTab('CITIZEN_RADAR')} role="button" tabIndex={0}>
-          <div className="brand-pulse-badge">
-            <Radio className="pulse-icon" size={20} />
-            <span className="pulse-ring" />
+    <header className="clean-header-root">
+      <div className="clean-header-container">
+        {/* Brand with circular red/orange badge */}
+        <div className="clean-header-brand" onClick={() => setActiveTab('CITIZEN_RADAR')} role="button" tabIndex={0}>
+          <div className="clean-brand-circle">
+            <Droplet className="clean-droplet-icon" size={20} />
           </div>
-          <div>
-            <div className="brand-title-wrap">
-              <span className="brand-title">SANJEEVANI</span>
-              <span className="brand-badge-pulse">PULSE</span>
+          <div className="clean-brand-text">
+            <div className="clean-brand-title">
+              SANJEEVANI <span className="clean-pulse-tag">PULSE</span>
             </div>
-            <p className="brand-tagline">
-              Emergency Stock Radar on <span className="arkiv-highlight">Arkiv DB-Chain</span>
-            </p>
+            <span className="clean-brand-sub">Arkiv DB-Chain Radar</span>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <nav className="header-nav">
+        {/* Navigation Tabs matching screenshot style */}
+        <nav className="clean-nav-links">
           <button
             onClick={() => setActiveTab('CITIZEN_RADAR')}
-            className={`nav-tab-btn ${activeTab === 'CITIZEN_RADAR' ? 'active' : ''}`}
+            className={`clean-nav-link ${activeTab === 'CITIZEN_RADAR' ? 'active' : ''}`}
           >
-            <Activity size={16} />
-            <span>Citizen Radar</span>
+            Home &amp; Radar
           </button>
 
           <button
             onClick={() => setActiveTab('HOSPITAL_PORTAL')}
-            className={`nav-tab-btn ${activeTab === 'HOSPITAL_PORTAL' ? 'active' : ''}`}
+            className={`clean-nav-link ${activeTab === 'HOSPITAL_PORTAL' ? 'active' : ''}`}
           >
-            <Hospital size={16} />
-            <span>Hospital Portal</span>
+            Hospital Portal
           </button>
 
           <button
             onClick={() => setActiveTab('STATE_PROOFS')}
-            className={`nav-tab-btn ${activeTab === 'STATE_PROOFS' ? 'active' : ''}`}
+            className={`clean-nav-link ${activeTab === 'STATE_PROOFS' ? 'active' : ''}`}
           >
-            <ShieldCheck size={16} />
-            <span>State Proofs</span>
+            State Proofs
           </button>
 
           <button
             onClick={() => setActiveTab('ARCHITECTURE')}
-            className={`nav-tab-btn ${activeTab === 'ARCHITECTURE' ? 'active' : ''}`}
+            className={`clean-nav-link ${activeTab === 'ARCHITECTURE' ? 'active' : ''}`}
           >
-            <FileText size={16} />
-            <span>Arkiv Friction Report</span>
+            Arkiv Report
           </button>
         </nav>
 
-        {/* Status and Controls */}
-        <div className="header-actions">
+        {/* Status and Action Buttons */}
+        <div className="clean-header-actions">
           {/* Network Pill */}
-          <div className="network-pill" title="Arkiv DB-Chain Tiramisu Testnet">
-            <span className={`status-dot ${isOnline ? 'online' : 'offline'}`} />
-            <span className="network-name">Tiramisu</span>
-            <span className="network-block">#{networkBlock.toLocaleString()}</span>
+          <div className="clean-network-badge" title="Arkiv DB-Chain Tiramisu Testnet">
+            <span className={`clean-dot ${isOnline ? 'online' : 'offline'}`} />
+            <span className="clean-net-label">Tiramisu</span>
+            <span className="clean-net-block">#{networkBlock.toLocaleString()}</span>
           </div>
 
           {/* Sound Toggle */}
           <button
             onClick={() => setSoundEnabled((prev) => !prev)}
-            className={`icon-action-btn ${soundEnabled ? 'active-audio' : ''}`}
+            className={`clean-icon-btn ${soundEnabled ? 'active-audio' : ''}`}
             title={soundEnabled ? 'Mute radar audio ping' : 'Enable radar audio ping'}
             aria-label="Toggle radar sound"
           >
-            {soundEnabled ? <Volume2 size={17} /> : <VolumeX size={17} />}
+            {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
           </button>
 
           {/* Reset Demo */}
           <button
             onClick={handleReset}
-            className="icon-action-btn"
+            className="clean-icon-btn"
             title="Reset testnet demo data"
             aria-label="Reset demo data"
           >
-            <RotateCcw size={16} />
+            <RotateCcw size={15} />
           </button>
         </div>
       </div>

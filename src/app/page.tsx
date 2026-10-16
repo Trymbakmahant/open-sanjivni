@@ -6,17 +6,30 @@ import { CitizenRadar } from '@/components/CitizenRadar';
 import { HospitalPortal } from '@/components/HospitalPortal';
 import { StateProofsModal } from '@/components/StateProofsModal';
 import { ArchitectureView } from '@/components/ArchitectureView';
+import { MobileEmergencyView } from '@/components/MobileEmergencyView';
 import { MedicalBeacon } from '@/types/beacon';
 import { INITIAL_BEACONS } from '@/data/seedData';
+import { beaconStore } from '@/lib/beaconStore';
 import { getNetworkStatus, ARKIV_CONFIG } from '@/lib/arkiv';
-import { Shield, Heart, Zap, Globe, Github } from 'lucide-react';
+import { Shield, Smartphone, LayoutDashboard, Globe, Zap } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('CITIZEN_RADAR');
+  const [viewMode, setViewMode] = useState<'MOBILE_EMERGENCY' | 'RADAR_DASHBOARD'>('MOBILE_EMERGENCY');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [inspectingBeacon, setInspectingBeacon] = useState<MedicalBeacon | null>(null);
   const [networkBlock, setNetworkBlock] = useState<number>(700680);
   const [isOnline, setIsOnline] = useState<boolean>(true);
+  const [beacons, setBeacons] = useState<MedicalBeacon[]>([]);
+
+  // Sync beacons
+  useEffect(() => {
+    setBeacons(beaconStore.getBeacons());
+    const unsubscribe = beaconStore.subscribe(() => {
+      setBeacons(beaconStore.getBeacons());
+    });
+    return unsubscribe;
+  }, []);
 
   // Poll live block number from Arkiv Tiramisu RPC
   useEffect(() => {
@@ -48,9 +61,47 @@ export default function Home() {
         isOnline={isOnline}
       />
 
+      {/* Emergency Mode Switcher for Hospital Corridor vs Desktop Analysis */}
+      {activeTab === 'CITIZEN_RADAR' && (
+        <div className="emergency-mode-banner">
+          <div className="mode-toggle-container">
+            <span className="mode-hint-text">
+              <strong>Emergency UX Mode:</strong> Tailored for mobile smartphones in ICU hospital corridors
+            </span>
+
+            <div className="mode-btn-group">
+              <button
+                onClick={() => setViewMode('MOBILE_EMERGENCY')}
+                className={`mode-btn ${viewMode === 'MOBILE_EMERGENCY' ? 'active-mode' : ''}`}
+              >
+                <Smartphone size={16} />
+                <span>1-Tap Mobile Ward Mode</span>
+              </button>
+
+              <button
+                onClick={() => setViewMode('RADAR_DASHBOARD')}
+                className={`mode-btn ${viewMode === 'RADAR_DASHBOARD' ? 'active-mode' : ''}`}
+              >
+                <LayoutDashboard size={16} />
+                <span>Desktop Radar Grid</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Container */}
       <main className="main-content-wrap">
-        {activeTab === 'CITIZEN_RADAR' && (
+        {activeTab === 'CITIZEN_RADAR' && viewMode === 'MOBILE_EMERGENCY' && (
+          <MobileEmergencyView
+            beacons={beacons}
+            soundEnabled={soundEnabled}
+            onInspectProof={(beacon) => setInspectingBeacon(beacon)}
+            onNavigateToHospitalPortal={() => setActiveTab('HOSPITAL_PORTAL')}
+          />
+        )}
+
+        {activeTab === 'CITIZEN_RADAR' && viewMode === 'RADAR_DASHBOARD' && (
           <CitizenRadar
             soundEnabled={soundEnabled}
             onInspectProof={(beacon) => setInspectingBeacon(beacon)}
@@ -125,7 +176,7 @@ export default function Home() {
             </div>
             <p className="footer-desc">
               Decentralized Emergency Medical Inventory Radar on Arkiv DB-Chain. Built for Indian Public
-              Goods & Censorship-Resistant Healthcare Access.
+              Goods &amp; Censorship-Resistant Healthcare Access.
             </p>
           </div>
 
