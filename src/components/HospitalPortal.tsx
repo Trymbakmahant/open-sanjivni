@@ -19,6 +19,8 @@ import {
   Wallet,
   ExternalLink,
   Zap,
+  Plus,
+  Minus,
 } from 'lucide-react';
 import { FacilityPreset, BeaconCategory, MedicalBeacon, BroadcastStockParams } from '@/types/beacon';
 import { INDIAN_FACILITIES, AVAILABLE_ITEM_CODES } from '@/data/seedData';
@@ -64,7 +66,8 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
   // Form state
   const [formCategory, setFormCategory] = useState<BeaconCategory>('BLOOD');
   const [formItemCode, setFormItemCode] = useState<string>('O_NEGATIVE');
-  const [formUnits, setFormUnits] = useState<number>(4);
+  const [formUnits, setFormUnits] = useState<number | string>(4);
+  const [formTtlHours, setFormTtlHours] = useState<number>(8); // Category-adaptive default
   const [formPrice, setFormPrice] = useState<string>('0.00');
   const [formNotes, setFormNotes] = useState<string>(
     'Emergency ICU cases prioritized. Immediate crossmatch desk active.'
@@ -196,15 +199,20 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
     }
   };
 
-  // Update default items when category changes
+  // Update default items and category-adaptive TTL when category changes
   useEffect(() => {
     const items = AVAILABLE_ITEM_CODES.filter((i) => i.category === formCategory);
     if (items.length > 0) {
       setFormItemCode(items[0].code);
-      if (formCategory === 'BLOOD' || formCategory === 'ANTI_VENOM') {
+      if (formCategory === 'BLOOD') {
         setFormPrice('0.00');
+        setFormTtlHours(8); // 8 Hours (1 Nursing Shift)
+      } else if (formCategory === 'ANTI_VENOM' || formCategory === 'RABIES_VACCINE') {
+        setFormPrice('0.00');
+        setFormTtlHours(48); // 48 Hours (2-Day Cold-Chain Audit)
       } else if (formCategory === 'JAN_AUSHADHI') {
         setFormPrice('14.50');
+        setFormTtlHours(336); // 14 Days (Bi-weekly Pharmacy Quota)
       }
     }
   }, [formCategory]);
@@ -248,6 +256,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         broadcastAddress = metaMaskState.account;
       }
 
+      const parsedUnits = Math.max(1, Number(formUnits) || 1);
       const params: BroadcastStockParams = {
         facilityName: currentFacility.facilityName,
         contactDesk: currentFacility.contactDesk,
@@ -257,10 +266,11 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         itemCode: formItemCode,
         pincode: currentFacility.pincode,
         districtCode: currentFacility.districtCode,
-        unitsAvailable: formUnits,
+        unitsAvailable: parsedUnits,
         priceInr: formPrice,
         notes: formNotes,
         isEmergency24x7: true,
+        ttlHours: formTtlHours,
       };
 
       const result = await broadcastMedicalStock(walletClient, params, broadcastAddress);
@@ -621,20 +631,60 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
               </div>
 
               {/* Units & Price */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Units Available with +1 / -1 Stepper and Backspace Fix */}
                 <div className="space-y-1.5">
-                  <label htmlFor="form-units" className="text-xs font-extrabold text-slate-700">
-                    Units Available
-                  </label>
-                  <input
-                    id="form-units"
-                    type="number"
-                    min={1}
-                    max={500}
-                    value={formUnits}
-                    onChange={(e) => setFormUnits(Number(e.target.value))}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-extrabold text-slate-800 focus:outline-none"
-                  />
+                  <div className="flex items-center justify-between">
+                    <label htmlFor="form-units" className="text-xs font-extrabold text-slate-700">
+                      Units Available
+                    </label>
+                    <span className="text-[10px] text-slate-400 font-semibold font-mono">1 - 500</span>
+                  </div>
+
+                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                    <button
+                      type="button"
+                      onClick={() => setFormUnits((prev) => Math.max(1, (Number(prev) || 1) - 1))}
+                      className="w-10 h-11 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 active:scale-95 transition-all font-bold text-lg border-r border-slate-200/80 shrink-0"
+                      aria-label="Decrease units"
+                    >
+                      <Minus size={15} />
+                    </button>
+
+                    <input
+                      id="form-units"
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      value={formUnits}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (val === '') {
+                          setFormUnits('');
+                        } else {
+                          const cleaned = val.replace(/[^0-9]/g, '');
+                          setFormUnits(cleaned === '' ? '' : parseInt(cleaned, 10));
+                        }
+                      }}
+                      onBlur={() => {
+                        if (formUnits === '' || Number(formUnits) < 1) {
+                          setFormUnits(1);
+                        } else if (Number(formUnits) > 500) {
+                          setFormUnits(500);
+                        }
+                      }}
+                      className="w-full bg-transparent p-2.5 text-center text-sm font-black font-mono text-slate-900 focus:outline-none"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={() => setFormUnits((prev) => Math.min(500, (Number(prev) || 0) + 1))}
+                      className="w-10 h-11 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 active:scale-95 transition-all font-bold text-lg border-l border-slate-200/80 shrink-0"
+                      aria-label="Increase units"
+                    >
+                      <Plus size={15} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">
@@ -646,9 +696,45 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                     type="text"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-extrabold text-slate-800 focus:outline-none"
+                    className="w-full h-11 bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-extrabold text-slate-800 focus:outline-none"
                     placeholder="0.00"
                   />
+                </div>
+              </div>
+
+              {/* Category-Adaptive TTL Expiration Model */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-extrabold text-slate-700">
+                    Protocol TTL Lifespan (Arkiv Auto-Purge)
+                  </label>
+                  <span className="text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">
+                    {formTtlHours >= 24 ? `${Math.round(formTtlHours / 24)} Days` : `${formTtlHours} Hours`}
+                  </span>
+                </div>
+                <div className="grid grid-cols-4 gap-1.5 text-xs">
+                  {[
+                    { label: '4h (Trauma)', hours: 4 },
+                    { label: '8h (Shift)', hours: 8 },
+                    { label: '24h (Daily)', hours: 24 },
+                    { label: '48h (Antidote)', hours: 48 },
+                    { label: '7 Days', hours: 168 },
+                    { label: '14 Days (Quota)', hours: 336 },
+                    { label: '30 Days', hours: 720 },
+                  ].map((preset) => (
+                    <button
+                      key={preset.label}
+                      type="button"
+                      onClick={() => setFormTtlHours(preset.hours)}
+                      className={`p-2 rounded-xl text-[11px] font-bold transition-all ${
+                        formTtlHours === preset.hours
+                          ? 'bg-sky-600 text-white shadow-sm'
+                          : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
                 </div>
               </div>
 
@@ -669,7 +755,13 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
               {/* Protocol Expiry Notice */}
               <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 flex items-center gap-2.5 text-xs text-sky-800 font-semibold">
                 <Clock size={16} className="text-sky-600 shrink-0" />
-                <span>Arkiv Protocol: Listing automatically vanishes in 4 Hours unless extended.</span>
+                <span>
+                  Arkiv Protocol: Listing automatically vanishes in{' '}
+                  <strong className="text-sky-950 font-bold">
+                    {formTtlHours >= 24 ? `${Math.round(formTtlHours / 24)} Days` : `${formTtlHours} Hours`}
+                  </strong>{' '}
+                  unless actively extended by hospital desk.
+                </span>
               </div>
 
               <button

@@ -56,6 +56,7 @@ export interface BroadcastStockParams {
   unitsAvailable: number;
   priceInr: string;
   isEmergency24x7?: boolean;
+  ttlHours?: number;
 }
 
 export interface SearchFilterParams {

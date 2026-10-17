@@ -38,9 +38,16 @@ export async function broadcastMedicalStock(
     console.warn('[Broadcast] Using estimated block number:', e);
   }
 
+  const ttlHours = params.ttlHours || (params.category === 'JAN_AUSHADHI' ? 336 : params.category === 'BLOOD' ? 8 : 48);
+  const expiration = ttlHours >= 24 
+    ? ExpirationTime.fromDays(Math.max(1, Math.round(ttlHours / 24))) 
+    : ExpirationTime.fromHours(ttlHours);
+  const ttlMs = ttlHours * 60 * 60 * 1000;
+  const blocksPerTtl = Math.round((ttlHours * 3600) / 2); // 2-second block times on Tiramisu
+
   // Attempt real on-chain transaction if walletClient is active
   if (walletClient && typeof walletClient.createEntity === 'function') {
-    console.log('[Broadcast] Signing Arkiv createEntity transaction with connected wallet...');
+    console.log(`[Broadcast] Signing Arkiv createEntity transaction with connected wallet (TTL: ${ttlHours}h)...`);
     const tx = await walletClient.createEntity({
       payload: payloadString,
       contentType: 'application/json',
@@ -55,7 +62,7 @@ export async function broadcastMedicalStock(
         isEmergency24x7: str(params.isEmergency24x7 === false ? 'NO' : 'YES'),
         status: str('ACTIVE'),
       },
-      expires: ExpirationTime.fromHours(4), // 4-Hour Time-Scoped Expiration Guarantee
+      expires: expiration, // Category-Adaptive Time-Scoped Expiration Guarantee
     });
 
     if (tx) {
@@ -69,8 +76,6 @@ export async function broadcastMedicalStock(
   }
 
   const now = Date.now();
-  const fourHoursMs = 4 * 60 * 60 * 1000;
-  const blocksIn4Hours = 7200; // 4 hours at 2-second block times
 
   const beacon: MedicalBeacon = {
     key: entityKey,
@@ -87,8 +92,8 @@ export async function broadcastMedicalStock(
       isEmergency24x7: params.isEmergency24x7 === false ? 'NO' : 'YES',
       status: 'ACTIVE',
     },
-    expiresAtBlock: blockNumber + blocksIn4Hours,
-    expiresAtTimestamp: now + fourHoursMs,
+    expiresAtBlock: blockNumber + blocksPerTtl,
+    expiresAtTimestamp: now + ttlMs,
     createdAtTimestamp: now,
     blockNumber,
     txHash,
