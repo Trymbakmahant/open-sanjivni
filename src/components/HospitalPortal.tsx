@@ -32,9 +32,11 @@ import { publicClient } from '@/lib/arkiv';
 import { formatEther } from 'viem';
 import {
   isMetaMaskInstalled,
+  getEthereumProvider,
   connectMetaMask,
   switchToTiramisuNetwork,
   getMetaMaskArkivClient,
+  isTiramisuChain,
   TIRAMISU_CHAIN_ID_HEX,
   MetaMaskState,
 } from '@/lib/metamask';
@@ -62,6 +64,8 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
   });
   const [isConnectingMetaMask, setIsConnectingMetaMask] = useState(false);
   const [useMetaMaskBroadcast, setUseMetaMaskBroadcast] = useState(false);
+  const [portalError, setPortalError] = useState<string | null>(null);
+  const [portalNotice, setPortalNotice] = useState<string | null>(null);
 
   // Form state
   const [formCategory, setFormCategory] = useState<BeaconCategory>('BLOOD');
@@ -95,16 +99,17 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
   // Check MetaMask presence and existing accounts
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.ethereum) {
+    const provider = getEthereumProvider();
+    if (provider) {
       setMetaMaskState((prev) => ({ ...prev, isInstalled: true }));
 
-      window.ethereum
+      provider
         .request({ method: 'eth_accounts' })
         .then(async (accounts: string[]) => {
           if (accounts && accounts.length > 0) {
             const account = accounts[0] as `0x${string}`;
-            const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-            const isCorrect = chainId?.toLowerCase() === TIRAMISU_CHAIN_ID_HEX.toLowerCase();
+            const chainId = await provider.request({ method: 'eth_chainId' });
+            const isCorrect = isTiramisuChain(chainId);
             let balanceGlm = '0.00';
             try {
               const rawBal = await publicClient.getBalance({ address: account });
@@ -153,16 +158,16 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         setMetaMaskState((prev) => ({
           ...prev,
           chainId: newChainId,
-          isCorrectNetwork: newChainId.toLowerCase() === TIRAMISU_CHAIN_ID_HEX.toLowerCase(),
+          isCorrectNetwork: isTiramisuChain(newChainId),
         }));
       };
 
-      window.ethereum.on?.('accountsChanged', handleAccountsChanged);
-      window.ethereum.on?.('chainChanged', handleChainChanged);
+      provider.on?.('accountsChanged', handleAccountsChanged);
+      provider.on?.('chainChanged', handleChainChanged);
 
       return () => {
-        window.ethereum.removeListener?.('accountsChanged', handleAccountsChanged);
-        window.ethereum.removeListener?.('chainChanged', handleChainChanged);
+        provider.removeListener?.('accountsChanged', handleAccountsChanged);
+        provider.removeListener?.('chainChanged', handleChainChanged);
       };
     }
   }, []);
@@ -181,7 +186,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
       });
       setUseMetaMaskBroadcast(true);
     } catch (err: any) {
-      alert(err?.message || 'Failed to connect MetaMask');
+      setPortalError(err?.message || 'Failed to connect MetaMask');
     } finally {
       setIsConnectingMetaMask(false);
     }
@@ -189,12 +194,13 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
   const handleSwitchNetwork = async () => {
     const ok = await switchToTiramisuNetwork();
-    if (ok && window.ethereum) {
-      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+    const provider = getEthereumProvider();
+    if (ok && provider) {
+      const chainId = await provider.request({ method: 'eth_chainId' });
       setMetaMaskState((prev) => ({
         ...prev,
         chainId,
-        isCorrectNetwork: chainId?.toLowerCase() === TIRAMISU_CHAIN_ID_HEX.toLowerCase(),
+        isCorrectNetwork: isTiramisuChain(chainId),
       }));
     }
   };
@@ -234,7 +240,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
   const handleBroadcast = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isAuthorized) {
-      alert('Access Denied: Unregistered public wallet cannot broadcast medical stock.');
+      setPortalError('Access Denied: Unregistered public wallet cannot broadcast medical stock. Please select a certified hospital desk or connect an authorized wallet.');
       return;
     }
     setIsBroadcasting(true);
@@ -247,7 +253,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
       // If user enabled MetaMask mode, sign using real MetaMask wallet client
       if (useMetaMaskBroadcast && metaMaskState.isConnected && metaMaskState.account) {
         if (!metaMaskState.isCorrectNetwork) {
-          alert('Please switch MetaMask to the Arkiv Tiramisu Testnet first.');
+          setPortalError('Network Mismatch: Please switch your wallet to the Arkiv Tiramisu Testnet (Chain ID 7738577).');
           await handleSwitchNetwork();
           setIsBroadcasting(false);
           return;
@@ -285,13 +291,13 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
       console.error('Broadcast failed:', err);
       const msg = err?.message || String(err);
       if (msg.includes('insufficient funds') || msg.includes('gas')) {
-        alert(
-          `MetaMask Gas Error: Your wallet does not have enough test GLM on Arkiv Tiramisu.\n\nPlease claim free testnet tokens from the Arkiv Hub Faucet:\nhttps://hub.arkiv.network/faucet\n\nOr toggle "Simulated Desk Mode" to test without tokens.`
+        setPortalError(
+          'MetaMask Gas Error: Your wallet does not have enough test GLM on Arkiv Tiramisu to pay for transaction gas. Please claim free testnet tokens from the Arkiv Hub Faucet (https://hub.arkiv.network/faucet), or switch to "Simulated Desk Mode" to broadcast without spending tokens.'
         );
       } else if (msg.includes('rejected') || msg.includes('denied') || msg.includes('User rejected')) {
-        alert('MetaMask Notice: Transaction signature was rejected by user in MetaMask.');
+        setPortalNotice('Notice: Transaction signature was cancelled in your wallet.');
       } else {
-        alert(`Broadcast error: ${msg}`);
+        setPortalError(`Broadcast error: ${msg}`);
       }
     } finally {
       setIsBroadcasting(false);
@@ -300,7 +306,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
   const handleDispense = async (beacon: MedicalBeacon) => {
     if (!isAuthorized) {
-      alert('Access Denied: Only certified hospital desk wallets can mutate inventory beacons.');
+      setPortalError('Access Denied: Only certified hospital desk wallets can mutate inventory beacons.');
       return;
     }
     try {
@@ -312,13 +318,13 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
       if (soundEnabled) playEmergencyChimeSound();
     } catch (e: any) {
       console.error('Dispense failed', e);
-      alert('Dispense error: ' + (e?.message || e));
+      setPortalError('Dispense error: ' + (e?.message || e));
     }
   };
 
   const handleExtend = async (beacon: MedicalBeacon) => {
     if (!isAuthorized) {
-      alert('Access Denied: Only certified hospital desk wallets can extend inventory leases.');
+      setPortalError('Access Denied: Only certified hospital desk wallets can extend inventory leases.');
       return;
     }
     try {
@@ -327,16 +333,16 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         walletClient = getMetaMaskArkivClient(metaMaskState.account);
       }
       await extendStockBeacon(walletClient, beacon.key);
-      alert('Beacon lease extended by +4 Hours (+7,200 blocks) on Arkiv DB-Chain!');
+      setPortalNotice('Beacon lease extended by +4 Hours (+7,200 blocks) on Arkiv DB-Chain!');
     } catch (e: any) {
       console.error('Extend failed', e);
-      alert('Extend error: ' + (e?.message || e));
+      setPortalError('Extend error: ' + (e?.message || e));
     }
   };
 
   const handleDelete = async (beacon: MedicalBeacon) => {
     if (!isAuthorized) {
-      alert('Access Denied: Only certified hospital desk wallets can recall inventory.');
+      setPortalError('Access Denied: Only certified hospital desk wallets can recall inventory.');
       return;
     }
     if (confirm('Execute emergency recall for this listing? It will immediately purge from Arkiv.')) {
@@ -348,13 +354,53 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         await deleteStockBeacon(walletClient, beacon.key);
       } catch (e: any) {
         console.error('Delete failed', e);
-        alert('Delete error: ' + (e?.message || e));
+        setPortalError('Delete error: ' + (e?.message || e));
       }
     }
   };
 
   return (
     <div className="space-y-6 sm:space-y-8">
+      {/* Dynamic Error Banner (Replaces disruptive browser alert) */}
+      {portalError && (
+        <div className="bg-rose-950/90 border border-rose-500/60 rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-3 text-rose-200 shadow-xl animate-in fade-in">
+          <div className="flex items-start gap-3">
+            <AlertCircle size={22} className="text-rose-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <strong className="block text-sm font-bold text-rose-300">Action Required:</strong>
+              <p className="text-xs sm:text-sm text-rose-200/90 leading-relaxed break-words">{portalError}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setPortalError(null)}
+            className="text-rose-400 hover:text-rose-200 text-lg leading-none p-1 rounded-lg hover:bg-rose-900/50"
+            title="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* Dynamic Notice Banner */}
+      {portalNotice && (
+        <div className="bg-emerald-950/90 border border-emerald-500/60 rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-3 text-emerald-200 shadow-xl animate-in fade-in">
+          <div className="flex items-start gap-3">
+            <Check size={22} className="text-emerald-400 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <strong className="block text-sm font-bold text-emerald-300">Notice:</strong>
+              <p className="text-xs sm:text-sm text-emerald-200/90 leading-relaxed break-words">{portalNotice}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => setPortalNotice(null)}
+            className="text-emerald-400 hover:text-emerald-200 text-lg leading-none p-1 rounded-lg hover:bg-emerald-900/50"
+            title="Dismiss"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Top Banner Card */}
       <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="flex items-center gap-4">
