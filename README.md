@@ -90,41 +90,54 @@ Open Sanjivni exercises the full suite of `@arkiv-network/sdk` v0.8.x capabiliti
 
 ---
 
-## 🔒 4. Strict Privacy Compliance (DPDP Act & Zero PHI)
+## 🛡️ 4. Anon Aadhaar Zero-Knowledge Privacy Architecture (Zero PII Guarantee)
 
-In accordance with India's **Digital Personal Data Protection (DPDP) Act** and the **Arkiv Privacy Gate**:
-* **ZERO Personal Health Information (PHI)**: No patient names, Aadhaar numbers, clinical diagnoses, blood recipient records, or private contact details are ever written to Arkiv.
-* **Institutional Beacons Only**: Stored entities contain *only* institutional inventory data (`facilityName`, `contactDesk`, `pincode`, `itemCode`, `unitsAvailable`).
-* **Synthetic Contacts for Demo**: All testnet demonstrations use verified synthetic institutional emergency lines (`+91-771-2578500`).
+Open Sanjivni pairs Arkiv's native DB-Chain engine with **Anon Aadhaar** zero-knowledge Groth16 proofs to guarantee anti-scalper sybil protection and verified volunteer donor networks with **STRICT ZERO PII**:
+
+* **Zero Raw PII on Arkiv**: In compliance with India's **DPDP Act**, no Aadhaar numbers, real names, phone numbers, or dates of birth are ever stored on-chain—not even hashed.
+* **Cryptographic Groth16 Nullifier**: An anonymous deterministic nullifier derived from `Poseidon(AadhaarSignature, appSeed=492099108)` acts as an anonymous, un-linkable single-use identifier.
+* **Feature #1 — 60-Minute Anti-Scalper Reservation (`emergency_lock`)**:
+  - Sybil protection check prevents bots or hoarders from locking multiple rare blood or anti-venom units across a city.
+  - Automatically written to Arkiv with `ExpirationTime.fromMinutes(60)`. If unclaimed at the casualty counter within 60 minutes, the lock auto-purges from the consensus state trie without gas cost.
+  - Dispenses a zero-PII synthetic claim token: `ICU-REQ-XXXXXX`.
+* **Feature #2 — ZK-Verified Standby Volunteer Donor Beacon (`volunteer_donor`)**:
+  - Zero-stock emergency fallback: when hospital blood banks hit 0 units, families locate verified standby donors in their exact PIN code.
+  - Age 18+ and residence PIN code are cryptographically enforced and locked directly by the Anon Aadhaar Groth16 proof (preventing location-spoofing).
+  - Broadcasted to Arkiv with `ExpirationTime.fromHours(12)` readiness TTL and synthetic Matrix relay handle (`matrix_relay_0x...`).
+* **Judge Accessibility Gate**: Includes a visible **"⚡ 1-Click Judge Demo"** button allowing international hackathon evaluators to test Groth16 ZK reservations and donor beacons immediately without needing an Indian physical Aadhaar card.
 
 ---
 
-## 📋 5. Arkiv Entity Data Schema (`medical_beacon`)
+## 📋 5. Arkiv Entity Data Schemas
 
-### Attributes Definition
+### Entity 1: `medical_beacon` (Active Hospital / Pharmacy Inventory)
 * `type`: `str("medical_beacon")`
 * `category`: `str("BLOOD" | "ANTI_VENOM" | "RABIES_VACCINE" | "JAN_AUSHADHI")`
 * `itemCode`: `str("O_NEGATIVE" | "SNAKE_POLYVALENT" | "PARACETAMOL_650" | ...)`
 * `pincode`: `i32(492099)` *(Indexed for geographical search & distance sorting)*
-* `districtCode`: `str("RAIPUR" | "BILASPUR" | "MUMBAI" | "NEW_DELHI")`
 * `unitsAvailable`: `i32(4)` *(Indexed for range query: `unitsAvailable > i32(0)`)*
-* `priceInr`: `dec("0.00")` *(0.00 for Govt blood bank/antivenom, subsidized MRP for Jan Aushadhi)*
+* `priceInr`: `dec("0.00")` *(₹0.00 for Govt supply, subsidized MRP for Jan Aushadhi)*
 * `isEmergency24x7`: `str("YES" | "NO")`
 * `status`: `str("ACTIVE" | "DEPLETED" | "EXPIRED")`
-* **Expiration Policy**: `ExpirationTime.fromHours(4)` *(4 hours = ~7,200 blocks)*
+* **Expiration Policy**: Category-adaptive TTL (8h for Blood, 48h for Anti-Venom, 14d for Jan Aushadhi)
 
-### JSON Payload (< 2 KiB)
-```json
-{
-  "facilityName": "AIIMS Raipur Emergency Blood Bank",
-  "contactDesk": "+91-771-2578500",
-  "address": "GE Road, Tatibandh, Raipur, Chhattisgarh",
-  "licenseNumber": "CG-BB-2024-889",
-  "operatingHours": "24x7",
-  "notes": "Emergency ICU requests prioritized. Replacement donor encouraged.",
-  "updatedAtIso": "2026-10-17T15:30:00.000Z"
-}
-```
+### Entity 2: `emergency_lock` (Anti-Scalper 60-Min Reservation)
+* `type`: `str("emergency_lock")`
+* `beaconKey`: `str(beaconEntityKey)`
+* `zkNullifier`: `str(nullifier)` *(Groth16 anonymous commitment)*
+* `verifiedPincode`: `i32(pincode)`
+* `isAdultVerified`: `str("YES")`
+* `status`: `str("LOCKED" | "CLAIMED" | "EXPIRED")`
+* **Expiration Policy**: `ExpirationTime.fromMinutes(60)`
+
+### Entity 3: `volunteer_donor` (Standby Volunteer Donor Beacon)
+* `type`: `str("volunteer_donor")`
+* `bloodGroup`: `str("O_NEGATIVE" | "B_NEGATIVE" | ...)`
+* `pincode`: `i32(pincode)` *(Cryptographically locked to ZK proof)*
+* `zkNullifier`: `str(nullifier)`
+* `isAnonAadhaarVerified`: `str("YES")`
+* `status`: `str("AVAILABLE" | "ENGAGED" | "EXPIRED")`
+* **Expiration Policy**: `ExpirationTime.fromHours(12)`
 
 ---
 

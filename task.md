@@ -42,9 +42,34 @@
   - Re-affirm public verifiability primitive for citizens, NGOs, and investigative journalists
   - Highlight Keccak-MPT Merkle proofs (`eth_getProof`) as the anti-hoarding verification tool
 
-### 5. Verification & Submission Readiness
+### 5. Anon Aadhaar Zero-Knowledge Identity Integration
+- [x] Configure `@anon-aadhaar/react` & `@anon-aadhaar/core` wrapper (`AnonAadhaarWrapper.tsx`):
+  - Client-side safe dynamic loading to guarantee zero SSR hydration errors in Next.js 15
+  - Mode toggle: Judge Test Aadhaar Mode (1-Click) vs Live UIDAI QR Scanner
+- [x] Implement `useVerifiedCitizen.ts`:
+  - Deterministic app seed: `nullifierSeed={492099108}`
+  - Selective disclosure: `ageAbove18`, `pincode`, `state`
+  - 1-Click Judge Demo fallback for instant international evaluation
+- [x] Implement Feature #1: Anti-Scalper 60-Minute Emergency Reservation (`src/services/reserveStock.ts`):
+  - Sybil protection query on Arkiv DB-Chain by `zkNullifier`
+  - Auto-expiring `emergency_lock` with `ExpirationTime.fromMinutes(60)`
+  - Synthetic claim token: `ICU-REQ-XXXXXX`
+- [x] Implement Feature #2: Standby Volunteer Donor Beacon (`src/services/registerDonor.ts`):
+  - Zero-stock fallback for families in critical ICU emergencies
+  - Enforce age 18+ and lock `pincode` to Anon Aadhaar proof (anti-spoofing)
+  - Auto-expiring `volunteer_donor` with `ExpirationTime.fromHours(12)`
+  - Synthetic Matrix relay handle: `matrix_relay_0x...`
+- [x] Build UI Components:
+  - `<AnonAadhaarBadge />` status bar with 1-click judge demo & QR login
+  - "Reserve 1 Unit (60m ZK Lock)" button on inventory cards
+  - Active reservation ticket banner with live countdown timer
+  - "Standby Volunteer Donors (Zero-Stock Fallback)" tab and broadcast modal
+- [x] Update Gate Documentation:
+  - Updated `/arkiv/schema.md` with `emergency_lock` and `volunteer_donor` schemas
+  - Documented DPDP Act zero-PII cryptographic guarantees
+  - Updated `README.md`
+
+### 6. Verification & Submission Readiness
 - [x] `pnpm tsc --noEmit` validation (0 errors)
-- [x] State Proofs Anti-Hoarding Verification UI for Citizens & NGOs
-- [x] Desk Authorization Simulation with 1-click Judge Toggles
-- [x] Mandatory Gate Files (`arkiv/schema.md`, `arkiv/friction.md`)
-- [x] Git commit under `TrymbakMahant <trymbak0102mahant@gmail.com>` with clean streak
+- [x] Next.js dev server rendering validation (200 OK)
+- [x] Gate files committed under `TrymbakMahant <trymbak0102mahant@gmail.com>`

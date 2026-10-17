@@ -43,75 +43,115 @@ The payload holds institutional facility data and operational dispatch instructi
 
 ---
 
-## 3. Protocol-Level Expiration Model (TTL)
+## 3. Anon Aadhaar Zero-Knowledge Identity Entities
 
-### 4-Hour Life Cycle
-Every medical beacon is instantiated with strict 4-hour validity:
-```typescript
-import { ExpirationTime } from '@arkiv-network/sdk';
+Open Sanjivni pairs Arkiv's native DB-Chain engine with **Anon Aadhaar** zero-knowledge Groth16 proofs to guarantee anti-scalper sybil protection and verified volunteer donor networks with **STRICT ZERO PII**.
 
-// Exact 4-hour protocol lifespan
-const expiration = ExpirationTime.fromHours(4);
-```
-
-### Automatic State Trie Pruning
-- If a hospital trauma desk fails to re-affirm stock within 4 hours, the Arkiv validator consensus automatically prunes the beacon from the active state trie.
-- **Zero Gas Cost**: Pruning requires zero gas fees from the hospital or patient.
-- **Anti-Phantom Guarantee**: Patients in ICU hospital corridors will never chase stale numbers or phantom stock listed 3 days prior.
+### DPDP Act & Privacy Architecture (Zero PII Guarantee)
+- **Zero Raw PII on Arkiv**: No Aadhaar numbers, real names, phone numbers, or dates of birth are ever written to Arkiv DB-Chain—not even hashed.
+- **Cryptographic Nullifier**: An anonymous deterministic nullifier (`0x...`) derived from `Poseidon(AadhaarSignature, appSeed=492099108)` acts as an anonymous, un-linkable single-use identifier.
+- **Selective Disclosure Signals**: Only the zero-knowledge boolean `ageAbove18` and the proven `pincode` (extracted from the UIDAI RSA digital signature inside the SNARK circuit) are stored.
+- **Synthetic Communication Relays**: Contact is mediated through synthetic tokens (`ICU-REQ-8F42E1`, `matrix_relay_0x8f42e1b9`).
 
 ---
 
-## 4. Query Semantics & Range Operations
+### Entity #2: `emergency_lock` (Anti-Scalper 60-Minute Reservation)
+
+Prevents hoarding or predatory scalping of critical O-Negative blood or anti-venoms.
+
+#### Indexed Typed Attributes
+| Attribute Name | Typed Helper | Data Type | Description | Example |
+| :--- | :--- | :--- | :--- | :--- |
+| `type` | `str` | `string` | Entity type identifier | `str('emergency_lock')` |
+| `beaconKey` | `str` | `string` | Target `medical_beacon` entity key | `str('0x9a8f...31')` |
+| `zkNullifier` | `str` | `string` | Anon Aadhaar Groth16 nullifier | `str('0x8f42e1b9...5019')` |
+| `verifiedPincode`| `i32` | `int32` | Proven pincode from ZK proof | `i32(492099)` |
+| `isAdultVerified`| `str` | `string` | Age 18+ proof verification | `str('YES')` |
+| `status` | `str` | `string` | Lock lifecycle status | `str('LOCKED')` |
+
+#### Unindexed JSON Payload
+```json
+{
+  "beaconKey": "0x9a8f1029bc4127...",
+  "zkProofTimestamp": "1792251800000",
+  "syntheticPatientToken": "ICU-REQ-8F42E1",
+  "hospitalName": "AIIMS Raipur Emergency Blood Bank",
+  "itemCode": "O_NEGATIVE"
+}
+```
+
+#### Protocol-Level Auto-Expiration
+```typescript
+// Strict 60-Minute Auto-Release
+expires: ExpirationTime.fromMinutes(60)
+```
+If an attendant does not arrive at the hospital casualty desk within 60 minutes, Arkiv DB-Chain automatically releases the lock without manual intervention.
+
+---
+
+### Entity #3: `volunteer_donor` (ZK-Verified Standby Volunteer Donor Beacon)
+
+When hospital inventory is depleted (0 units), families locate verified adult standby replacement donors in their exact PIN code.
+
+#### Indexed Typed Attributes
+| Attribute Name | Typed Helper | Data Type | Description | Example |
+| :--- | :--- | :--- | :--- | :--- |
+| `type` | `str` | `string` | Entity type identifier | `str('volunteer_donor')` |
+| `bloodGroup` | `str` | `string` | Blood group code | `str('O_NEGATIVE')` |
+| `pincode` | `i32` | `int32` | Enforced from ZK proof | `i32(492099)` |
+| `zkNullifier` | `str` | `string` | Unique anonymous donor nullifier | `str('0x8f42e1b9...5019')` |
+| `isAnonAadhaarVerified` | `str` | `string` | Cryptographic confirmation | `str('YES')` |
+| `status` | `str` | `string` | Standby availability | `str('AVAILABLE')` |
+
+#### Unindexed JSON Payload
+```json
+{
+  "bloodGroup": "O_NEGATIVE",
+  "syntheticRelay": "matrix_relay_0x8f42e1b9",
+  "state": "Chhattisgarh",
+  "note": "Available for emergency ICU replacement donation at AIIMS corridor.",
+  "registeredAtIso": "2026-10-17T17:30:00.000Z"
+}
+```
+
+#### Protocol-Level Auto-Expiration
+```typescript
+// 12-Hour Standby Readiness TTL
+expires: ExpirationTime.fromHours(12)
+```
+
+---
+
+## 4. Protocol-Level Expiration Model (Category-Adaptive TTL)
+
+Open Sanjivni implements Category-Adaptive Time-To-Live parameters:
+- **Emergency Blood (Platelets / O-Neg RBC)**: `ExpirationTime.fromHours(8)`
+- **Snake Anti-Venom & Rabies Immunoglobulins**: `ExpirationTime.fromDays(2)` (48 hours)
+- **Jan Aushadhi Generic Essential Medicines**: `ExpirationTime.fromDays(14)` (336 hours)
+- **Anti-Scalper Citizen Locks**: `ExpirationTime.fromMinutes(60)` (1 hour)
+- **Standby Volunteer Donors**: `ExpirationTime.fromHours(12)` (12 hours)
+
+### Automatic State Trie Pruning
+- If not extended or renewed before expiration, Arkiv validator consensus automatically prunes the entity from the active state trie.
+- **Zero Gas Cost**: Pruning requires zero gas fees from the hospital or patient.
+- **Anti-Phantom Guarantee**: Patients in ICU hospital corridors will never chase stale numbers or phantom stock.
+
+---
+
+## 5. Query Semantics & Range Operations
 
 ### Direct JSON-RPC Querying
 Citizens and emergency attendants query Arkiv Tiramisu RPC (`https://rpc.tiramisu.db-chain.testnet.arkiv.network`) directly without an intermediary server or GraphQL subgraph.
 
-#### Query Filter Example:
+#### Anti-Scalper Sybil Query:
 ```sql
-type = str('medical_beacon') AND unitsAvailable > i32(0) AND category = str('BLOOD') AND pincode = i32(492099)
+type = str('emergency_lock') AND zkNullifier = str('0x8f42e1b99c72ad416a29bf33d90184e271a01298471928374650192837465019') AND status = str('LOCKED')
 ```
 
-#### TypeScript SDK Invocation:
-```typescript
-import { createPublicClient } from '@arkiv-network/sdk';
-import { http } from 'viem';
-import { str, i32 } from '@arkiv-network/sdk/attr';
-
-const publicClient = createPublicClient({
-  transport: http('https://rpc.tiramisu.db-chain.testnet.arkiv.network'),
-});
-
-const beacons = await publicClient.queryEntities({
-  where: `type = str('medical_beacon') AND unitsAvailable > i32(0) AND category = str('${category}')`,
-});
+#### Standby Donor Neighborhood Query:
+```sql
+type = str('volunteer_donor') AND bloodGroup = str('O_NEGATIVE') AND pincode = i32(492099) AND status = str('AVAILABLE')
 ```
-
----
-
-## 5. Mutation & Lifecycle Operations
-
-1. **Broadcast (`createEntity`)**:
-   Hospital wallet signs an EIP-712 medical beacon creation with typed attributes and payload.
-2. **Dispense (`patchEntity`)**:
-   When 1 unit of O-Negative blood is transfused, the hospital wallet invokes an in-place patch to mutate only `unitsAvailable`:
-   ```typescript
-   await walletClient.patchEntity({
-     key: beaconKey,
-     attributes: {
-       unitsAvailable: i32(newUnitCount),
-     },
-   });
-   ```
-3. **Extend (`extendEntity`)**:
-   When nursing staff verify continued refrigerated viability, they extend the beacon by +4 hours:
-   ```typescript
-   await walletClient.extendEntity({
-     key: beaconKey,
-     expirationTime: ExpirationTime.fromHours(4),
-   });
-   ```
-4. **Purge (`deleteEntity`)**:
-   Explicit deletion if inventory fails quality tests or hemolysis screening.
 
 ---
 
@@ -125,3 +165,4 @@ const beacons = await publicClient.queryEntities({
 | **Safdarjung Emergency Desk** | New Delhi, DL | `110029` | `0x7D81b899F231e33D106e231154E8976E2A10A054` |
 | **KEM Hospital Blood Bank** | Mumbai, MH | `400012` | `0x2a91e5F42D1C90B3e1209bF541E8972E10972A01` |
 | **Jan Aushadhi Kendra Raipur Hub** | Raipur, CG | `492001` | `0x4e19F90a210Eb8B3d52611aE102F71569e9E9901` |
+
