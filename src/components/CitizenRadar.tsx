@@ -132,33 +132,50 @@ export function CitizenRadar({
   ];
 
   return (
-    <div className="space-y-12">
-      {/* 1. Hero Section matching user design reference */}
-      <section className="bg-white rounded-3xl p-8 sm:p-12 lg:p-16 border border-slate-100 shadow-sm">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          {/* Left Text & CTA */}
-          <div className="lg:col-span-6 space-y-6">
+    <div className="space-y-6 sm:space-y-10">
+      {/* 1. Unified Hero & Emergency Search Section */}
+      <section className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-12 border border-slate-100 shadow-sm">
+        {/* Mobile Header: Compact, Life-Saving, Zero-Scroll */}
+        <div className="lg:hidden space-y-3 pb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-100 text-[11px] font-extrabold uppercase tracking-wide">
+            <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse" />
+            <span>ICU Emergency Stock Radar • Arkiv DB</span>
+          </div>
+
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight leading-tight">
+              Emergency <span className="text-rose-600">Medical Supplies</span>
+            </h1>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Verified inventory with strict <strong>4-hour auto-expiration</strong> on Arkiv DB-Chain to protect families from phantom stock.
+            </p>
+          </div>
+        </div>
+
+        {/* Desktop Hero: BloodConnect Layout with Compressed WebP Illustration */}
+        <div className="hidden lg:grid grid-cols-12 gap-10 items-center pb-8 border-b border-slate-100">
+          <div className="col-span-6 space-y-5">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100 text-xs font-extrabold uppercase tracking-wider">
               <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse" />
               Live Emergency Medical Inventory Radar
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.12]">
+            <h1 className="text-4xl xl:text-5xl font-black text-slate-900 tracking-tight leading-[1.12]">
               Donate <br />
               <span className="text-rose-600">your Blood</span> <br />
               for saving life
             </h1>
 
-            <p className="text-base sm:text-lg text-slate-500 leading-relaxed max-w-xl">
+            <p className="text-sm xl:text-base text-slate-500 leading-relaxed max-w-lg">
               Sanjeevani Pulse runs on the <strong>Arkiv DB-Chain</strong>. Certified Indian blood banks, Jan Aushadhi
               stores, and trauma desks broadcast time-scoped stock with strict{' '}
               <strong>4-hour auto-expiration</strong> so families never chase phantom stock in an ICU emergency.
             </p>
 
-            <div className="flex items-center gap-4 pt-2">
+            <div className="flex items-center gap-4 pt-1">
               <button
                 onClick={onNavigateToHospitalPortal}
-                className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm sm:text-base px-8 py-4 rounded-xl shadow-lg shadow-slate-900/10 hover:shadow-xl hover:shadow-slate-900/20 hover:-translate-y-0.5 transition-all tracking-wider"
+                className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all tracking-wider"
               >
                 DONATE NOW
               </button>
@@ -169,34 +186,33 @@ export function CitizenRadar({
                   setSelectedItemCode('O_NEGATIVE');
                   if (soundEnabled) playRadarPingSound();
                 }}
-                className="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-extrabold text-sm sm:text-base px-6 py-4 rounded-xl transition-all"
+                className="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-extrabold text-xs px-5 py-3.5 rounded-xl transition-all"
               >
                 Find O-Negative
               </button>
             </div>
 
             {/* Quick Metrics */}
-            <div className="flex items-center gap-8 pt-6 border-t border-slate-100">
+            <div className="flex items-center gap-6 pt-4 border-t border-slate-100">
               <div>
-                <span className="block text-2xl font-black text-slate-900">4 Hours</span>
-                <span className="text-xs font-bold text-slate-400">Protocol Auto-Expiry</span>
+                <span className="block text-xl font-black text-slate-900">4 Hours</span>
+                <span className="text-[11px] font-bold text-slate-400">Protocol Auto-Expiry</span>
               </div>
-              <div className="w-px h-8 bg-slate-200" />
+              <div className="w-px h-6 bg-slate-200" />
               <div>
-                <span className="block text-2xl font-black text-slate-900">100%</span>
-                <span className="text-xs font-bold text-slate-400">Censorship Resistant</span>
+                <span className="block text-xl font-black text-slate-900">100%</span>
+                <span className="text-[11px] font-bold text-slate-400">Censorship Resistant</span>
               </div>
-              <div className="w-px h-8 bg-slate-200" />
+              <div className="w-px h-6 bg-slate-200" />
               <div>
-                <span className="block text-2xl font-black text-slate-900">0%</span>
-                <span className="text-xs font-bold text-slate-400">Phantom Inventory</span>
+                <span className="block text-xl font-black text-slate-900">0%</span>
+                <span className="text-[11px] font-bold text-slate-400">Phantom Inventory</span>
               </div>
             </div>
           </div>
 
-          {/* Right Hero Compressed WebP Illustration */}
-          <div className="lg:col-span-6 flex justify-center">
-            <div className="relative w-full max-w-lg overflow-hidden rounded-2xl">
+          <div className="col-span-6 flex justify-center">
+            <div className="relative w-full max-w-md overflow-hidden rounded-2xl">
               <Image
                 src="/images/blood_donation_hero.webp"
                 alt="Emergency blood donation and clinic care illustration"
@@ -208,230 +224,187 @@ export function CitizenRadar({
             </div>
           </div>
         </div>
-      </section>
 
-      {/* 2. Floating Search Bar Card (Matching User Reference Image) */}
-      <section className="relative -mt-6 sm:-mt-8 z-10 max-w-5xl mx-auto px-4">
-        <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-xl shadow-slate-200/60 border border-slate-100 flex flex-col md:flex-row items-stretch md:items-center gap-4">
-          {/* Location input */}
-          <div className="flex-1 flex items-center gap-3 px-3">
-            <MapPin size={20} className="text-slate-400 shrink-0" />
-            <input
-              type="text"
-              maxLength={6}
-              placeholder="Search Location (PIN Code e.g. 492099)"
-              value={pincodeInput}
-              onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
-              className="w-full bg-transparent font-bold text-slate-800 placeholder:text-slate-400 focus:outline-none text-base"
-            />
-            {userPincode && (
-              <span className="flex items-center gap-1 text-[11px] font-extrabold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full shrink-0">
-                <Check size={12} /> Active
-              </span>
-            )}
-          </div>
+        {/* 2. Responsive Search & Filter Controls */}
+        <div className="space-y-4 pt-3 sm:pt-6">
+          {/* Location PIN Input & Quick Hub Chips */}
+          <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 sm:p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 px-1 flex-1">
+              <MapPin size={20} className="text-rose-500 shrink-0" />
+              <input
+                type="text"
+                maxLength={6}
+                placeholder="Enter 6-Digit PIN (e.g. 492099 for AIIMS Raipur)"
+                value={pincodeInput}
+                onChange={(e) => setPincodeInput(e.target.value.replace(/\D/g, ''))}
+                className="w-full bg-transparent font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none text-sm sm:text-base"
+              />
+              {userPincode && (
+                <span className="flex items-center gap-1 text-[11px] font-extrabold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full shrink-0">
+                  <Check size={12} /> Active
+                </span>
+              )}
+            </div>
 
-          <div className="hidden md:block w-px h-10 bg-slate-200" />
-
-          {/* Blood group selector */}
-          <div className="flex-1 flex items-center gap-3 px-3">
-            <Droplet size={20} className="text-rose-500 shrink-0" />
-            <div className="relative w-full">
-              <select
-                value={selectedItemCode}
-                onChange={(e) => setSelectedItemCode(e.target.value)}
-                className="w-full bg-transparent font-bold text-slate-800 focus:outline-none text-base appearance-none cursor-pointer pr-6"
-              >
-                <option value="ALL">All Medical Supplies</option>
-                <option value="O_NEGATIVE">O-Negative Blood (Universal / Rare)</option>
-                <option value="B_NEGATIVE">B-Negative Blood</option>
-                <option value="A_NEGATIVE">A-Negative Blood</option>
-                <option value="AB_NEGATIVE">AB-Negative Blood</option>
-                <option value="BOMBAY_PHENOTYPE">Bombay Blood Group (Oh Phenotype)</option>
-                <option value="SNAKE_POLYVALENT">Polyvalent Snake Anti-Venom</option>
-                <option value="RABIES_IMMUNOGLOBULIN">Anti-Rabies Immunoglobulin</option>
-                <option value="PARACETAMOL_650">Jan Aushadhi Paracetamol 650</option>
-                <option value="AZITHROMYCIN_500">Jan Aushadhi Azithromycin 500</option>
-              </select>
-              <ChevronDown size={16} className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            {/* Quick Hub Chips */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs shrink-0 flex-nowrap">
+              {[
+                { code: '492099', label: 'AIIMS Raipur' },
+                { code: '495001', label: 'CIMS Bilaspur' },
+                { code: '492001', label: 'Raipur Central' },
+                { code: '400012', label: 'KEM Mumbai' },
+                { code: '110029', label: 'Safdarjung Delhi' },
+              ].map((h) => (
+                <button
+                  key={h.code}
+                  onClick={() => {
+                    setPincodeInput(h.code);
+                    if (soundEnabled) playRadarPingSound();
+                  }}
+                  className={`px-2.5 py-1 rounded-lg font-bold whitespace-nowrap text-[11px] transition-all ${
+                    pincodeInput === h.code
+                      ? 'bg-rose-600 text-white shadow-xs'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                  }`}
+                >
+                  {h.label}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Find Donor Button */}
-          <button
-            onClick={() => {
-              if (soundEnabled) playRadarPingSound();
-            }}
-            className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-sm px-8 py-4 rounded-xl shadow-md transition-all shrink-0 tracking-wider"
-          >
-            Find Donor
-          </button>
-        </div>
-
-        {/* Quick Hub Pins */}
-        <div className="flex items-center gap-2 pt-3 px-2 flex-wrap text-xs">
-          <span className="font-bold text-slate-400">Quick Hubs:</span>
-          {[
-            { code: '492099', label: 'AIIMS Raipur' },
-            { code: '495001', label: 'Bilaspur CIMS' },
-            { code: '492001', label: 'Raipur Central' },
-            { code: '400012', label: 'KEM Mumbai' },
-            { code: '110029', label: 'Safdarjung Delhi' },
-          ].map((pin) => (
+          {/* Specialty Tabs */}
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 flex-nowrap text-xs">
             <button
-              key={pin.code}
-              onClick={() => setPincodeInput(pin.code)}
-              className={`px-3 py-1 rounded-full font-bold transition-all ${
-                pincodeInput === pin.code
-                  ? 'bg-rose-50 text-rose-600 border border-rose-200'
-                  : 'bg-white text-slate-500 border border-slate-200 hover:text-slate-800'
+              onClick={() => {
+                setSelectedCategory('BLOOD');
+                if (soundEnabled) playRadarPingSound();
+              }}
+              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                selectedCategory === 'BLOOD' || selectedCategory === 'ALL'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
               }`}
             >
-              {pin.label} ({pin.code})
+              🩸 Blood Group
             </button>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. Section 2 matching reference: Lab Testing WebP + Circular Blood Group Pills */}
-      <section className="bg-white rounded-3xl p-8 sm:p-12 lg:p-16 border border-slate-100 shadow-sm">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          {/* Left Lab Compressed WebP Graphic */}
-          <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-md overflow-hidden rounded-2xl">
-              <Image
-                src="/images/blood_lab_testing.webp"
-                alt="Medical laboratory testing blood tubes with microscope"
-                width={800}
-                height={800}
-                className="w-full h-auto object-cover rounded-2xl"
-              />
-            </div>
+            <button
+              onClick={() => {
+                setSelectedCategory('ANTI_VENOM');
+                setSelectedItemCode('SNAKE_POLYVALENT');
+                if (soundEnabled) playRadarPingSound();
+              }}
+              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                selectedCategory === 'ANTI_VENOM'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              🐍 Snake Anti-Venom
+            </button>
+            <button
+              onClick={() => {
+                setSelectedCategory('RABIES_VACCINE');
+                setSelectedItemCode('RABIES_IMMUNOGLOBULIN');
+                if (soundEnabled) playRadarPingSound();
+              }}
+              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                selectedCategory === 'RABIES_VACCINE'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              💉 Rabies Vaccine
+            </button>
+            <button
+              onClick={() => {
+                setSelectedCategory('JAN_AUSHADHI');
+                setSelectedItemCode('ALL');
+                if (soundEnabled) playRadarPingSound();
+              }}
+              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
+                selectedCategory === 'JAN_AUSHADHI'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+              }`}
+            >
+              💊 Jan Aushadhi
+            </button>
           </div>
 
-          {/* Right Circular Blood Group Pills (Matching Reference Image Pixel-by-Pixel) */}
-          <div className="lg:col-span-7 space-y-6">
-            <div>
-              <span className="text-xs font-extrabold uppercase tracking-widest text-rose-600">
-                SELECT BLOOD GROUP RADAR
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mt-1">
-                Real-Time Blood Availability by Group
-              </h2>
-              <p className="text-slate-500 text-sm sm:text-base mt-2">
-                Click any blood group below to instantly filter certified institutional blood bank vaults on Arkiv
-                DB-Chain.
-              </p>
-            </div>
-
-            {/* Circular Neumorphic Pills */}
-            <div className="grid grid-cols-4 gap-4 sm:gap-6 max-w-md">
-              {bloodGroupCircles.map((bg) => {
-                const isSelected = selectedItemCode === bg.code;
-                return (
-                  <button
-                    key={bg.label}
-                    onClick={() => handleBloodGroupClick(bg.code)}
-                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center font-black text-lg sm:text-xl transition-all ${
-                      isSelected
-                        ? 'bg-rose-600 text-white shadow-xl shadow-rose-600/35 scale-105'
-                        : 'bg-white text-rose-600 border border-slate-100 shadow-md hover:shadow-lg hover:scale-105 hover:border-rose-200'
-                    }`}
-                  >
-                    {bg.label}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Other Critical Emergency Categories */}
-            <div className="flex gap-2.5 flex-wrap pt-2">
-              <button
-                onClick={() => {
-                  setSelectedCategory('ANTI_VENOM');
-                  setSelectedItemCode('SNAKE_POLYVALENT');
-                  if (soundEnabled) playRadarPingSound();
-                }}
-                className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${
-                  selectedCategory === 'ANTI_VENOM'
-                    ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                }`}
-              >
-                🐍 Snake Anti-Venom
-              </button>
-
-              <button
-                onClick={() => {
-                  setSelectedCategory('RABIES_VACCINE');
-                  setSelectedItemCode('RABIES_IMMUNOGLOBULIN');
-                  if (soundEnabled) playRadarPingSound();
-                }}
-                className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${
-                  selectedCategory === 'RABIES_VACCINE'
-                    ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                }`}
-              >
-                💉 Rabies Vaccine
-              </button>
-
-              <button
-                onClick={() => {
-                  setSelectedCategory('JAN_AUSHADHI');
-                  setSelectedItemCode('ALL');
-                  if (soundEnabled) playRadarPingSound();
-                }}
-                className={`px-4 py-2 rounded-full text-xs font-bold border transition-all ${
-                  selectedCategory === 'JAN_AUSHADHI'
-                    ? 'bg-slate-900 text-white border-slate-900'
-                    : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'
-                }`}
-              >
-                💊 Jan Aushadhi Medicines
-              </button>
-            </div>
-
-            {/* Reset / Get More Tips button */}
+          {/* Blood Group Selector (Circular Pills) - Prominently Displayed on Both Mobile and Desktop */}
+          {(selectedCategory === 'BLOOD' || selectedCategory === 'ALL') && (
             <div className="pt-2">
-              <button
-                onClick={() => {
-                  setSelectedCategory('ALL');
-                  setSelectedItemCode('ALL');
-                }}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs px-6 py-3 rounded-lg transition-all tracking-wider"
-              >
-                Get More Tips / Reset Filters
-              </button>
+              <div className="flex items-center justify-between pb-2">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                  Select Blood Group ({selectedItemCode === 'ALL' ? 'Showing All' : selectedItemCode.replace('_', ' ')})
+                </span>
+                {selectedItemCode !== 'ALL' && (
+                  <button
+                    onClick={() => setSelectedItemCode('ALL')}
+                    className="text-xs font-bold text-rose-600 hover:underline"
+                  >
+                    Clear Filter
+                  </button>
+                )}
+              </div>
+
+              {/* 8 Clean Circular Pills in Responsive Grid */}
+              <div className="grid grid-cols-4 sm:grid-cols-8 gap-2 sm:gap-3">
+                {bloodGroupCircles.map((bg) => {
+                  const isSelected = selectedItemCode === bg.code;
+                  const isRare = bg.code.includes('NEGATIVE') || bg.code.includes('BOMBAY');
+                  return (
+                    <button
+                      key={bg.label}
+                      onClick={() => handleBloodGroupClick(bg.code)}
+                      className={`h-14 sm:h-16 rounded-2xl flex flex-col items-center justify-center font-black transition-all ${
+                        isSelected
+                          ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30 scale-102 ring-2 ring-rose-600 ring-offset-2'
+                          : 'bg-white text-slate-800 border border-slate-200 hover:border-rose-300 hover:bg-rose-50/50'
+                      }`}
+                    >
+                      <span className="text-base sm:text-lg leading-tight">{bg.label}</span>
+                      {isRare && (
+                        <span className={`text-[8px] sm:text-[9px] font-extrabold uppercase mt-0.5 ${
+                          isSelected ? 'text-rose-100' : 'text-rose-600'
+                        }`}>
+                          Rare
+                        </span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </section>
 
-      {/* 4. Live Arkiv DB-Chain Query Status Strip */}
-      <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
-        <div className="flex items-center gap-2.5 overflow-hidden text-ellipsis whitespace-nowrap">
-          <span className="bg-sky-50 text-sky-600 font-extrabold px-2 py-0.5 rounded text-[10px] uppercase">
-            ARKIV_QUERY JSON-RPC
+      {/* 3. Live Arkiv DB-Chain Query Status Strip */}
+      <div className="bg-white rounded-2xl border border-slate-100 p-3 sm:p-4 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs">
+        <div className="flex items-center gap-2 overflow-hidden text-ellipsis whitespace-nowrap max-w-full">
+          <span className="bg-sky-50 text-sky-600 font-extrabold px-2 py-0.5 rounded text-[10px] uppercase shrink-0">
+            ARKIV_QUERY RPC
           </span>
-          <code className="font-mono text-slate-500 font-medium">
+          <code className="font-mono text-slate-500 font-medium text-[11px] truncate">
             type = str('medical_beacon') AND unitsAvailable &gt; i32(0)
             {selectedCategory !== 'ALL' ? ` AND category = str('${selectedCategory}')` : ''}
             {userPincode ? ` AND pincode = i32(${userPincode})` : ''}
           </code>
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="flex items-center gap-1 text-emerald-600 font-extrabold">
-            <Zap size={14} /> 74ms Direct RPC (Zero Subgraph)
+        <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
+          <span className="flex items-center gap-1 text-emerald-600 font-extrabold text-[11px]">
+            <Zap size={13} /> 74ms Direct RPC
           </span>
-          <span className="bg-slate-100 text-slate-800 font-extrabold px-3 py-1 rounded-full">
+          <span className="bg-rose-50 text-rose-600 font-extrabold px-2.5 py-0.5 rounded-full text-xs">
             {searchResults.length} Verified Available
           </span>
         </div>
       </div>
 
-      {/* 5. Results Cards Grid */}
+      {/* 4. Results Cards Grid */}
       <section>
         {searchResults.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center border border-slate-100 shadow-sm max-w-lg mx-auto space-y-4">
@@ -559,24 +532,25 @@ export function CitizenRadar({
                   </div>
 
                   {/* Card Actions */}
-                  <div className="flex gap-2 pt-6 mt-4 border-t border-slate-100">
-                    <button
+                  <div className="flex gap-2 pt-4 mt-3 border-t border-slate-100">
+                    <a
+                      href={`tel:${beacon.payload.contactDesk}`}
                       onClick={() => {
                         setCallingBeacon(beacon);
                         if (soundEnabled) playEmergencyChimeSound();
                       }}
-                      className="flex-1 bg-slate-900 hover:bg-rose-600 text-white font-extrabold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all"
+                      className="flex-1 bg-gradient-to-r from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 text-white font-black text-xs py-3.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-md shadow-rose-600/25 transition-all tracking-wide"
                     >
-                      <PhoneCall size={14} />
-                      <span>Contact Desk</span>
-                    </button>
+                      <PhoneCall size={15} />
+                      <span>CALL 24x7 DESK NOW</span>
+                    </a>
 
                     <button
                       onClick={() => onInspectProof(beacon)}
-                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3 px-3 rounded-xl transition-all"
+                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-3.5 px-3.5 rounded-xl transition-all shrink-0"
                       title="Inspect Arkiv Keccak-MPT Inclusion Proof"
                     >
-                      <ShieldCheck size={16} />
+                      <ShieldCheck size={18} />
                     </button>
                   </div>
                 </article>

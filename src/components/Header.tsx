@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Droplet, Volume2, VolumeX, RotateCcw } from 'lucide-react';
+import { Droplet, Volume2, VolumeX, RotateCcw, Hospital, ShieldCheck } from 'lucide-react';
 import { beaconStore } from '@/lib/beaconStore';
 
 export type ActiveTab = 'CITIZEN_RADAR' | 'HOSPITAL_PORTAL' | 'STATE_PROOFS';
@@ -31,33 +31,33 @@ export function Header({
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-        {/* Brand with circular coral logo matching reference */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+        {/* Brand with circular coral logo */}
         <div
           onClick={() => setActiveTab('CITIZEN_RADAR')}
-          className="flex items-center gap-3.5 cursor-pointer group"
+          className="flex items-center gap-2 sm:gap-3.5 cursor-pointer group shrink-0"
           role="button"
           tabIndex={0}
         >
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-orange-500 via-rose-500 to-red-600 flex items-center justify-center text-white shadow-md shadow-rose-500/25 group-hover:scale-105 transition-transform">
-            <Droplet className="fill-white" size={22} />
+          <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-gradient-to-br from-orange-500 via-rose-500 to-red-600 flex items-center justify-center text-white shadow-md shadow-rose-500/25 group-hover:scale-105 transition-transform shrink-0">
+            <Droplet className="fill-white" size={18} />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-extrabold text-lg tracking-tight text-slate-900">
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900">
                 SANJEEVANI
               </span>
-              <span className="bg-rose-600 text-white text-[10px] font-extrabold px-1.5 py-0.5 rounded tracking-wide">
+              <span className="bg-rose-600 text-white text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.5 rounded tracking-wide">
                 PULSE
               </span>
             </div>
-            <p className="text-xs font-semibold text-slate-400">
+            <p className="hidden sm:block text-xs font-semibold text-slate-400">
               Emergency Stock Radar on <span className="text-sky-600 font-bold">Arkiv DB-Chain</span>
             </p>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs for Tablet & Desktop */}
         <nav className="hidden md:flex items-center gap-1 bg-slate-50 p-1.5 rounded-full border border-slate-200/80">
           <button
             onClick={() => setActiveTab('CITIZEN_RADAR')}
@@ -94,10 +94,10 @@ export function Header({
         </nav>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           {/* Tiramisu Testnet Live Pill */}
           <div
-            className="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3.5 py-1.5 rounded-full text-xs"
+            className="flex items-center gap-1.5 sm:gap-2 bg-slate-50 border border-slate-200 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full text-[11px] sm:text-xs"
             title="Arkiv DB-Chain Tiramisu Testnet (Chain ID: 7738577)"
           >
             <span
@@ -106,7 +106,7 @@ export function Header({
               }`}
             />
             <span className="font-bold text-slate-800">Tiramisu</span>
-            <span className="font-mono text-sky-600 font-semibold">
+            <span className="hidden sm:inline font-mono text-sky-600 font-semibold">
               #{networkBlock.toLocaleString()}
             </span>
           </div>
@@ -114,7 +114,7 @@ export function Header({
           {/* Sound Toggle */}
           <button
             onClick={() => setSoundEnabled((prev) => !prev)}
-            className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all ${
+            className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border flex items-center justify-center transition-all ${
               soundEnabled
                 ? 'bg-rose-50 border-rose-200 text-rose-600'
                 : 'bg-white border-slate-200 text-slate-400 hover:text-slate-700'
@@ -122,19 +122,58 @@ export function Header({
             title={soundEnabled ? 'Mute radar ping' : 'Enable radar ping'}
             aria-label="Toggle radar audio"
           >
-            {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
+            {soundEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
           </button>
 
           {/* Reset Demo Data */}
           <button
             onClick={handleReset}
-            className="w-9 h-9 rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-800 hover:bg-slate-50 flex items-center justify-center transition-all"
+            className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-800 hover:bg-slate-50 flex items-center justify-center transition-all"
             title="Reset testnet demo data"
             aria-label="Reset demo data"
           >
-            <RotateCcw size={15} />
+            <RotateCcw size={14} />
           </button>
         </div>
+      </div>
+
+      {/* Mobile Tab Navigation Sub-bar */}
+      <div className="md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-md px-3 py-1.5 flex items-center justify-around gap-2 text-xs font-bold">
+        <button
+          onClick={() => setActiveTab('CITIZEN_RADAR')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl transition-all ${
+            activeTab === 'CITIZEN_RADAR'
+              ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/30'
+              : 'text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <Droplet size={14} className={activeTab === 'CITIZEN_RADAR' ? 'fill-white' : ''} />
+          <span>Radar</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('HOSPITAL_PORTAL')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl transition-all ${
+            activeTab === 'HOSPITAL_PORTAL'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <Hospital size={14} />
+          <span>Hospital Desk</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('STATE_PROOFS')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl transition-all ${
+            activeTab === 'STATE_PROOFS'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'text-slate-600 hover:bg-slate-50'
+          }`}
+        >
+          <ShieldCheck size={14} />
+          <span>Proofs</span>
+        </button>
       </div>
     </header>
   );

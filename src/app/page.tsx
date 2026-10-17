@@ -5,16 +5,14 @@ import { Header, ActiveTab } from '@/components/Header';
 import { CitizenRadar } from '@/components/CitizenRadar';
 import { HospitalPortal } from '@/components/HospitalPortal';
 import { StateProofsModal } from '@/components/StateProofsModal';
-import { MobileEmergencyView } from '@/components/MobileEmergencyView';
 import { MedicalBeacon } from '@/types/beacon';
 import { INITIAL_BEACONS } from '@/data/seedData';
 import { beaconStore } from '@/lib/beaconStore';
 import { getNetworkStatus, ARKIV_CONFIG } from '@/lib/arkiv';
-import { Shield, Smartphone, LayoutDashboard, Globe, Zap } from 'lucide-react';
+import { Shield, Globe, Zap } from 'lucide-react';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('CITIZEN_RADAR');
-  const [viewMode, setViewMode] = useState<'MOBILE_EMERGENCY' | 'RADAR_DASHBOARD'>('RADAR_DASHBOARD');
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [inspectingBeacon, setInspectingBeacon] = useState<MedicalBeacon | null>(null);
   const [networkBlock, setNetworkBlock] = useState<number>(700680);
@@ -60,58 +58,9 @@ export default function Home() {
         isOnline={isOnline}
       />
 
-      {/* View Switcher: Desktop Radar vs Mobile ICU Ward Mode */}
-      {activeTab === 'CITIZEN_RADAR' && (
-        <div className="bg-white border-b border-slate-100 py-3 px-4 shadow-xs">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2 text-slate-600">
-              <span className="w-2 h-2 rounded-full bg-rose-600 animate-pulse" />
-              <span>
-                <strong>Smart View Selector:</strong> Switch between full desktop medical search &amp; 1-tap mobile emergency ward layout
-              </span>
-            </div>
-
-            <div className="flex items-center bg-slate-100 p-1 rounded-full gap-1">
-              <button
-                onClick={() => setViewMode('RADAR_DASHBOARD')}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold transition-all ${
-                  viewMode === 'RADAR_DASHBOARD'
-                    ? 'bg-white text-rose-600 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <LayoutDashboard size={14} />
-                <span>🖥️ Full Desktop Portal</span>
-              </button>
-
-              <button
-                onClick={() => setViewMode('MOBILE_EMERGENCY')}
-                className={`flex items-center gap-2 px-4 py-1.5 rounded-full font-bold transition-all ${
-                  viewMode === 'MOBILE_EMERGENCY'
-                    ? 'bg-white text-rose-600 shadow-sm'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Smartphone size={14} />
-                <span>📱 1-Tap Mobile Ward Mode</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-        {activeTab === 'CITIZEN_RADAR' && viewMode === 'MOBILE_EMERGENCY' && (
-          <MobileEmergencyView
-            beacons={beacons}
-            soundEnabled={soundEnabled}
-            onInspectProof={(beacon) => setInspectingBeacon(beacon)}
-            onNavigateToHospitalPortal={() => setActiveTab('HOSPITAL_PORTAL')}
-          />
-        )}
-
-        {activeTab === 'CITIZEN_RADAR' && viewMode === 'RADAR_DASHBOARD' && (
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+        {activeTab === 'CITIZEN_RADAR' && (
           <CitizenRadar
             soundEnabled={soundEnabled}
             onInspectProof={(beacon) => setInspectingBeacon(beacon)}
