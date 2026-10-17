@@ -73,6 +73,18 @@ export const INDIAN_FACILITIES: FacilityPreset[] = [
     category: 'BLOOD',
     badges: ['State Medical College Hub', 'Platelet Apheresis Unit'],
   },
+  {
+    id: 'unauthorized-citizen',
+    facilityName: 'Unauthorized Public Attendant (Access Denied Demo)',
+    contactDesk: 'Unregistered',
+    address: 'Non-whitelisted public address (Simulated test for judges)',
+    pincode: 492099,
+    districtCode: 'UNVERIFIED',
+    licenseNumber: 'NONE',
+    walletAddress: '0x1111111111111111111111111111111111111111',
+    category: 'BLOOD',
+    badges: ['Unverified Address', 'Access Denied Test'],
+  },
 ];
 
 export const AVAILABLE_ITEM_CODES = [

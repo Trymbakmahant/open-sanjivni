@@ -29,8 +29,11 @@ pnpm-debug.log*
 .vscode/
 .idea/
 
-# Markdown policy: All markdown files except README.md are ignored
+# Markdown policy: Track only mandatory hackathon gate documentation
 *.md
-!README.md
 **/*.md
+!README.md
 !**/README.md
+!task.md
+!arkiv/schema.md
+!arkiv/friction.md

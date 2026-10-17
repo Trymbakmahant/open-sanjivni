@@ -41,8 +41,13 @@ export function StateProofsModal({ beacon, onClose }: StateProofsModalProps) {
               <ShieldCheck size={22} />
             </div>
             <div>
-              <h3 className="font-black text-lg text-slate-900">Cryptographic State Proof</h3>
-              <p className="text-xs text-slate-400">Arkiv DB-Chain Keccak-MPT &amp; Ethereum L1 Anchor</p>
+              <div className="flex items-center gap-2">
+                <h3 className="font-black text-lg text-slate-900">Cryptographic Anti-Hoarding State Proof</h3>
+                <span className="text-[9px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full">
+                  Public NGO Primitive
+                </span>
+              </div>
+              <p className="text-xs text-slate-400">Arkiv DB-Chain Keccak-MPT &amp; Ethereum L1 State Anchor</p>
             </div>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-700 text-lg">
@@ -50,14 +55,15 @@ export function StateProofsModal({ beacon, onClose }: StateProofsModalProps) {
           </button>
         </div>
 
-        {/* Notice */}
-        <div className="bg-sky-50 border border-sky-100 rounded-2xl p-4 flex gap-3 text-xs text-sky-800">
+        {/* Anti-Hoarding Notice for Citizens & NGOs */}
+        <div className="bg-sky-50 border border-sky-100 rounded-2xl p-4 flex gap-3 text-xs text-sky-900">
           <Lock size={18} className="text-sky-600 shrink-0 mt-0.5" />
-          <p className="leading-relaxed">
-            Every medical beacon on Arkiv is hashed into a modified Merkle Patricia Trie (MPT) and committed
-            to an Ethereum Layer 1 state root. Any citizen can cryptographically verify that this stock was authorized
-            by the hospital wallet without trusting centralized middlemen.
-          </p>
+          <div className="space-y-1">
+            <strong className="block font-bold text-sky-950">Public Anti-Hoarding &amp; Verifiability Guarantee:</strong>
+            <p className="leading-relaxed text-sky-800">
+              Every medical beacon on Arkiv DB-Chain is committed to an Ethereum Layer 1 state root via Keccak-256 Merkle Patricia Tries. Citizens, health-rights NGOs, and investigative journalists can independently audit true reported stock levels against physical hospital supplies. Illicit black-market hoarding, fake inventory claims, or artificial shortage creation become mathematically detectable without requiring centralized permission or API access.
+            </p>
+          </div>
         </div>
 
         {/* Proof Details */}
@@ -122,10 +128,12 @@ export function StateProofsModal({ beacon, onClose }: StateProofsModalProps) {
           <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 flex items-start gap-3 text-xs text-emerald-800">
             <CheckCircle2 size={20} className="text-emerald-600 shrink-0 mt-0.5" />
             <div>
-              <strong className="block font-bold text-emerald-900 text-sm">Cryptographic Inclusion Verified: Valid!</strong>
+              <strong className="block font-bold text-emerald-900 text-sm">
+                Anti-Hoarding Cryptographic Inclusion Verified: Valid!
+              </strong>
               <p className="mt-0.5 leading-relaxed">
-                Entity belongs to state root committed at block #{beacon.blockNumber}. Facility wallet{' '}
-                {beacon.owner.slice(0, 10)}... legitimately authorized this inventory.
+                Beacon is cryptographically proven in the state root committed at block #{beacon.blockNumber}. Verified authority wallet{' '}
+                <code className="font-mono text-emerald-950 font-bold">{beacon.owner.slice(0, 10)}...</code> legitimately signed this stock allocation. Public NGO audit trail is tamper-proof and verifiable on Ethereum L1.
               </p>
             </div>
           </div>

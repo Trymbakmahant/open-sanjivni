@@ -76,42 +76,99 @@ export default function Home() {
         )}
 
         {activeTab === 'STATE_PROOFS' && (
-          <div className="space-y-6">
-            <div className="bg-white rounded-3xl p-8 sm:p-10 border border-slate-100 shadow-sm flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
-                <Shield size={28} />
+          <div className="space-y-6 sm:space-y-8">
+            {/* Hero Card */}
+            <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                  <Shield size={28} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+                      Cryptographic Anti-Hoarding Proof Explorer
+                    </h2>
+                    <span className="text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full hidden sm:inline">
+                      100% Public Primitive
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                    Public cryptographic verifiability for citizens, health-rights NGOs, and journalists. Every inventory beacon is hashed into the Keccak-MPT state trie on{' '}
+                    <strong className="text-slate-800">{ARKIV_CONFIG.chainName}</strong> and anchored onto Ethereum L1 consensus roots.
+                  </p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-2xl font-black text-slate-900">Cryptographic Proof Verification Explorer</h2>
-                <p className="text-sm text-slate-500 mt-1">
-                  Explore how every medical beacon is hashed into the Keccak-MPT state trie on{' '}
-                  <strong className="text-slate-800">{ARKIV_CONFIG.chainName} (Chain ID: {ARKIV_CONFIG.chainId})</strong> and
-                  anchored onto Ethereum Layer 1 consensus roots.
-                </p>
+
+              <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 shrink-0 text-right space-y-0.5 w-full md:w-auto">
+                <span className="text-[10px] font-extrabold uppercase text-slate-400 block tracking-wider">
+                  Consensus Root Anchor
+                </span>
+                <span className="text-xs font-mono font-bold text-sky-600 block">
+                  Block #{networkBlock.toLocaleString()}
+                </span>
               </div>
             </div>
 
+            {/* Anti-Hoarding Notice Banner */}
+            <div className="bg-sky-50/70 border border-sky-100 rounded-2xl p-5 sm:p-6 text-xs text-sky-950 space-y-2">
+              <div className="flex items-center gap-2 text-sky-900 font-extrabold text-sm">
+                <Shield size={18} className="text-sky-600 shrink-0" />
+                <span>Why State Proofs Remain 100% Public (CROPS Mandate)</span>
+              </div>
+              <p className="text-sky-800 leading-relaxed">
+                Under the Ethereum Foundation&apos;s <strong>CROPS (Censorship Resistant, Open source, Private, Secure)</strong> framework, cryptographic proofs must never be locked behind private logins. Sanjeevani Pulse empowers ordinary families and independent NGOs to verify hospital stock directly on the Arkiv DB-Chain without middlemen. If an emergency facility claims zero units of O-Negative blood or Anti-Venom while an active beacon exists on-chain, citizens have mathematical proof of illicit black-market hoarding.
+              </p>
+            </div>
+
+            {/* Grid of Dynamic Active Beacons */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {INITIAL_BEACONS.map((beacon) => (
-                <div key={beacon.key} className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-all space-y-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-extrabold text-[10px] uppercase bg-sky-50 text-sky-600 px-2 py-0.5 rounded">
-                      {beacon.attributes.category}
-                    </span>
-                    <span className="font-mono text-slate-400 font-bold">Block #{beacon.blockNumber}</span>
+              {(beacons.length > 0 ? beacons : INITIAL_BEACONS).map((beacon) => (
+                <div
+                  key={beacon.key}
+                  className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm hover:shadow-md transition-all space-y-3 flex flex-col justify-between"
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-extrabold text-[10px] uppercase bg-sky-50 text-sky-600 px-2 py-0.5 rounded">
+                        {beacon.attributes.category}
+                      </span>
+                      <span className="font-mono text-slate-400 font-bold">Block #{beacon.blockNumber}</span>
+                    </div>
+
+                    <h4 className="font-extrabold text-base text-slate-900">{beacon.payload.facilityName}</h4>
+
+                    <div className="bg-slate-50 rounded-xl p-3 space-y-1">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate-500">Available Stock:</span>
+                        <span className="font-black text-emerald-600 font-mono">
+                          {beacon.attributes.unitsAvailable} Units
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate-500">Supply Code:</span>
+                        <span className="font-bold text-slate-700 font-mono">
+                          {beacon.attributes.itemCode}
+                        </span>
+                      </div>
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-slate-500">TTL Lease:</span>
+                        <span className="font-bold text-sky-700 font-mono text-[11px]">
+                          Expires #{beacon.expiresAtBlock}
+                        </span>
+                      </div>
+                    </div>
+
+                    <code className="block font-mono text-[10px] text-slate-400 truncate bg-slate-50 p-2 rounded-lg border border-slate-100">
+                      Key: {beacon.key}
+                    </code>
                   </div>
-                  <h4 className="font-extrabold text-base text-slate-900">{beacon.payload.facilityName}</h4>
-                  <p className="text-xs font-bold text-emerald-600">
-                    Stocked: {beacon.attributes.unitsAvailable} Units of {beacon.attributes.itemCode}
-                  </p>
-                  <code className="block font-mono text-[11px] text-slate-400 truncate bg-slate-50 p-2 rounded-lg">
-                    Key: {beacon.key}
-                  </code>
+
                   <button
                     onClick={() => setInspectingBeacon(beacon)}
-                    className="w-full bg-slate-900 hover:bg-rose-600 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all"
+                    className="w-full bg-slate-900 hover:bg-rose-600 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
                   >
-                    Inspect Merkle Proof
+                    <Shield size={14} />
+                    <span>Verify Anti-Hoarding Proof</span>
                   </button>
                 </div>
               ))}
