@@ -29,8 +29,8 @@ export async function dispenseUnits(
             };
 
       const tx = await walletClient.patchEntity({
-        key: entityKey,
-        attributes,
+        entityKey: entityKey as `0x${string}`,
+        set: attributes,
       });
 
       if (tx) {
@@ -67,7 +67,7 @@ export async function extendStockBeacon(
     try {
       console.log(`[Arkiv] Executing extendEntity (+4h) for ${entityKey}`);
       const tx = await walletClient.extendEntity({
-        key: entityKey,
+        entityKey: entityKey as `0x${string}`,
         expires: ExpirationTime.fromHours(4),
       });
 
@@ -100,7 +100,7 @@ export async function deleteStockBeacon(
     try {
       console.log(`[Arkiv] Executing deleteEntity for ${entityKey}`);
       const tx = await walletClient.deleteEntity({
-        key: entityKey,
+        entityKey: entityKey as `0x${string}`,
       });
 
       if (tx) {

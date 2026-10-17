@@ -1,5 +1,5 @@
 import { str, dec, i32 } from '@arkiv-network/sdk/attr';
-import { ExpirationTime } from '@arkiv-network/sdk';
+import { ExpirationTime, jsonToPayload } from '@arkiv-network/sdk';
 import { BroadcastStockParams, MedicalBeacon } from '@/types/beacon';
 import { beaconStore } from '@/lib/beaconStore';
 import { publicClient } from '@/lib/arkiv';
@@ -26,7 +26,6 @@ export async function broadcastMedicalStock(
     updatedAtIso: new Date().toISOString(),
   };
 
-  const payloadString = JSON.stringify(payloadData);
   let txHash = '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
   let entityKey = '0x' + Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join('');
   let blockNumber = 700680;
@@ -49,7 +48,7 @@ export async function broadcastMedicalStock(
   if (walletClient && typeof walletClient.createEntity === 'function') {
     console.log(`[Broadcast] Signing Arkiv createEntity transaction with connected wallet (TTL: ${ttlHours}h)...`);
     const tx = await walletClient.createEntity({
-      payload: payloadString,
+      payload: jsonToPayload(payloadData),
       contentType: 'application/json',
       attributes: {
         type: str('medical_beacon'),
