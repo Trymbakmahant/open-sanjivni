@@ -36,9 +36,11 @@ export async function dispenseUnits(
       if (tx) {
         if (typeof tx === 'string') txHash = tx;
         if (tx.hash) txHash = tx.hash;
+        if (tx.txHash) txHash = tx.txHash;
       }
     } catch (e: any) {
-      console.warn('[Arkiv patchEntity] Simulation fallback active:', e?.message || e);
+      console.warn('[Arkiv patchEntity] On-chain notice:', e?.message || e);
+      if (walletClient) throw e;
     }
   }
 
@@ -72,9 +74,11 @@ export async function extendStockBeacon(
       if (tx) {
         if (typeof tx === 'string') txHash = tx;
         if (tx.hash) txHash = tx.hash;
+        if (tx.txHash) txHash = tx.txHash;
       }
     } catch (e: any) {
-      console.warn('[Arkiv extendEntity] Simulation fallback active:', e?.message || e);
+      console.warn('[Arkiv extendEntity] On-chain notice:', e?.message || e);
+      if (walletClient) throw e;
     }
   }
 
@@ -102,9 +106,11 @@ export async function deleteStockBeacon(
       if (tx) {
         if (typeof tx === 'string') txHash = tx;
         if (tx.hash) txHash = tx.hash;
+        if (tx.txHash) txHash = tx.txHash;
       }
     } catch (e: any) {
-      console.warn('[Arkiv deleteEntity] Simulation fallback active:', e?.message || e);
+      console.warn('[Arkiv deleteEntity] On-chain notice:', e?.message || e);
+      if (walletClient) throw e;
     }
   }
 

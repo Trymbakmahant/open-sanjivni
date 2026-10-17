@@ -1,4 +1,4 @@
-# Arkiv Developer Friction Report — Sanjeevani Pulse
+# Arkiv Developer Friction Report — Open Sanjivni
 
 ## Executive Summary
 This friction report provides specific, reproducible feedback on integrating the **Arkiv DB-Chain SDK (`@arkiv-network/sdk` v0.8.1)**, **Viem v2.57.7**, and the **Tiramisu Testnet (Chain ID: `7738577`)** within a modern **Next.js 15 (App Router) & TypeScript** environment.
@@ -105,7 +105,7 @@ Clarify in the official documentation the exact diff semantics between attribute
 ## 4. Cryptographic Proof Extraction (`eth_getProof`) on Tiramisu
 
 ### Friction Encountered
-To satisfy the CROPS Security & Censorship Resistance mandate, Sanjeevani Pulse provides a **Cryptographic State Proof Explorer** where citizens and NGOs can verify that inventory was committed into Arkiv's modified Merkle Patricia Trie (MPT) without trusting a central API. 
+To satisfy the CROPS Security & Censorship Resistance mandate, Open Sanjivni provides a **Cryptographic State Proof Explorer** where citizens and NGOs can verify that inventory was committed into Arkiv's modified Merkle Patricia Trie (MPT) without trusting a central API. 
 
 However, extracting the raw storage trie proof nodes via standard JSON-RPC required custom RPC calls (`eth_getProof`) because the high-level `@arkiv-network/sdk` currently focuses primarily on entity CRUD operations.
 

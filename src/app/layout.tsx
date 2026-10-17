@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Sanjeevani Pulse | Live Emergency Medical Radar on Arkiv DB-Chain',
+  title: 'Open Sanjivni | Live Emergency Medical Radar on Arkiv DB-Chain',
   description:
-    'Censorship-resistant, decentralized emergency medical inventory radar. Live time-scoped broadcasts of rare blood groups (O-Neg), anti-venom, and Jan Aushadhi generic medicines with protocol-level 4-hour auto-expiration.',
+    'Open Sanjivni: Censorship-resistant, decentralized emergency medical inventory radar. Live time-scoped broadcasts of rare blood groups (O-Neg), anti-venom, and Jan Aushadhi generic medicines with protocol-level 4-hour auto-expiration.',
   keywords: [
     'Arkiv DB-Chain',
     'Tiramisu Testnet',

@@ -116,7 +116,7 @@ export default function Home() {
                 <span>Why State Proofs Remain 100% Public (CROPS Mandate)</span>
               </div>
               <p className="text-sky-800 leading-relaxed">
-                Under the Ethereum Foundation&apos;s <strong>CROPS (Censorship Resistant, Open source, Private, Secure)</strong> framework, cryptographic proofs must never be locked behind private logins. Sanjeevani Pulse empowers ordinary families and independent NGOs to verify hospital stock directly on the Arkiv DB-Chain without middlemen. If an emergency facility claims zero units of O-Negative blood or Anti-Venom while an active beacon exists on-chain, citizens have mathematical proof of illicit black-market hoarding.
+                Under the Ethereum Foundation&apos;s <strong>CROPS (Censorship Resistant, Open source, Private, Secure)</strong> framework, cryptographic proofs must never be locked behind private logins. Open Sanjivni empowers ordinary families and independent NGOs to verify hospital stock directly on the Arkiv DB-Chain without middlemen. If an emergency facility claims zero units of O-Negative blood or Anti-Venom while an active beacon exists on-chain, citizens have mathematical proof of illicit black-market hoarding.
               </p>
             </div>
 
@@ -189,7 +189,7 @@ export default function Home() {
           <div className="space-y-1.5 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-600" />
-              <strong className="font-black text-slate-900 text-base">Sanjeevani Pulse</strong>
+              <strong className="font-black text-slate-900 text-base">Open Sanjivni</strong>
               <span className="text-[10px] font-extrabold uppercase bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full">
                 Road to Devcon 8 Mumbai
               </span>

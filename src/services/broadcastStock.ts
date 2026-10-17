@@ -40,33 +40,32 @@ export async function broadcastMedicalStock(
 
   // Attempt real on-chain transaction if walletClient is active
   if (walletClient && typeof walletClient.createEntity === 'function') {
-    try {
-      console.log('[Broadcast] Signing Arkiv createEntity transaction...');
-      const tx = await walletClient.createEntity({
-        payload: payloadString,
-        contentType: 'application/json',
-        attributes: {
-          type: str('medical_beacon'),
-          category: str(params.category),
-          itemCode: str(params.itemCode),
-          pincode: i32(params.pincode),
-          districtCode: str(params.districtCode),
-          unitsAvailable: i32(params.unitsAvailable),
-          priceInr: dec(params.priceInr),
-          isEmergency24x7: str(params.isEmergency24x7 === false ? 'NO' : 'YES'),
-          status: str('ACTIVE'),
-        },
-        expires: ExpirationTime.fromHours(4), // 4-Hour Time-Scoped Expiration Guarantee
-      });
+    console.log('[Broadcast] Signing Arkiv createEntity transaction with connected wallet...');
+    const tx = await walletClient.createEntity({
+      payload: payloadString,
+      contentType: 'application/json',
+      attributes: {
+        type: str('medical_beacon'),
+        category: str(params.category),
+        itemCode: str(params.itemCode),
+        pincode: i32(params.pincode),
+        districtCode: str(params.districtCode),
+        unitsAvailable: i32(params.unitsAvailable),
+        priceInr: dec(params.priceInr),
+        isEmergency24x7: str(params.isEmergency24x7 === false ? 'NO' : 'YES'),
+        status: str('ACTIVE'),
+      },
+      expires: ExpirationTime.fromHours(4), // 4-Hour Time-Scoped Expiration Guarantee
+    });
 
-      if (tx) {
-        if (typeof tx === 'string') txHash = tx;
-        if (tx.hash) txHash = tx.hash;
-        if (tx.key) entityKey = tx.key;
-      }
-    } catch (err: any) {
-      console.warn('[Broadcast] Real RPC broadcast encountered testnet gas / signature limitation. Executing resilient simulation fallback:', err?.message || err);
+    if (tx) {
+      if (typeof tx === 'string') txHash = tx;
+      if (tx.hash) txHash = tx.hash;
+      if (tx.txHash) txHash = tx.txHash;
+      if (tx.key) entityKey = tx.key;
+      if (tx.entityKey) entityKey = tx.entityKey;
     }
+    console.log('[Broadcast] On-Chain Broadcast Success! TX:', txHash, 'Entity Key:', entityKey);
   }
 
   const now = Date.now();

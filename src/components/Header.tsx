@@ -45,10 +45,10 @@ export function Header({
           <div>
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900">
-                SANJEEVANI
+                OPEN
               </span>
               <span className="bg-rose-600 text-white text-[9px] sm:text-[10px] font-extrabold px-1.5 py-0.5 rounded tracking-wide">
-                PULSE
+                SANJIVNI
               </span>
             </div>
             <p className="hidden sm:block text-xs font-semibold text-slate-400">

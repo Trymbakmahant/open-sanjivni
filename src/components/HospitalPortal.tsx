@@ -16,6 +16,9 @@ import {
   ShieldCheck,
   ShieldAlert,
   Lock,
+  Wallet,
+  ExternalLink,
+  Zap,
 } from 'lucide-react';
 import { FacilityPreset, BeaconCategory, MedicalBeacon, BroadcastStockParams } from '@/types/beacon';
 import { INDIAN_FACILITIES, AVAILABLE_ITEM_CODES } from '@/data/seedData';
@@ -23,6 +26,16 @@ import { beaconStore, ArkivAuditLog } from '@/lib/beaconStore';
 import { broadcastMedicalStock } from '@/services/broadcastStock';
 import { dispenseUnits, extendStockBeacon, deleteStockBeacon } from '@/services/manageStock';
 import { playEmergencyChimeSound } from '@/lib/audioAlert';
+import { publicClient } from '@/lib/arkiv';
+import { formatEther } from 'viem';
+import {
+  isMetaMaskInstalled,
+  connectMetaMask,
+  switchToTiramisuNetwork,
+  getMetaMaskArkivClient,
+  TIRAMISU_CHAIN_ID_HEX,
+  MetaMaskState,
+} from '@/lib/metamask';
 
 interface HospitalPortalProps {
   soundEnabled: boolean;
@@ -36,6 +49,18 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
   const [isBroadcasting, setIsBroadcasting] = useState(false);
   const [broadcastSuccess, setBroadcastSuccess] = useState<string | null>(null);
 
+  // MetaMask Web3 State
+  const [metaMaskState, setMetaMaskState] = useState<MetaMaskState>({
+    isInstalled: false,
+    isConnected: false,
+    account: null,
+    chainId: null,
+    isCorrectNetwork: false,
+    balanceGlm: '0.00',
+  });
+  const [isConnectingMetaMask, setIsConnectingMetaMask] = useState(false);
+  const [useMetaMaskBroadcast, setUseMetaMaskBroadcast] = useState(false);
+
   // Form state
   const [formCategory, setFormCategory] = useState<BeaconCategory>('BLOOD');
   const [formItemCode, setFormItemCode] = useState<string>('O_NEGATIVE');
@@ -45,7 +70,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
     'Emergency ICU cases prioritized. Immediate crossmatch desk active.'
   );
 
-  const isAuthorized = selectedFacilityId !== 'unauthorized-citizen';
+  const isAuthorized = selectedFacilityId !== 'unauthorized-citizen' || (useMetaMaskBroadcast && metaMaskState.isConnected);
 
   const currentFacility = useMemo(() => {
     return (
@@ -65,6 +90,112 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
     return unsubscribe;
   }, []);
 
+  // Check MetaMask presence and existing accounts
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.ethereum) {
+      setMetaMaskState((prev) => ({ ...prev, isInstalled: true }));
+
+      window.ethereum
+        .request({ method: 'eth_accounts' })
+        .then(async (accounts: string[]) => {
+          if (accounts && accounts.length > 0) {
+            const account = accounts[0] as `0x${string}`;
+            const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+            const isCorrect = chainId?.toLowerCase() === TIRAMISU_CHAIN_ID_HEX.toLowerCase();
+            let balanceGlm = '0.00';
+            try {
+              const rawBal = await publicClient.getBalance({ address: account });
+              balanceGlm = parseFloat(formatEther(rawBal)).toFixed(4);
+            } catch {}
+            setMetaMaskState({
+              isInstalled: true,
+              isConnected: true,
+              account,
+              chainId,
+              isCorrectNetwork: isCorrect,
+              balanceGlm,
+            });
+            setUseMetaMaskBroadcast(true);
+          }
+        })
+        .catch(() => {});
+
+      const handleAccountsChanged = async (accounts: string[]) => {
+        if (accounts.length === 0) {
+          setMetaMaskState((prev) => ({
+            ...prev,
+            isConnected: false,
+            account: null,
+            balanceGlm: '0.00',
+          }));
+          setUseMetaMaskBroadcast(false);
+        } else {
+          const account = accounts[0] as `0x${string}`;
+          let balanceGlm = '0.00';
+          try {
+            const rawBal = await publicClient.getBalance({ address: account });
+            balanceGlm = parseFloat(formatEther(rawBal)).toFixed(4);
+          } catch {}
+          setMetaMaskState((prev) => ({
+            ...prev,
+            isConnected: true,
+            account,
+            balanceGlm,
+          }));
+          setUseMetaMaskBroadcast(true);
+        }
+      };
+
+      const handleChainChanged = (newChainId: string) => {
+        setMetaMaskState((prev) => ({
+          ...prev,
+          chainId: newChainId,
+          isCorrectNetwork: newChainId.toLowerCase() === TIRAMISU_CHAIN_ID_HEX.toLowerCase(),
+        }));
+      };
+
+      window.ethereum.on?.('accountsChanged', handleAccountsChanged);
+      window.ethereum.on?.('chainChanged', handleChainChanged);
+
+      return () => {
+        window.ethereum.removeListener?.('accountsChanged', handleAccountsChanged);
+        window.ethereum.removeListener?.('chainChanged', handleChainChanged);
+      };
+    }
+  }, []);
+
+  const handleConnectMetaMask = async () => {
+    setIsConnectingMetaMask(true);
+    try {
+      const res = await connectMetaMask();
+      setMetaMaskState({
+        isInstalled: true,
+        isConnected: true,
+        account: res.account,
+        chainId: res.chainId,
+        isCorrectNetwork: res.isCorrectNetwork,
+        balanceGlm: res.balanceGlm,
+      });
+      setUseMetaMaskBroadcast(true);
+    } catch (err: any) {
+      alert(err?.message || 'Failed to connect MetaMask');
+    } finally {
+      setIsConnectingMetaMask(false);
+    }
+  };
+
+  const handleSwitchNetwork = async () => {
+    const ok = await switchToTiramisuNetwork();
+    if (ok && window.ethereum) {
+      const chainId = await window.ethereum.request({ method: 'eth_chainId' });
+      setMetaMaskState((prev) => ({
+        ...prev,
+        chainId,
+        isCorrectNetwork: chainId?.toLowerCase() === TIRAMISU_CHAIN_ID_HEX.toLowerCase(),
+      }));
+    }
+  };
+
   // Update default items when category changes
   useEffect(() => {
     const items = AVAILABLE_ITEM_CODES.filter((i) => i.category === formCategory);
@@ -80,12 +211,16 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
   // Filter beacons for current facility
   const facilityBeacons = useMemo(() => {
+    const activeAddress = (useMetaMaskBroadcast && metaMaskState.account)
+      ? metaMaskState.account.toLowerCase()
+      : currentFacility.walletAddress.toLowerCase();
+
     return beacons.filter(
       (b) =>
         b.payload.facilityName.toLowerCase().includes(currentFacility.facilityName.slice(0, 10).toLowerCase()) ||
-        b.owner.toLowerCase() === currentFacility.walletAddress.toLowerCase()
+        b.owner.toLowerCase() === activeAddress
     );
-  }, [beacons, currentFacility]);
+  }, [beacons, currentFacility, useMetaMaskBroadcast, metaMaskState.account]);
 
   // Handle broadcast
   const handleBroadcast = async (e: React.FormEvent) => {
@@ -98,6 +233,21 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
     setBroadcastSuccess(null);
 
     try {
+      let walletClient: any = null;
+      let broadcastAddress = currentFacility.walletAddress;
+
+      // If user enabled MetaMask mode, sign using real MetaMask wallet client
+      if (useMetaMaskBroadcast && metaMaskState.isConnected && metaMaskState.account) {
+        if (!metaMaskState.isCorrectNetwork) {
+          alert('Please switch MetaMask to the Arkiv Tiramisu Testnet first.');
+          await handleSwitchNetwork();
+          setIsBroadcasting(false);
+          return;
+        }
+        walletClient = getMetaMaskArkivClient(metaMaskState.account);
+        broadcastAddress = metaMaskState.account;
+      }
+
       const params: BroadcastStockParams = {
         facilityName: currentFacility.facilityName,
         contactDesk: currentFacility.contactDesk,
@@ -113,16 +263,26 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         isEmergency24x7: true,
       };
 
-      const result = await broadcastMedicalStock(null, params, currentFacility.walletAddress);
+      const result = await broadcastMedicalStock(walletClient, params, broadcastAddress);
       if (result.success) {
         setBroadcastSuccess(
-          `Beacon created on Arkiv DB-Chain! Entity Key: ${result.entityKey.slice(0, 14)}...`
+          `Beacon created on Arkiv DB-Chain! Entity Key: ${result.entityKey.slice(0, 14)}... Tx: ${result.txHash.slice(0, 10)}...`
         );
         if (soundEnabled) playEmergencyChimeSound();
-        setTimeout(() => setBroadcastSuccess(null), 5000);
+        setTimeout(() => setBroadcastSuccess(null), 8000);
       }
     } catch (err: any) {
-      alert(`Broadcast error: ${err?.message || err}`);
+      console.error('Broadcast failed:', err);
+      const msg = err?.message || String(err);
+      if (msg.includes('insufficient funds') || msg.includes('gas')) {
+        alert(
+          `MetaMask Gas Error: Your wallet does not have enough test GLM on Arkiv Tiramisu.\n\nPlease claim free testnet tokens from the Arkiv Hub Faucet:\nhttps://hub.arkiv.network/faucet\n\nOr toggle "Simulated Desk Mode" to test without tokens.`
+        );
+      } else if (msg.includes('rejected') || msg.includes('denied') || msg.includes('User rejected')) {
+        alert('MetaMask Notice: Transaction signature was rejected by user in MetaMask.');
+      } else {
+        alert(`Broadcast error: ${msg}`);
+      }
     } finally {
       setIsBroadcasting(false);
     }
@@ -134,10 +294,15 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
       return;
     }
     try {
-      await dispenseUnits(null, beacon.key, beacon.attributes.unitsAvailable);
+      let walletClient = null;
+      if (useMetaMaskBroadcast && metaMaskState.isConnected && metaMaskState.account) {
+        walletClient = getMetaMaskArkivClient(metaMaskState.account);
+      }
+      await dispenseUnits(walletClient, beacon.key, beacon.attributes.unitsAvailable);
       if (soundEnabled) playEmergencyChimeSound();
     } catch (e: any) {
       console.error('Dispense failed', e);
+      alert('Dispense error: ' + (e?.message || e));
     }
   };
 
@@ -147,10 +312,15 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
       return;
     }
     try {
-      await extendStockBeacon(null, beacon.key);
+      let walletClient = null;
+      if (useMetaMaskBroadcast && metaMaskState.isConnected && metaMaskState.account) {
+        walletClient = getMetaMaskArkivClient(metaMaskState.account);
+      }
+      await extendStockBeacon(walletClient, beacon.key);
       alert('Beacon lease extended by +4 Hours (+7,200 blocks) on Arkiv DB-Chain!');
     } catch (e: any) {
       console.error('Extend failed', e);
+      alert('Extend error: ' + (e?.message || e));
     }
   };
 
@@ -161,9 +331,14 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
     }
     if (confirm('Execute emergency recall for this listing? It will immediately purge from Arkiv.')) {
       try {
-        await deleteStockBeacon(null, beacon.key);
+        let walletClient = null;
+        if (useMetaMaskBroadcast && metaMaskState.isConnected && metaMaskState.account) {
+          walletClient = getMetaMaskArkivClient(metaMaskState.account);
+        }
+        await deleteStockBeacon(walletClient, beacon.key);
       } catch (e: any) {
         console.error('Delete failed', e);
+        alert('Delete error: ' + (e?.message || e));
       }
     }
   };
@@ -177,7 +352,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
             <Hospital size={26} />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Hospital &amp; Jan Aushadhi Desk Portal</h2>
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Open Sanjivni Hospital &amp; Jan Aushadhi Desk Portal</h2>
             <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
               Broadcast, dispense, and extend time-scoped inventory directly from verified medical wallets to Arkiv DB-Chain.
             </p>
@@ -203,7 +378,96 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
           </select>
           <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 truncate">
             <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isAuthorized ? 'bg-emerald-500' : 'bg-rose-500 animate-ping'}`} />
-            <span className="truncate">{currentFacility.walletAddress}</span>
+            <span className="truncate">
+              {useMetaMaskBroadcast && metaMaskState.account ? metaMaskState.account : currentFacility.walletAddress}
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* Live Web3 MetaMask Connection Bar */}
+      <section className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 border border-orange-200/80 rounded-3xl p-5 sm:p-6 shadow-sm space-y-3">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-orange-500/25 shrink-0">
+              🦊
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="font-extrabold text-sm sm:text-base text-slate-900">
+                  MetaMask Web3 Mode: Live On-Chain Signatures
+                </h3>
+                {metaMaskState.isConnected ? (
+                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    Wallet Connected
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                    Not Connected
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-600 mt-0.5">
+                {metaMaskState.isConnected
+                  ? `Connected: ${metaMaskState.account?.slice(0, 8)}...${metaMaskState.account?.slice(-6)} • Balance: ${metaMaskState.balanceGlm} GLM`
+                  : 'Connect your MetaMask extension to broadcast real on-chain medical beacons directly to the Arkiv Tiramisu DB-Chain with wallet signatures.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 self-stretch md:self-auto flex-wrap">
+            {!metaMaskState.isConnected ? (
+              <button
+                type="button"
+                onClick={handleConnectMetaMask}
+                disabled={isConnectingMetaMask}
+                className="bg-orange-600 hover:bg-orange-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-orange-600/25 transition-all flex items-center gap-2"
+              >
+                <Wallet size={15} />
+                <span>{isConnectingMetaMask ? 'Connecting MetaMask...' : 'Connect MetaMask (Real Signing)'}</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-2 flex-wrap">
+                {!metaMaskState.isCorrectNetwork ? (
+                  <button
+                    type="button"
+                    onClick={handleSwitchNetwork}
+                    className="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl transition-all shadow-sm flex items-center gap-1.5"
+                  >
+                    <Zap size={14} />
+                    <span>Switch to Arkiv Tiramisu</span>
+                  </button>
+                ) : (
+                  <span className="text-[11px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    Tiramisu Testnet (7738577)
+                  </span>
+                )}
+
+                <a
+                  href="https://hub.arkiv.network/faucet"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1"
+                  title="Claim free test GLM tokens to pay for Arkiv gas"
+                >
+                  <ExternalLink size={13} />
+                  <span>Get Free GLM (Faucet)</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={() => setUseMetaMaskBroadcast((prev) => !prev)}
+                  className={`text-xs font-extrabold px-3 py-2 rounded-xl border transition-all ${
+                    useMetaMaskBroadcast
+                      ? 'bg-slate-900 text-white border-slate-900'
+                      : 'bg-white text-slate-700 border-slate-200'
+                  }`}
+                >
+                  {useMetaMaskBroadcast ? '✓ Using MetaMask Signing' : 'Using Desk Simulation'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -425,12 +689,12 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                 ) : isBroadcasting ? (
                   <>
                     <RefreshCw className="animate-spin" size={16} />
-                    <span>Signing Transaction on Arkiv...</span>
+                    <span>{useMetaMaskBroadcast ? 'Prompting MetaMask Signature...' : 'Signing Transaction on Arkiv...'}</span>
                   </>
                 ) : (
                   <>
                     <Send size={16} />
-                    <span>Broadcast Beacon to DB-Chain</span>
+                    <span>{useMetaMaskBroadcast ? 'Broadcast via MetaMask Signature' : 'Broadcast Beacon to DB-Chain'}</span>
                   </>
                 )}
               </button>

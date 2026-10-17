@@ -1,4 +1,4 @@
-# 🚨 Sanjeevani Pulse: Live Emergency Blood, Anti-Venom & Jan Aushadhi Stock Radar on Arkiv DB-Chain
+# 🚨 Open Sanjivni: Live Emergency Blood, Anti-Venom & Jan Aushadhi Stock Radar on Arkiv DB-Chain
 
 [![Arkiv Tiramisu Testnet](https://img.shields.io/badge/Network-Arkiv%20Tiramisu%20(7738577)-06B6D4?style=for-the-badge&logo=ethereum)](https://tiramisu.explorer.arkiv.network)
 [![Track: Best Indian Use Case](https://img.shields.io/badge/Track-Best%20Indian%20Use%20Case-EF4444?style=for-the-badge)](https://devfolio.co)
@@ -14,7 +14,7 @@
 
 ## ⚡ Executive Summary
 
-**Sanjeevani Pulse** is a censorship-resistant, decentralized emergency medical inventory radar where Indian blood banks, Jan Aushadhi Kendras, and hospital desks broadcast perishable, time-scoped availability of rare blood groups (O-Negative, Bombay Phenotype), snake anti-venom, rabies vaccines, and critical generic drugs directly to citizens.
+**Open Sanjivni** is a censorship-resistant, decentralized emergency medical inventory radar where Indian blood banks, Jan Aushadhi Kendras, and hospital desks broadcast perishable, time-scoped availability of rare blood groups (O-Negative, Bombay Phenotype), snake anti-venom, rabies vaccines, and critical generic drugs directly to citizens.
 
 By leveraging **Arkiv DB-Chain's protocol-enforced auto-expiration (`ExpirationTime.fromHours(4)`)**, listings automatically vanish from the query layer when a hospital goes offline—**mathematically guaranteeing that desperate families never chase phantom stock in the dead of night.**
 
@@ -26,13 +26,13 @@ In Indian district hubs and metropolitan cities (from Raipur and Bilaspur to Mum
 * **The 2:00 AM ICU Nightmare**: An emergency patient in critical care needs O-Negative blood or polyvalent snake anti-venom. Family members frantically dial 30+ hospital contacts scraped from Google Maps or commercial aggregators, only to hear: *"Stock finished 3 days ago."*
 * **Commercial Gatekeeping & Paywalls**: Centralized aggregators routinely bury non-profit Jan Aushadhi Kendras (offering generic Paracetamol 650 at ₹14.50) to promote high-margin commercial hospital pharmacies (selling branded variants at ₹60+).
 * **WhatsApp SOS Chains**: Unverified forwards with disconnected mobile numbers circulate for months after the patient has already been discharged.
-* **The Sanjeevani Pulse Solution**: An open, wallet-authenticated medical beacon network where verified facility wallets publish real-time stock by PIN code directly over Arkiv RPC. No commercial intermediaries, no advertising bias, and zero phone spam.
+* **The Open Sanjivni Solution**: An open, wallet-authenticated medical beacon network where verified facility wallets publish real-time stock by PIN code directly over Arkiv RPC. No commercial intermediaries, no advertising bias, and zero phone spam. Fully supports real MetaMask on-chain signatures as well as 1-click evaluator simulation mode.
 
 ---
 
 ## 🛡️ 2. Why Arkiv? What Breaks Elsewhere?
 
-| Feature / Architecture | IPFS + Decentralized Storage | Traditional EVM (Polygon / Arbitrum) | Centralized Postgres / Supabase | **Arkiv DB-Chain (Sanjeevani Pulse)** |
+| Feature / Architecture | IPFS + Decentralized Storage | Traditional EVM (Polygon / Arbitrum) | Centralized Postgres / Supabase | **Arkiv DB-Chain (Open Sanjivni)** |
 | :--- | :--- | :--- | :--- | :--- |
 | **Perishable Stock Lifecycle** | ❌ **Immutability Kills**: "4 units O-Neg" pinned to IPFS lives forever, misleading families after transfusion. | ⚠️ Costly smart contract cleanup transactions burn continuous gas. | ⚠️ Stale rows persist indefinitely unless background cron jobs succeed. | ✅ **Native Auto-Expiration**: `ExpirationTime.fromHours(4)` purges stale beacons at the protocol layer. |
 | **Serverless Range Queries** | ❌ Cannot filter `unitsAvailable > 0 AND pincode = 492099` without a server. | ❌ Requires indexing layers (The Graph / Subgraphs) adding 30s-10m indexing lag. | ❌ Single Point of Failure; vulnerable to server crashes or censorship. | ✅ **Sub-Second RPC Queries**: `arkiv_query` / `select()` over JSON-RPC in &lt; 85ms. |
@@ -43,7 +43,7 @@ In Indian district hubs and metropolitan cities (from Raipur and Bilaspur to Mum
 
 ## 🧩 3. Purposeful Utilization of Arkiv SDK Primitives
 
-Sanjeevani Pulse exercises the full suite of `@arkiv-network/sdk` v0.8.x capabilities:
+Open Sanjivni exercises the full suite of `@arkiv-network/sdk` v0.8.x capabilities:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -189,9 +189,9 @@ pnpm start
 ## 🎬 9. 3-Minute Video Demo Script
 
 * **0:00 - 0:45 (The Crisis)**: *"At 2:00 AM in Raipur or Mumbai, an ICU patient urgently needs O-Negative blood or anti-venom. The family calls 30 numbers on Google Maps, only to hear: 'Stock finished 3 days ago.' Centralized apps show stale data, private hospitals gatekeep stock, and WhatsApp forwards are full of dead numbers. What if medical availability was verified, wallet-owned, and mathematically guaranteed to never be stale?"*
-* **0:45 - 1:25 (Enter Sanjeevani Pulse)**: *"Sanjeevani Pulse runs on the Arkiv DB-Chain. Certified blood banks and Jan Aushadhi stores broadcast stock directly from their wallets with a strict 4-hour expiration. If the facility desk does not actively extend the beacon, the listing automatically vanishes from the query layer. No stale data, no ad-driven bias, and zero commercial gatekeeping."*
+* **0:45 - 1:25 (Enter Open Sanjivni)**: *"Open Sanjivni runs on the Arkiv DB-Chain. Certified blood banks and Jan Aushadhi stores broadcast stock directly from their wallets with a strict 4-hour expiration. If the facility desk does not actively extend the beacon, the listing automatically vanishes from the query layer. No stale data, no ad-driven bias, and zero commercial gatekeeping."*
 * **1:25 - 2:25 (Live Tiramisu Demo)**: *"Watch our hospital portal on Tiramisu testnet. With one click, AIIMS Raipur broadcasts 4 units of O-Negative blood with `createEntity()` and `ExpirationTime.fromHours(4)`. In 2 seconds, it confirms. Now look at our citizen radar screen: querying `category = BLOOD AND itemCode = O_NEGATIVE AND unitsAvailable > 0` directly fetches live results in 80 milliseconds over RPC—no Subgraph, no centralized Postgres server. When a unit is transfused, the hospital clicks 'Dispense' (`patchEntity()`), or clicks 'Extend (+4h)' (`extendEntity()`)."*
-* **2:25 - 3:00 (Why This Wins)**: *"Sanjeevani Pulse stores zero personal health data, solves a life-or-death challenge for 1.4 billion people in India, and proves why Arkiv's time-scoped DB-Chain is the perfect foundation for decentralized public goods. Thank you!"*
+* **2:25 - 3:00 (Why This Wins)**: *"Open Sanjivni stores zero personal health data, solves a life-or-death challenge for 1.4 billion people in India, and proves why Arkiv's time-scoped DB-Chain is the perfect foundation for decentralized public goods. Thank you!"*
 
 ---
 

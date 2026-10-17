@@ -167,7 +167,7 @@ export function CitizenRadar({
             </h1>
 
             <p className="text-sm xl:text-base text-slate-500 leading-relaxed max-w-lg">
-              Sanjeevani Pulse runs on the <strong>Arkiv DB-Chain</strong>. Certified Indian blood banks, Jan Aushadhi
+              Open Sanjivni runs on the <strong>Arkiv DB-Chain</strong>. Certified Indian blood banks, Jan Aushadhi
               stores, and trauma desks broadcast time-scoped stock with strict{' '}
               <strong>4-hour auto-expiration</strong> so families never chase phantom stock in an ICU emergency.
             </p>

@@ -1,9 +1,9 @@
-# Arkiv Entity Schema Specification — Sanjeevani Pulse
+# Arkiv Entity Schema Specification — Open Sanjivni
 
 ## 1. Overview
-Sanjeevani Pulse models emergency medical supplies (rare blood groups, snake polyvalent anti-venoms, anti-rabies immunoglobulins, and Jan Aushadhi generic medicines) as **Time-Scoped Beacons** on the **Arkiv DB-Chain Tiramisu Testnet** (Chain ID: `7738577`).
+Open Sanjivni models emergency medical supplies (rare blood groups, snake polyvalent anti-venoms, anti-rabies immunoglobulins, and Jan Aushadhi generic medicines) as **Time-Scoped Beacons** on the **Arkiv DB-Chain Tiramisu Testnet** (Chain ID: `7738577`).
 
-Unlike traditional smart contracts where data persists indefinitely unless pruned at great gas cost, or off-chain Web2 databases prone to hoarding and stale phantom listings, Sanjeevani Pulse leverages Arkiv's native **Time-To-Live (TTL)** protocol engine.
+Unlike traditional smart contracts where data persists indefinitely unless pruned at great gas cost, or off-chain Web2 databases prone to hoarding and stale phantom listings, Open Sanjivni leverages Arkiv's native **Time-To-Live (TTL)** protocol engine.
 
 ---
 

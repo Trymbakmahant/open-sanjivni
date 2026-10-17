@@ -1,4 +1,4 @@
-# Sanjeevani Pulse — Arkiv Hackathon Execution Tasks
+# Open Sanjivni — Arkiv Hackathon Execution Tasks
 
 ## Hackathon Context
 - **Hackathon**: Arkiv Global Tour Stop (Road to Devcon 8 Mumbai)
