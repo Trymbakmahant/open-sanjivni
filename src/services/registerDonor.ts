@@ -79,10 +79,10 @@ export async function registerStandbyDonor(
         contentType: 'application/json',
         attributes: {
           type: str('volunteer_donor'),
-          bloodGroup: str(bloodGroup),
+          blood_group: str(bloodGroup),
           pincode: i32(pincode), // Enforced from Anon Aadhaar ZK proof
-          zkNullifier: str(nullifier),
-          isAnonAadhaarVerified: str('YES'),
+          zk_nullifier: str(nullifier),
+          is_anon_aadhaar_verified: str('YES'),
           status: str('AVAILABLE'),
         },
         expires: ExpirationTime.fromHours(12), // 12-hour auto-expiration

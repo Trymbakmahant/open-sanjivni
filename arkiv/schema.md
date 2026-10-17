@@ -15,16 +15,20 @@ Unlike traditional smart contracts where data persists indefinitely unless prune
 ### Indexed Typed Attributes
 Arkiv stores indexed attributes alongside the entity to enable sub-100ms range queries directly over JSON-RPC without requiring subgraphs or centralized indexers.
 
+> [!NOTE]
+> Arkiv DB-Chain validator precompiles enforce lowercase snake_case attribute names (`[a-z][a-z0-9._-]*`). Uppercase ASCII bytes are rejected with `Ident32InvalidByte`.
+
 | Attribute Name | Typed Helper | Data Type | Description | Example |
 | :--- | :--- | :--- | :--- | :--- |
 | `category` | `str` | `string` | Medical category for taxonomy | `str('BLOOD')` |
-| `itemCode` | `str` | `string` | Standardized inventory code | `str('O_NEGATIVE')` |
-| `unitsAvailable`| `i32` | `int32` | Verified ready-to-dispatch units | `i32(6)` |
+| `item_code` | `str` | `string` | Standardized inventory code | `str('O_NEGATIVE')` |
+| `units_available`| `i32` | `int32` | Verified ready-to-dispatch units | `i32(6)` |
 | `pincode` | `i32` | `int32` | 6-digit Indian Postal Index | `i32(492099)` |
-| `priceInr` | `dec` | `decimal` | Unit cost in Indian Rupees (₹0 for Govt) | `dec(0.00)` |
-| `isEmergency24x7`| `str` | `string` | 24x7 Casualty Desk availability | `str('YES')` |
+| `district_code` | `str` | `string` | District administrative code | `str('RAIPUR')` |
+| `price_inr` | `dec` | `decimal` | Unit cost in Indian Rupees (₹0 for Govt) | `dec(0.00)` |
+| `is_emergency_24x7`| `str` | `string` | 24x7 Casualty Desk availability | `str('YES')` |
 | `status` | `str` | `string` | Lifecycle status | `str('ACTIVE')` |
-| `facilityId` | `str` | `string` | Institutional identifier | `str('aiims-raipur')` |
+| `type` | `str` | `string` | Top-level entity discriminator | `str('medical_beacon')` |
 
 ### Unindexed JSON Payload
 The payload holds institutional facility data and operational dispatch instructions:
@@ -63,10 +67,10 @@ Prevents hoarding or predatory scalping of critical O-Negative blood or anti-ven
 | Attribute Name | Typed Helper | Data Type | Description | Example |
 | :--- | :--- | :--- | :--- | :--- |
 | `type` | `str` | `string` | Entity type identifier | `str('emergency_lock')` |
-| `beaconKey` | `str` | `string` | Target `medical_beacon` entity key | `str('0x9a8f...31')` |
-| `zkNullifier` | `str` | `string` | Anon Aadhaar Groth16 nullifier | `str('0x8f42e1b9...5019')` |
-| `verifiedPincode`| `i32` | `int32` | Proven pincode from ZK proof | `i32(492099)` |
-| `isAdultVerified`| `str` | `string` | Age 18+ proof verification | `str('YES')` |
+| `beacon_key` | `str` | `string` | Target `medical_beacon` entity key | `str('0x9a8f...31')` |
+| `zk_nullifier` | `str` | `string` | Anon Aadhaar Groth16 nullifier | `str('0x8f42e1b9...5019')` |
+| `verified_pincode`| `i32` | `int32` | Proven pincode from ZK proof | `i32(492099)` |
+| `is_adult_verified`| `str` | `string` | Age 18+ proof verification | `str('YES')` |
 | `status` | `str` | `string` | Lock lifecycle status | `str('LOCKED')` |
 
 #### Unindexed JSON Payload
@@ -97,10 +101,10 @@ When hospital inventory is depleted (0 units), families locate verified adult st
 | Attribute Name | Typed Helper | Data Type | Description | Example |
 | :--- | :--- | :--- | :--- | :--- |
 | `type` | `str` | `string` | Entity type identifier | `str('volunteer_donor')` |
-| `bloodGroup` | `str` | `string` | Blood group code | `str('O_NEGATIVE')` |
+| `blood_group` | `str` | `string` | Blood group code | `str('O_NEGATIVE')` |
 | `pincode` | `i32` | `int32` | Enforced from ZK proof | `i32(492099)` |
-| `zkNullifier` | `str` | `string` | Unique anonymous donor nullifier | `str('0x8f42e1b9...5019')` |
-| `isAnonAadhaarVerified` | `str` | `string` | Cryptographic confirmation | `str('YES')` |
+| `zk_nullifier` | `str` | `string` | Unique anonymous donor nullifier | `str('0x8f42e1b9...5019')` |
+| `is_anon_aadhaar_verified` | `str` | `string` | Cryptographic confirmation | `str('YES')` |
 | `status` | `str` | `string` | Standby availability | `str('AVAILABLE')` |
 
 #### Unindexed JSON Payload

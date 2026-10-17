@@ -53,12 +53,12 @@ export async function broadcastMedicalStock(
       attributes: {
         type: str('medical_beacon'),
         category: str(params.category),
-        itemCode: str(params.itemCode),
+        item_code: str(params.itemCode),
         pincode: i32(params.pincode),
-        districtCode: str(params.districtCode),
-        unitsAvailable: i32(params.unitsAvailable),
-        priceInr: dec(params.priceInr),
-        isEmergency24x7: str(params.isEmergency24x7 === false ? 'NO' : 'YES'),
+        district_code: str(params.districtCode),
+        units_available: i32(params.unitsAvailable),
+        price_inr: dec(params.priceInr),
+        is_emergency_24x7: str(params.isEmergency24x7 === false ? 'NO' : 'YES'),
         status: str('ACTIVE'),
       },
       expires: expiration, // Category-Adaptive Time-Scoped Expiration Guarantee

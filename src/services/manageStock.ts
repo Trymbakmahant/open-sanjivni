@@ -21,11 +21,11 @@ export async function dispenseUnits(
       const attributes =
         newUnits === 0
           ? {
-              unitsAvailable: i32(0),
+              units_available: i32(0),
               status: str('DEPLETED'),
             }
           : {
-              unitsAvailable: i32(newUnits),
+              units_available: i32(newUnits),
             };
 
       const tx = await walletClient.patchEntity({

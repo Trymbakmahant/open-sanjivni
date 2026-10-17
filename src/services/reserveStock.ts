@@ -103,10 +103,10 @@ export async function reserveEmergencyStock(
         contentType: 'application/json',
         attributes: {
           type: str('emergency_lock'),
-          beaconKey: str(beaconKey),
-          zkNullifier: str(nullifier),
-          verifiedPincode: i32(pincode),
-          isAdultVerified: str('YES'),
+          beacon_key: str(beaconKey),
+          zk_nullifier: str(nullifier),
+          verified_pincode: i32(pincode),
+          is_adult_verified: str('YES'),
           status: str('LOCKED'),
         },
         expires: ExpirationTime.fromMinutes(60), // Automatically purges after 60 mins if unclaimed
