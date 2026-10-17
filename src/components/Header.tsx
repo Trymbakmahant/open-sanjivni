@@ -4,7 +4,7 @@ import React from 'react';
 import { Droplet, Volume2, VolumeX, RotateCcw } from 'lucide-react';
 import { beaconStore } from '@/lib/beaconStore';
 
-export type ActiveTab = 'CITIZEN_RADAR' | 'HOSPITAL_PORTAL' | 'STATE_PROOFS' | 'ARCHITECTURE';
+export type ActiveTab = 'CITIZEN_RADAR' | 'HOSPITAL_PORTAL' | 'STATE_PROOFS';
 
 interface HeaderProps {
   activeTab: ActiveTab;
@@ -90,17 +90,6 @@ export function Header({
             }`}
           >
             State Proofs
-          </button>
-
-          <button
-            onClick={() => setActiveTab('ARCHITECTURE')}
-            className={`px-5 py-2 rounded-full text-sm font-bold transition-all ${
-              activeTab === 'ARCHITECTURE'
-                ? 'bg-slate-900 text-white shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
-            }`}
-          >
-            Arkiv Report
           </button>
         </nav>
 

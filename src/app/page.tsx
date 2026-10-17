@@ -5,7 +5,6 @@ import { Header, ActiveTab } from '@/components/Header';
 import { CitizenRadar } from '@/components/CitizenRadar';
 import { HospitalPortal } from '@/components/HospitalPortal';
 import { StateProofsModal } from '@/components/StateProofsModal';
-import { ArchitectureView } from '@/components/ArchitectureView';
 import { MobileEmergencyView } from '@/components/MobileEmergencyView';
 import { MedicalBeacon } from '@/types/beacon';
 import { INITIAL_BEACONS } from '@/data/seedData';
@@ -170,8 +169,6 @@ export default function Home() {
             </div>
           </div>
         )}
-
-        {activeTab === 'ARCHITECTURE' && <ArchitectureView />}
       </main>
 
       {/* Proof Modal */}
@@ -209,12 +206,6 @@ export default function Home() {
               >
                 <Zap size={14} /> Tiramisu Explorer
               </a>
-              <button
-                onClick={() => setActiveTab('ARCHITECTURE')}
-                className="hover:text-rose-600 transition-colors"
-              >
-                Friction Report
-              </button>
             </div>
             <p className="text-[11px] text-slate-400">
               Strict DPDP Privacy Compliance • Zero Personal Health Information (PHI) Stored
