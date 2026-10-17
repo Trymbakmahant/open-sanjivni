@@ -80,3 +80,61 @@ export interface FacilityPreset {
   category: BeaconCategory;
   badges: string[];
 }
+
+export type LockStatus = 'LOCKED' | 'CLAIMED' | 'EXPIRED';
+
+export interface EmergencyLockPayload {
+  beaconKey: string;
+  zkProofTimestamp: string;
+  syntheticPatientToken: string;
+  hospitalName?: string;
+  itemCode?: string;
+}
+
+export interface EmergencyLockAttributes {
+  type: 'emergency_lock';
+  beaconKey: string;
+  zkNullifier: string;
+  verifiedPincode: number;
+  isAdultVerified: 'YES';
+  status: LockStatus;
+}
+
+export interface EmergencyLock {
+  key: string;
+  payload: EmergencyLockPayload;
+  attributes: EmergencyLockAttributes;
+  expiresAtTimestamp: number;
+  createdAtTimestamp: number;
+  txHash: string;
+  blockNumber: number;
+}
+
+export type DonorStatus = 'AVAILABLE' | 'ENGAGED' | 'EXPIRED';
+
+export interface VolunteerDonorPayload {
+  bloodGroup: string;
+  syntheticRelay: string;
+  state: string;
+  note: string;
+  registeredAtIso: string;
+}
+
+export interface VolunteerDonorAttributes {
+  type: 'volunteer_donor';
+  bloodGroup: string;
+  pincode: number;
+  zkNullifier: string;
+  isAnonAadhaarVerified: 'YES';
+  status: DonorStatus;
+}
+
+export interface VolunteerDonor {
+  key: string;
+  payload: VolunteerDonorPayload;
+  attributes: VolunteerDonorAttributes;
+  expiresAtTimestamp: number;
+  createdAtTimestamp: number;
+  txHash: string;
+  blockNumber: number;
+}

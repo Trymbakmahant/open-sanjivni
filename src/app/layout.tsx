@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { AnonAadhaarWrapper } from '@/providers/AnonAadhaarWrapper';
 
 export const metadata: Metadata = {
   title: 'Open Sanjivni | Live Emergency Medical Radar on Arkiv DB-Chain',
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
     'Decentralized Healthcare',
     'India Public Goods',
     'Devcon 8 Mumbai',
+    'Anon Aadhaar',
+    'Zero Knowledge',
   ],
 };
 
@@ -38,7 +41,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        <AnonAadhaarWrapper>
+          {children}
+        </AnonAadhaarWrapper>
+      </body>
     </html>
   );
 }
