@@ -80,7 +80,7 @@ export function AnonAadhaarBadge() {
         onClick={() => setIsOpen(true)}
         className={`group relative flex items-center gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-semibold transition-all duration-200 shadow-xs cursor-pointer select-none ${
           isVerified
-            ? 'bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-500/30 text-emerald-950'
+            ? 'bg-sky-50 hover:bg-sky-100/80 border border-sky-300 text-sky-950'
             : 'bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-700'
         }`}
         title={
@@ -95,19 +95,19 @@ export function AnonAadhaarBadge() {
         <div
           className={`relative flex items-center justify-center w-5 h-5 rounded-full font-black text-[9px] shrink-0 transition-transform group-hover:scale-105 ${
             isVerified
-              ? 'bg-gradient-to-br from-emerald-600 to-teal-600 text-white shadow-xs'
+              ? 'bg-sky-600 text-white shadow-xs'
               : 'bg-slate-100 border border-slate-200 text-slate-700'
           }`}
         >
           <span>ZK</span>
           {isVerified && (
-            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping" />
+            <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-sky-400 rounded-full animate-ping" />
           )}
         </div>
 
         {/* State Label */}
         {isVerified ? (
-          <span className="font-mono text-xs font-bold text-emerald-800 tracking-tight">
+          <span className="font-mono text-xs font-bold text-sky-800 tracking-tight">
             {truncatedNullifier || 'Verified'}
           </span>
         ) : (
@@ -122,22 +122,22 @@ export function AnonAadhaarBadge() {
         mounted &&
         createPortal(
           <div
-            className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
+            className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
             onClick={() => setIsOpen(false)}
             role="dialog"
             aria-modal="true"
           >
             <div
-              className="bg-white border border-slate-100 text-slate-900 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl shadow-slate-900/20 relative my-auto max-h-[90vh] overflow-y-auto space-y-5 animate-in zoom-in-95 duration-200"
+              className="bg-white border border-slate-200 text-slate-900 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-auto max-h-[90vh] overflow-y-auto space-y-5 animate-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
               <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-600 font-black text-sm shrink-0">
+                  <div className="relative flex items-center justify-center w-11 h-11 rounded-2xl bg-sky-50 border border-sky-200 text-sky-600 font-black text-sm shrink-0">
                     <span>ZK</span>
                     {isVerified && (
-                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping" />
+                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-sky-500 rounded-full animate-ping" />
                     )}
                   </div>
                   <div>
@@ -145,12 +145,12 @@ export function AnonAadhaarBadge() {
                       <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900">
                         Anon Aadhaar Identity
                       </h3>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold border bg-emerald-50 text-emerald-700 border-emerald-200">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-bold border bg-sky-50 text-sky-700 border-sky-200">
                         Groth16 Zero-PII
                       </span>
                       {isVerified ? (
-                        <span className="text-[10px] px-2.5 py-0.5 rounded-full font-bold border bg-emerald-100/80 text-emerald-800 border-emerald-300 flex items-center gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="text-[10px] px-2.5 py-0.5 rounded-full font-bold border bg-sky-100 text-sky-800 border-sky-300 flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse" />
                           Verified Citizen
                         </span>
                       ) : (
@@ -186,7 +186,7 @@ export function AnonAadhaarBadge() {
                       onClick={() => setUseTestAadhaar(true)}
                       className={`px-3 py-1 rounded-lg font-bold transition-all text-xs ${
                         useTestAadhaar
-                          ? 'bg-white text-emerald-800 border border-slate-200/80 shadow-xs'
+                          ? 'bg-white text-rose-700 border border-slate-200/80 shadow-xs'
                           : 'text-slate-500 hover:text-slate-800'
                       }`}
                     >
@@ -215,32 +215,32 @@ export function AnonAadhaarBadge() {
               {isVerified ? (
                 <div className="space-y-4">
                   {/* Active Sovereign Identity Card */}
-                  <div className="relative overflow-hidden bg-emerald-50/40 border border-emerald-200/80 rounded-2xl p-4 sm:p-5 space-y-3.5">
+                  <div className="relative overflow-hidden bg-sky-50/40 border border-sky-200/80 rounded-2xl p-4 sm:p-5 space-y-3.5">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <ShieldCheck size={18} className="text-emerald-600" />
-                        <span className="text-xs font-black uppercase tracking-wider text-emerald-950">
+                        <ShieldCheck size={18} className="text-sky-600" />
+                        <span className="text-xs font-black uppercase tracking-wider text-sky-950">
                           Verified Citizen Credentials
                         </span>
                       </div>
-                      <span className="text-[10px] font-mono text-emerald-800 bg-white px-2.5 py-0.5 rounded-full border border-emerald-200 font-bold">
+                      <span className="text-[10px] font-mono text-sky-800 bg-white px-2.5 py-0.5 rounded-full border border-sky-200 font-bold">
                         DPDP Compliant
                       </span>
                     </div>
 
                     {/* Groth16 Nullifier Box */}
-                    <div className="bg-white border border-emerald-200/80 rounded-xl p-3 space-y-1.5 shadow-2xs">
+                    <div className="bg-white border border-sky-200/80 rounded-xl p-3 space-y-1.5 shadow-2xs">
                       <div className="flex items-center justify-between text-[11px]">
                         <span className="text-slate-500 font-semibold">
                           Groth16 Nullifier (Zero-PII ID):
                         </span>
                         <button
                           onClick={() => handleCopy(citizenData?.nullifier || '')}
-                          className="text-emerald-700 hover:text-emerald-800 flex items-center gap-1 font-bold text-xs transition-colors"
+                          className="text-sky-700 hover:text-sky-800 flex items-center gap-1 font-bold text-xs transition-colors"
                         >
                           {copied ? (
                             <>
-                              <Check size={12} className="text-emerald-600" />
+                              <Check size={12} className="text-sky-600" />
                               <span>Copied!</span>
                             </>
                           ) : (
@@ -262,8 +262,8 @@ export function AnonAadhaarBadge() {
                         <span className="block text-[10px] text-slate-400 uppercase font-bold">
                           Age Verified
                         </span>
-                        <span className="font-extrabold text-emerald-700 flex items-center gap-1 mt-0.5">
-                          <UserCheck size={13} className="text-emerald-600" />
+                        <span className="font-extrabold text-sky-700 flex items-center gap-1 mt-0.5">
+                          <UserCheck size={13} className="text-sky-600" />
                           18+ Adult
                         </span>
                       </div>
@@ -291,7 +291,7 @@ export function AnonAadhaarBadge() {
                   {/* Privacy & Anti-Scalper Guarantee */}
                   <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-3.5 space-y-1.5 text-xs text-slate-600">
                     <div className="flex items-center gap-2 text-slate-900 font-bold text-xs">
-                      <Lock size={14} className="text-emerald-600" />
+                      <Lock size={14} className="text-sky-600" />
                       <span>Active ZK Protections:</span>
                     </div>
                     <ul className="space-y-1 pl-4 list-disc text-[11px] text-slate-600">
@@ -321,7 +321,7 @@ export function AnonAadhaarBadge() {
 
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="px-6 py-2 rounded-xl text-xs font-black bg-slate-900 hover:bg-rose-600 text-white shadow-sm transition-all"
+                      className="px-6 py-2 rounded-xl text-xs font-black bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 transition-all"
                     >
                       Done
                     </button>

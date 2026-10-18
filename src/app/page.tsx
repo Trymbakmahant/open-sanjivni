@@ -88,7 +88,7 @@ export default function Home() {
                     <h2 className="text-xl sm:text-2xl font-black text-slate-900">
                       Cryptographic Anti-Hoarding Proof Explorer
                     </h2>
-                    <span className="text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full hidden sm:inline">
+                    <span className="text-[10px] font-extrabold uppercase bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-0.5 rounded-full hidden sm:inline">
                       100% Public Primitive
                     </span>
                   </div>
@@ -140,7 +140,7 @@ export default function Home() {
                     <div className="bg-slate-50 rounded-xl p-3 space-y-1">
                       <div className="flex justify-between items-center text-xs">
                         <span className="text-slate-500">Available Stock:</span>
-                        <span className="font-black text-emerald-600 font-mono">
+                        <span className="font-black text-rose-600 font-mono">
                           {beacon.attributes.unitsAvailable} Units
                         </span>
                       </div>
@@ -165,7 +165,7 @@ export default function Home() {
 
                   <button
                     onClick={() => setInspectingBeacon(beacon)}
-                    className="w-full bg-slate-900 hover:bg-rose-600 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+                    className="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs py-2.5 rounded-xl transition-all shadow-md shadow-rose-600/20 flex items-center justify-center gap-1.5 active:scale-[0.99]"
                   >
                     <Shield size={14} />
                     <span>Verify Anti-Hoarding Proof</span>

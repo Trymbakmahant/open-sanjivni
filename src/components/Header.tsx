@@ -64,7 +64,7 @@ export function Header({
             onClick={() => setActiveTab('CITIZEN_RADAR')}
             className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               activeTab === 'CITIZEN_RADAR'
-                ? 'bg-slate-900 text-white shadow-xs'
+                ? 'bg-rose-600 text-white shadow-xs shadow-rose-600/20'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
@@ -75,7 +75,7 @@ export function Header({
             onClick={() => setActiveTab('HOSPITAL_PORTAL')}
             className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               activeTab === 'HOSPITAL_PORTAL'
-                ? 'bg-slate-900 text-white shadow-xs'
+                ? 'bg-rose-600 text-white shadow-xs shadow-rose-600/20'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
@@ -86,7 +86,7 @@ export function Header({
             onClick={() => setActiveTab('STATE_PROOFS')}
             className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${
               activeTab === 'STATE_PROOFS'
-                ? 'bg-slate-900 text-white shadow-xs'
+                ? 'bg-rose-600 text-white shadow-xs shadow-rose-600/20'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-white/60'
             }`}
           >
@@ -106,7 +106,7 @@ export function Header({
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                isOnline ? 'bg-emerald-500 shadow-xs shadow-emerald-500/50 animate-pulse' : 'bg-rose-500'
+                isOnline ? 'bg-sky-500 shadow-xs shadow-sky-500/50 animate-pulse' : 'bg-rose-500'
               }`}
             />
             <span className="text-xs font-bold text-slate-800">Tiramisu</span>
@@ -160,7 +160,7 @@ export function Header({
           onClick={() => setActiveTab('HOSPITAL_PORTAL')}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl transition-all ${
             activeTab === 'HOSPITAL_PORTAL'
-              ? 'bg-slate-900 text-white shadow-sm'
+              ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/30'
               : 'text-slate-600 hover:bg-slate-50'
           }`}
         >
@@ -172,7 +172,7 @@ export function Header({
           onClick={() => setActiveTab('STATE_PROOFS')}
           className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-xl transition-all ${
             activeTab === 'STATE_PROOFS'
-              ? 'bg-slate-900 text-white shadow-sm'
+              ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/30'
               : 'text-slate-600 hover:bg-slate-50'
           }`}
         >

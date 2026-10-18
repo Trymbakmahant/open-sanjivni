@@ -389,17 +389,17 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
     <div className="space-y-3 sm:space-y-4">
       {/* Dynamic Error Banner */}
       {portalError && (
-        <div className="bg-rose-950/95 border border-rose-500/60 rounded-2xl p-3 sm:p-4 flex items-start justify-between gap-3 text-rose-200 shadow-xl animate-in fade-in">
+        <div className="bg-white border-2 border-rose-400 rounded-2xl p-3 sm:p-4 flex items-start justify-between gap-3 text-slate-800 shadow-sm animate-in fade-in">
           <div className="flex items-start gap-2.5">
-            <AlertCircle size={20} className="text-rose-400 shrink-0 mt-0.5" />
+            <AlertCircle size={20} className="text-rose-600 shrink-0 mt-0.5" />
             <div className="space-y-0.5">
-              <strong className="block text-xs font-bold text-rose-300">Action Required:</strong>
-              <p className="text-xs text-rose-200/90 leading-relaxed break-words">{portalError}</p>
+              <strong className="block text-xs font-black text-rose-600">Action Required:</strong>
+              <p className="text-xs text-slate-700 leading-relaxed break-words">{portalError}</p>
             </div>
           </div>
           <button
             onClick={() => setPortalError(null)}
-            className="text-rose-400 hover:text-rose-200 text-sm leading-none p-1 rounded-lg hover:bg-rose-900/50"
+            className="text-slate-400 hover:text-slate-700 text-sm leading-none p-1 rounded-lg hover:bg-slate-100"
             title="Dismiss"
           >
             ✕
@@ -409,17 +409,17 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
       {/* Dynamic Notice Banner */}
       {portalNotice && (
-        <div className="bg-emerald-950/95 border border-emerald-500/60 rounded-2xl p-3 sm:p-4 flex items-start justify-between gap-3 text-emerald-200 shadow-xl animate-in fade-in">
+        <div className="bg-white border-2 border-sky-400 rounded-2xl p-3 sm:p-4 flex items-start justify-between gap-3 text-slate-800 shadow-sm animate-in fade-in">
           <div className="flex items-start gap-2.5">
-            <Check size={20} className="text-emerald-400 shrink-0 mt-0.5" />
+            <Check size={20} className="text-sky-600 shrink-0 mt-0.5" />
             <div className="space-y-0.5">
-              <strong className="block text-xs font-bold text-emerald-300">Notice:</strong>
-              <p className="text-xs text-emerald-200/90 leading-relaxed break-words">{portalNotice}</p>
+              <strong className="block text-xs font-black text-sky-700">Notice:</strong>
+              <p className="text-xs text-slate-700 leading-relaxed break-words">{portalNotice}</p>
             </div>
           </div>
           <button
             onClick={() => setPortalNotice(null)}
-            className="text-emerald-400 hover:text-emerald-200 text-sm leading-none p-1 rounded-lg hover:bg-emerald-900/50"
+            className="text-slate-400 hover:text-slate-700 text-sm leading-none p-1 rounded-lg hover:bg-slate-100"
             title="Dismiss"
           >
             ✕
@@ -456,12 +456,12 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                 ))}
               </select>
               <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500">
-                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isAuthorized ? 'bg-emerald-500' : 'bg-rose-500 animate-ping'}`} />
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isAuthorized ? 'bg-sky-500' : 'bg-rose-500 animate-ping'}`} />
                 <span className="truncate max-w-[90px] sm:max-w-[120px]" title={useMetaMaskBroadcast && metaMaskState.account ? metaMaskState.account : currentFacility.walletAddress}>
                   {useMetaMaskBroadcast && metaMaskState.account ? metaMaskState.account : currentFacility.walletAddress}
                 </span>
                 <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded ${
-                  isAuthorized ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                  isAuthorized ? 'bg-sky-50 text-sky-700 border border-sky-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
                 }`}>
                   {isAuthorized ? 'Verified' : 'Blocked'}
                 </span>
@@ -502,7 +502,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                   Switch Chain
                 </button>
               ) : (
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-0.5" title="Connected to Arkiv Tiramisu (7738577)" />
+                <span className="w-1.5 h-1.5 rounded-full bg-sky-500 ml-0.5" title="Connected to Arkiv Tiramisu (7738577)" />
               )}
 
               <a
@@ -520,7 +520,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                 onClick={() => setUseMetaMaskBroadcast((prev) => !prev)}
                 className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded transition-all ml-1 ${
                   useMetaMaskBroadcast
-                    ? 'bg-slate-900 text-white'
+                    ? 'bg-rose-600 text-white shadow-2xs'
                     : 'bg-white text-slate-700 border border-slate-200'
                 }`}
                 title="Toggle between MetaMask signing and Simulated Desk signing"
@@ -539,7 +539,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
               onClick={() => setSelectedFacilityId('aiims-raipur')}
               className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all ${
                 selectedFacilityId === 'aiims-raipur'
-                  ? 'bg-emerald-600 text-white shadow-2xs'
+                  ? 'bg-rose-600 text-white shadow-2xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
@@ -577,24 +577,24 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
             {/* Broadcast Success Box (Compact) */}
             {broadcastSuccess && (
-              <div className="bg-emerald-50/95 border border-emerald-400 rounded-xl p-2.5 text-xs text-slate-800 space-y-2 shadow-xs animate-in fade-in">
+              <div className="bg-sky-50/95 border border-sky-300 rounded-xl p-2.5 text-xs text-slate-800 space-y-2 shadow-xs animate-in fade-in">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 rounded bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                    <div className="w-5 h-5 rounded bg-sky-600 text-white flex items-center justify-center shrink-0">
                       <Check size={12} />
                     </div>
                     <div>
-                      <strong className="text-xs font-black text-emerald-950">
+                      <strong className="text-xs font-black text-sky-950">
                         Broadcast Confirmed On-Chain!
                       </strong>
-                      <span className="text-[10px] font-mono text-emerald-800 ml-1.5">
+                      <span className="text-[10px] font-mono text-sky-800 ml-1.5">
                         Block #{broadcastSuccess.blockNumber.toLocaleString()} • {broadcastSuccess.units} Units of {broadcastSuccess.itemLabel}
                       </span>
                     </div>
                   </div>
                   <button
                     onClick={() => setBroadcastSuccess(null)}
-                    className="text-slate-400 hover:text-slate-700 text-xs p-0.5 leading-none rounded hover:bg-emerald-100"
+                    className="text-slate-400 hover:text-slate-700 text-xs p-0.5 leading-none rounded hover:bg-sky-100"
                     aria-label="Dismiss banner"
                   >
                     ✕
@@ -602,27 +602,27 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                 </div>
 
                 <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono">
-                  <div className="bg-white/90 border border-emerald-200 rounded-lg p-1.5 flex items-center justify-between">
+                  <div className="bg-white/90 border border-sky-200 rounded-lg p-1.5 flex items-center justify-between">
                     <span className="truncate text-slate-700" title={broadcastSuccess.entityKey}>
                       Key: {broadcastSuccess.entityKey.slice(0, 10)}...
                     </span>
                     <button
                       type="button"
                       onClick={() => handleCopySuccessField(broadcastSuccess.entityKey, 'entityKey')}
-                      className="text-emerald-700 hover:text-emerald-900 font-bold shrink-0 ml-1"
+                      className="text-sky-700 hover:text-sky-900 font-bold shrink-0 ml-1"
                       title="Copy Entity Key"
                     >
                       {copiedSuccessField === 'entityKey' ? '✓' : <Copy size={11} />}
                     </button>
                   </div>
-                  <div className="bg-white/90 border border-emerald-200 rounded-lg p-1.5 flex items-center justify-between">
+                  <div className="bg-white/90 border border-sky-200 rounded-lg p-1.5 flex items-center justify-between">
                     <span className="truncate text-slate-700" title={broadcastSuccess.txHash}>
                       TX: {broadcastSuccess.txHash.slice(0, 10)}...
                     </span>
                     <button
                       type="button"
                       onClick={() => handleCopySuccessField(broadcastSuccess.txHash, 'txHash')}
-                      className="text-emerald-700 hover:text-emerald-900 font-bold shrink-0 ml-1"
+                      className="text-sky-700 hover:text-sky-900 font-bold shrink-0 ml-1"
                       title="Copy Transaction Hash"
                     >
                       {copiedSuccessField === 'txHash' ? '✓' : <Copy size={11} />}
@@ -635,7 +635,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                     href={`${ARKIV_CONFIG.explorerUrl}/tx/${broadcastSuccess.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                    className="flex-1 bg-sky-600 hover:bg-sky-700 text-white font-black text-[11px] py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
                   >
                     <ExternalLink size={12} />
                     <span>View on Arkiv Explorer ↗</span>
@@ -698,7 +698,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                   id="form-item-code"
                   value={formItemCode}
                   onChange={(e) => setFormItemCode(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500 cursor-pointer"
                 >
                   {AVAILABLE_ITEM_CODES.filter((i) => i.category === formCategory).map((i) => (
                     <option key={i.code} value={i.code}>
@@ -718,7 +718,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                     </label>
                     <span className="text-[9px] text-slate-400 font-mono">1-500</span>
                   </div>
-                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-slate-900 h-8 sm:h-8.5">
+                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-rose-500 h-8 sm:h-8.5">
                     <button
                       type="button"
                       onClick={() => setFormUnits((prev) => Math.max(1, (Number(prev) || 1) - 1))}
@@ -762,7 +762,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                     type="text"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
-                    className="w-full h-8 sm:h-8.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 text-xs font-black font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                    className="w-full h-8 sm:h-8.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 text-xs font-black font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500"
                     placeholder="0.00"
                   />
                 </div>
@@ -812,7 +812,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
                   placeholder="Emergency ICU cases prioritized. Immediate crossmatch active."
-                  className="w-full h-8 bg-slate-50 border border-slate-200 rounded-xl px-2.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
+                  className="w-full h-8 bg-slate-50 border border-slate-200 rounded-xl px-2.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500"
                 />
               </div>
 
@@ -823,7 +823,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                 className={`w-full font-black text-xs py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm tracking-wide transition-all ${
                   !isAuthorized
                     ? 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300'
-                    : 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/10 active:scale-[0.99]'
+                    : 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-[0.99]'
                 }`}
               >
                 {!isAuthorized ? (
@@ -858,7 +858,7 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                   Active Facility Beacons ({facilityBeacons.length})
                 </h3>
               </div>
-              <span className="text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.2 rounded">
+              <span className="text-[10px] font-extrabold uppercase bg-sky-50 text-sky-700 border border-sky-200 px-2 py-0.2 rounded">
                 Live State
               </span>
             </div>

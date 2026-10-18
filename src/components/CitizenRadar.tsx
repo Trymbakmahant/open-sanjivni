@@ -267,38 +267,37 @@ export function CitizenRadar({
       )}
 
       {/* Active 60-Minute Emergency Reservation Ticket */}
+      {/* Active 60-Minute Emergency Reservation Ticket (Clean Light Theme) */}
       {activeTicket && activeTicket.expiresAtTimestamp > now && activeTicket.attributes.status === 'LOCKED' && (
-        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 border-2 border-emerald-500/60 rounded-3xl p-5 sm:p-7 shadow-2xl text-slate-100">
-          <div className="absolute top-0 right-0 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-emerald-500/30 pb-4">
+        <div className="relative overflow-hidden bg-white border-2 border-rose-300 rounded-3xl p-5 sm:p-7 shadow-md text-slate-900">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-rose-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-400">
+              <div className="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
                 <Lock size={24} />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-black tracking-wider uppercase text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-500/40">
+                  <span className="text-xs font-black tracking-wider uppercase text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
                     60-Min Emergency Lock Active
                   </span>
                   <span className="text-xs text-slate-400 font-mono">
                     Arkiv DB-Chain Auto-Expiry
                   </span>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-black text-white mt-1">
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-1">
                   1 Unit Reserved at {activeTicket.payload.hospitalName || 'Emergency Desk'}
                 </h2>
               </div>
             </div>
 
             {/* Countdown Badge */}
-            <div className="bg-slate-950/80 border border-emerald-500/40 px-4 py-2 rounded-2xl flex items-center gap-2 text-right">
-              <Clock size={18} className="text-emerald-400 animate-spin" />
+            <div className="bg-rose-50 border border-rose-200 px-4 py-2 rounded-2xl flex items-center gap-2 text-right">
+              <Clock size={18} className="text-rose-600 animate-spin" />
               <div>
-                <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                <span className="block text-[10px] font-bold uppercase tracking-wider text-slate-500">
                   Time Remaining to Claim
                 </span>
-                <span className="text-lg font-black font-mono text-emerald-300">
+                <span className="text-lg font-black font-mono text-rose-600">
                   {formatCountdown(Math.floor((activeTicket.expiresAtTimestamp - now) / 1000))}
                 </span>
               </div>
@@ -306,54 +305,54 @@ export function CitizenRadar({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 text-xs">
-            <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-3.5">
-              <span className="block text-slate-400 font-bold uppercase text-[10px]">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
+              <span className="block text-slate-500 font-bold uppercase text-[10px]">
                 Synthetic Patient Token (Zero PII)
               </span>
               <div className="flex items-center justify-between mt-1">
-                <span className="font-mono text-lg font-black text-amber-300">
+                <span className="font-mono text-lg font-black text-slate-900">
                   {activeTicket.payload.syntheticPatientToken}
                 </span>
                 <button
                   onClick={() => handleCopy(activeTicket.payload.syntheticPatientToken, 'token-copy')}
-                  className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold"
+                  className="px-2 py-1 rounded bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-semibold"
                 >
                   {copiedKey === 'token-copy' ? 'Copied' : 'Copy'}
                 </button>
               </div>
             </div>
 
-            <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-3.5">
-              <span className="block text-slate-400 font-bold uppercase text-[10px]">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
+              <span className="block text-slate-500 font-bold uppercase text-[10px]">
                 Item Reserved
               </span>
-              <span className="block font-bold text-base text-white mt-1">
+              <span className="block font-bold text-base text-slate-900 mt-1">
                 {activeTicket.payload.itemCode?.replace('_', ' ') || 'Emergency Unit'}
               </span>
-              <span className="text-[11px] text-emerald-400">
+              <span className="text-[11px] text-rose-600 font-bold">
                 1 Unit Deducted from Radar Public Pool
               </span>
             </div>
 
-            <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-3.5">
-              <span className="block text-slate-400 font-bold uppercase text-[10px]">
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3.5">
+              <span className="block text-slate-500 font-bold uppercase text-[10px]">
                 Hospital Claim Instruction
               </span>
-              <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+              <p className="text-[11px] text-slate-600 mt-1 leading-relaxed">
                 Present this token at the casualty counter. The reservation auto-releases on Arkiv after 60 mins if unclaimed.
               </p>
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 mt-1 border-t border-emerald-500/20 text-xs">
-            <span className="text-[11px] font-mono text-emerald-400/80 truncate max-w-sm">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 mt-1 border-t border-slate-100 text-xs">
+            <span className="text-[11px] font-mono text-slate-500 truncate max-w-sm">
               Lock Key: {activeTicket.key}
             </span>
             <a
               href={`${ARKIV_CONFIG.explorerUrl}/tx/${activeTicket.txHash}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-300 hover:text-white flex items-center gap-1 font-bold hover:underline transition-colors text-xs"
+              className="text-sky-600 hover:text-sky-800 flex items-center gap-1 font-bold hover:underline transition-colors text-xs"
             >
               <span>View Lock TX on Arkiv Explorer</span>
               <ExternalLink size={12} />
@@ -363,20 +362,20 @@ export function CitizenRadar({
       )}
 
       {/* Main View Switcher Tabs: Live Supplies vs Standby Volunteer Donors */}
-      <div className="flex items-center justify-between bg-white rounded-2xl p-2 border border-slate-100 shadow-xs">
+      <div className="flex items-center justify-between bg-white rounded-2xl p-2 border border-slate-200/80 shadow-xs">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActiveTab('LIVE_STOCK')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all ${
               activeTab === 'LIVE_STOCK'
-                ? 'bg-slate-900 text-white shadow-sm'
+                ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/20'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
             <span>🚨 Live Emergency Inventory</span>
             <span
               className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${
-                activeTab === 'LIVE_STOCK' ? 'bg-rose-600 text-white' : 'bg-slate-200 text-slate-700'
+                activeTab === 'LIVE_STOCK' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700'
               }`}
             >
               {searchResults.length}
@@ -387,7 +386,7 @@ export function CitizenRadar({
             onClick={() => setActiveTab('STANDBY_DONORS')}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-extrabold transition-all ${
               activeTab === 'STANDBY_DONORS'
-                ? 'bg-emerald-600 text-white shadow-sm'
+                ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/20'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
@@ -395,7 +394,7 @@ export function CitizenRadar({
             <span>Standby Volunteer Donors (Zero-Stock Fallback)</span>
             <span
               className={`text-[10px] px-2 py-0.5 rounded-full font-mono ${
-                activeTab === 'STANDBY_DONORS' ? 'bg-emerald-950 text-emerald-200' : 'bg-emerald-100 text-emerald-800'
+                activeTab === 'STANDBY_DONORS' ? 'bg-white/20 text-white' : 'bg-rose-50 text-rose-700 border border-rose-200'
               }`}
             >
               {donors.length}
@@ -411,7 +410,7 @@ export function CitizenRadar({
               }
               setShowDonorModal(true);
             }}
-            className="hidden sm:flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md transition-all active:scale-95"
+            className="hidden sm:flex items-center gap-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black px-4 py-2.5 rounded-xl shadow-md shadow-rose-600/20 transition-all active:scale-95"
           >
             <Sparkles size={14} />
             <span>Broadcast 12h Donor Beacon (ZK)</span>
@@ -463,7 +462,7 @@ export function CitizenRadar({
                 <div className="flex items-center gap-4 pt-1">
                   <button
                     onClick={onNavigateToHospitalPortal}
-                    className="bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs px-6 py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all tracking-wider"
+                    className="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-6 py-3.5 rounded-xl shadow-md shadow-rose-600/20 hover:shadow-lg transition-all tracking-wider"
                   >
                     DONATE NOW
                   </button>
@@ -528,7 +527,7 @@ export function CitizenRadar({
                     className="w-full bg-transparent font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none text-sm sm:text-base"
                   />
                   {userPincode && (
-                    <span className="flex items-center gap-1 text-[11px] font-extrabold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full shrink-0">
+                    <span className="flex items-center gap-1 text-[11px] font-extrabold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded-full shrink-0">
                       <Check size={12} /> Active
                     </span>
                   )}
@@ -570,8 +569,8 @@ export function CitizenRadar({
                   }}
                   className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
                     selectedCategory === 'BLOOD' || selectedCategory === 'ALL'
-                      ? 'bg-slate-900 text-white shadow-sm'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                      ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/20 font-black'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
                   🩸 Blood Group
@@ -584,8 +583,8 @@ export function CitizenRadar({
                   }}
                   className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
                     selectedCategory === 'ANTI_VENOM'
-                      ? 'bg-slate-900 text-white shadow-sm'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                      ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/20 font-black'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
                   🐍 Snake Anti-Venom
@@ -598,8 +597,8 @@ export function CitizenRadar({
                   }}
                   className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
                     selectedCategory === 'RABIES_VACCINE'
-                      ? 'bg-slate-900 text-white shadow-sm'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                      ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/20 font-black'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
                   💉 Rabies Vaccine
@@ -612,8 +611,8 @@ export function CitizenRadar({
                   }}
                   className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all ${
                     selectedCategory === 'JAN_AUSHADHI'
-                      ? 'bg-slate-900 text-white shadow-sm'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                      ? 'bg-rose-600 text-white shadow-sm shadow-rose-600/20 font-black'
+                      : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
                   💊 Jan Aushadhi
@@ -684,7 +683,7 @@ export function CitizenRadar({
             </div>
 
             <div className="flex items-center gap-3 shrink-0 self-end sm:self-auto">
-              <span className="flex items-center gap-1 text-emerald-600 font-extrabold text-[11px]">
+              <span className="flex items-center gap-1 text-sky-600 font-extrabold text-[11px]">
                 <Zap size={13} /> 74ms Direct RPC
               </span>
               <span className="bg-rose-50 text-rose-600 font-extrabold px-2.5 py-0.5 rounded-full text-xs">
@@ -710,13 +709,13 @@ export function CitizenRadar({
                       setSelectedItemCode('ALL');
                       setMaxDistance(1500);
                     }}
-                    className="bg-slate-900 text-white font-extrabold text-xs px-6 py-3 rounded-lg"
+                    className="bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-xs px-6 py-3 rounded-xl transition-all"
                   >
                     Clear Filters &amp; Expand Radius
                   </button>
                   <button
                     onClick={() => setActiveTab('STANDBY_DONORS')}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs px-6 py-3 rounded-lg"
+                    className="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-6 py-3 rounded-xl shadow-md shadow-rose-600/20 transition-all active:scale-98"
                   >
                     Check Standby Donors Pool
                   </button>
@@ -748,7 +747,7 @@ export function CitizenRadar({
 
                           <span
                             className={`text-[11px] font-bold font-mono px-2.5 py-1 rounded-full flex items-center gap-1 ${
-                              remainingSeconds < 3600 ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'
+                              remainingSeconds < 3600 ? 'bg-rose-50 text-rose-600' : 'bg-sky-50 text-sky-700 border border-sky-200'
                             }`}
                           >
                             <Clock size={12} />
@@ -763,11 +762,11 @@ export function CitizenRadar({
                           </h3>
                           <div className="flex items-center gap-2 mt-1.5">
                             {beacon.attributes.priceInr === '0.00' ? (
-                              <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">
+                              <span className="text-xs font-bold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded">
                                 Govt Free Supply
                               </span>
                             ) : (
-                              <span className="text-xs font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">
+                              <span className="text-xs font-bold text-sky-700 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded">
                                 Jan Aushadhi MRP: ₹{beacon.attributes.priceInr}
                               </span>
                             )}
@@ -795,7 +794,7 @@ export function CitizenRadar({
                               <Flame size={12} /> CRITICAL RARE
                             </span>
                           ) : (
-                            <span className="text-[11px] font-extrabold text-emerald-600 bg-emerald-100/60 px-2.5 py-1 rounded flex items-center gap-1">
+                            <span className="text-[11px] font-extrabold text-sky-700 bg-sky-50 border border-sky-200 px-2.5 py-1 rounded flex items-center gap-1">
                               <Check size={12} /> IN STOCK
                             </span>
                           )}
@@ -821,7 +820,7 @@ export function CitizenRadar({
                           <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                             <div
                               className={`h-full rounded-full ${
-                                ttlPercent < 25 ? 'bg-rose-500' : ttlPercent < 60 ? 'bg-amber-500' : 'bg-emerald-500'
+                                ttlPercent < 25 ? 'bg-rose-500' : ttlPercent < 60 ? 'bg-amber-500' : 'bg-sky-500'
                               }`}
                               style={{ width: `${ttlPercent}%` }}
                             />
@@ -837,8 +836,8 @@ export function CitizenRadar({
                           disabled={isReserving || beacon.attributes.unitsAvailable <= 0}
                           className={`w-full font-black text-xs py-3 px-3 rounded-xl flex items-center justify-center gap-2 transition-all shadow-sm ${
                             isVerified
-                              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-emerald-600/20 active:scale-98'
-                              : 'bg-slate-900 hover:bg-slate-800 text-emerald-300'
+                              ? 'bg-rose-600 hover:bg-rose-700 text-white shadow-md shadow-rose-600/20 active:scale-98'
+                              : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300'
                           }`}
                           title={
                             isVerified
@@ -890,18 +889,18 @@ export function CitizenRadar({
       {/* VIEW 2: STANDBY VOLUNTEER DONORS (ZERO-STOCK FALLBACK) */}
       {activeTab === 'STANDBY_DONORS' && (
         <div className="space-y-6">
-          {/* Header Banner */}
-          <div className="bg-gradient-to-br from-emerald-950 via-slate-900 to-teal-950 text-white p-6 sm:p-8 rounded-3xl border border-emerald-500/30 shadow-xl space-y-4">
+          {/* Header Banner - 100% Light Theme, Pure White with Soft Rose & Slate */}
+          <div className="bg-white text-slate-900 p-6 sm:p-8 rounded-3xl border border-slate-200/90 shadow-xs space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 text-xs font-bold uppercase tracking-wider">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200/80 text-xs font-bold uppercase tracking-wider">
                   <Shield size={14} />
                   <span>Feature #2: ZK-Verified Standby Volunteer Donor Beacon</span>
                 </div>
-                <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-                  Zero-Stock Fallback: <span className="text-emerald-400">Pincode-Locked Donors</span>
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
+                  Zero-Stock Fallback: <span className="text-rose-600">Pincode-Locked Donors</span>
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 max-w-2xl leading-relaxed">
                   When certified hospital blood banks hit zero units, families connect with verified adult donors in their exact PIN code. Anon Aadhaar cryptographically proves age 18+ and residence without doxxing real names or phone numbers.
                 </p>
               </div>
@@ -913,29 +912,29 @@ export function CitizenRadar({
                   }
                   setShowDonorModal(true);
                 }}
-                className="self-start md:self-auto bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-xs px-5 py-3.5 rounded-2xl shadow-lg shadow-emerald-500/30 transition-all flex items-center gap-2 shrink-0 active:scale-95"
+                className="self-start md:self-auto bg-rose-600 hover:bg-rose-700 text-white font-black text-xs px-5 py-3.5 rounded-2xl shadow-md shadow-rose-600/20 transition-all flex items-center gap-2 shrink-0 active:scale-95"
               >
                 <Sparkles size={16} />
                 <span>Broadcast 12h Donor Beacon</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-emerald-500/20 text-xs">
-              <div className="bg-slate-950/40 p-2.5 rounded-xl border border-emerald-500/20">
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Age Enforced</span>
-                <strong className="block text-emerald-400 font-mono text-sm mt-0.5">18+ via Groth16</strong>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-100 text-xs">
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] text-slate-500 font-bold uppercase">Age Enforced</span>
+                <strong className="block text-slate-900 font-mono text-sm mt-0.5">18+ via Groth16</strong>
               </div>
-              <div className="bg-slate-950/40 p-2.5 rounded-xl border border-emerald-500/20">
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Location Locked</span>
-                <strong className="block text-emerald-400 font-mono text-sm mt-0.5">QR Verified PIN</strong>
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] text-slate-500 font-bold uppercase">Location Locked</span>
+                <strong className="block text-slate-900 font-mono text-sm mt-0.5">QR Verified PIN</strong>
               </div>
-              <div className="bg-slate-950/40 p-2.5 rounded-xl border border-emerald-500/20">
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Arkiv TTL</span>
-                <strong className="block text-emerald-400 font-mono text-sm mt-0.5">12-Hour Expiration</strong>
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] text-slate-500 font-bold uppercase">Arkiv TTL</span>
+                <strong className="block text-slate-900 font-mono text-sm mt-0.5">12-Hour Expiration</strong>
               </div>
-              <div className="bg-slate-950/40 p-2.5 rounded-xl border border-emerald-500/20">
-                <span className="text-[10px] text-slate-400 font-bold uppercase">Privacy Protection</span>
-                <strong className="block text-emerald-400 font-mono text-sm mt-0.5">Synthetic Matrix Relay</strong>
+              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200/70">
+                <span className="text-[10px] text-slate-500 font-bold uppercase">Privacy Protection</span>
+                <strong className="block text-slate-900 font-mono text-sm mt-0.5">Synthetic Matrix Relay</strong>
               </div>
             </div>
           </div>
@@ -949,19 +948,19 @@ export function CitizenRadar({
               return (
                 <div
                   key={donor.key}
-                  className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between space-y-4"
+                  className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-4"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span
                         className={`text-xs font-black px-3 py-1 rounded-full ${
-                          isOType ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800'
+                          isOType ? 'bg-rose-100 text-rose-700' : 'bg-rose-50 text-rose-700 border border-rose-200'
                         }`}
                       >
                         🩸 {donor.attributes.bloodGroup.replace('_', ' ')}
                       </span>
                       <span className="text-[11px] font-mono text-slate-500 flex items-center gap-1">
-                        <Clock size={12} className="text-emerald-500" />
+                        <Clock size={12} className="text-slate-400" />
                         {formatCountdown(remainingSeconds)} left
                       </span>
                     </div>
@@ -971,19 +970,21 @@ export function CitizenRadar({
                         <MapPin size={14} className="text-rose-500" />
                         <span>PIN {donor.attributes.pincode} • {donor.payload.state}</span>
                       </div>
-                      <p className="text-xs text-slate-600 mt-1 leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed bg-slate-50 p-2.5 rounded-xl border border-slate-200/60">
                         &quot;{donor.payload.note}&quot;
                       </p>
                     </div>
 
-                    <div className="bg-slate-900 text-slate-200 p-3 rounded-xl space-y-1.5 text-[11px]">
-                      <div className="flex justify-between items-center text-slate-400">
+                    <div className="bg-slate-50 border border-slate-200/80 text-slate-700 p-3 rounded-xl space-y-1.5 text-[11px]">
+                      <div className="flex justify-between items-center text-slate-500">
                         <span>Identity Proof:</span>
-                        <span className="text-emerald-400 font-bold">Age 18+ Verified ✓</span>
+                        <span className="text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full font-bold">
+                          Age 18+ Verified ✓
+                        </span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-slate-400">Private Relay:</span>
-                        <code className="font-mono text-cyan-300 font-bold">
+                        <span className="text-slate-500">Private Relay:</span>
+                        <code className="font-mono text-slate-900 bg-white px-2 py-0.5 rounded border border-slate-200 font-bold">
                           {donor.payload.syntheticRelay}
                         </code>
                       </div>
@@ -993,7 +994,7 @@ export function CitizenRadar({
                   <div className="pt-2">
                     <button
                       onClick={() => handleCopy(donor.payload.syntheticRelay, `relay-${donor.key}`)}
-                      className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5"
+                      className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-2xs"
                     >
                       <Copy size={13} />
                       <span>
@@ -1013,16 +1014,16 @@ export function CitizenRadar({
       {/* Standby Donor Registration Modal */}
       {showDonorModal && (
         <div
-          className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
+          className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in"
           onClick={() => setShowDonorModal(false)}
         >
           <div
-            className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6"
+            className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 space-y-6"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center">
                   <HeartHandshake size={20} />
                 </div>
                 <div>
@@ -1036,10 +1037,10 @@ export function CitizenRadar({
             </div>
 
             {donorSuccess ? (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 text-center space-y-2 text-emerald-800">
-                <CheckCircle2 size={36} className="text-emerald-600 mx-auto" />
+              <div className="bg-rose-50 border border-rose-200 rounded-2xl p-5 text-center space-y-2 text-rose-800">
+                <CheckCircle2 size={36} className="text-rose-600 mx-auto" />
                 <h4 className="font-extrabold text-base">Beacon Broadcasted Successfully!</h4>
-                <p className="text-xs text-emerald-700">{donorSuccess}</p>
+                <p className="text-xs text-rose-700">{donorSuccess}</p>
               </div>
             ) : (
               <form onSubmit={handleRegisterDonor} className="space-y-4">
@@ -1047,7 +1048,7 @@ export function CitizenRadar({
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-2.5 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-slate-500 font-semibold">Age Verification (Groth16):</span>
-                    <span className="text-emerald-700 bg-emerald-100 font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <span className="text-rose-700 bg-rose-50 border border-rose-200 font-extrabold px-2.5 py-0.5 rounded-full flex items-center gap-1">
                       <UserCheck size={12} /> 18+ Adult Verified
                     </span>
                   </div>
@@ -1075,7 +1076,7 @@ export function CitizenRadar({
                   <select
                     value={donorBloodGroup}
                     onChange={(e) => setDonorBloodGroup(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500"
                   >
                     <option value="O_NEGATIVE">O Negative (Universal Donor)</option>
                     <option value="O_POSITIVE">O Positive</option>
@@ -1099,7 +1100,7 @@ export function CitizenRadar({
                     value={donorNote}
                     onChange={(e) => setDonorNote(e.target.value)}
                     placeholder="e.g. Can reach AIIMS Trauma desk within 30 minutes in case of emergency ICU request."
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500"
                   />
                 </div>
 
@@ -1123,7 +1124,7 @@ export function CitizenRadar({
                   <button
                     type="submit"
                     disabled={isSubmittingDonor}
-                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs py-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20"
+                    className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs py-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-rose-600/20"
                   >
                     <Send size={14} className={isSubmittingDonor ? 'animate-spin' : ''} />
                     <span>{isSubmittingDonor ? 'Broadcasting...' : 'Broadcast Beacon (12h)'}</span>
