@@ -1,14 +1,15 @@
 # 🚨 Open Sanjivni: Live Emergency Blood, Anti-Venom & Jan Aushadhi Stock Radar on Arkiv DB-Chain
 
 [![Arkiv Tiramisu Testnet](https://img.shields.io/badge/Network-Arkiv%20Tiramisu%20(7738577)-06B6D4?style=for-the-badge&logo=ethereum)](https://tiramisu.explorer.arkiv.network)
-[![Track: Best Indian Use Case](https://img.shields.io/badge/Track-Best%20Indian%20Use%20Case-EF4444?style=for-the-badge)](https://devfolio.co)
+[![Track: Indian Public Goods](https://img.shields.io/badge/Track-Best%20Indian%20Use%20Case-EF4444?style=for-the-badge)](https://devfolio.co)
 [![Track: Censorship Resistance](https://img.shields.io/badge/Track-Censorship%20Resistance-10B981?style=for-the-badge)](https://devfolio.co)
-[![Next.js 15](https://img.shields.io/badge/Framework-Next.js%2015%20App%20Router-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
+[![Anon Aadhaar ZK](https://img.shields.io/badge/Privacy-Anon%20Aadhaar%20ZK-8B5CF6?style=for-the-badge)](https://anon-aadhaar.pse.dev)
+[![Next.js 15](https://img.shields.io/badge/Framework-Next.js%2015-black?style=for-the-badge&logo=next.js)](https://nextjs.org)
 [![TypeScript 5](https://img.shields.io/badge/TypeScript-5.x%20Strict-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 
-> **Arkiv: Global Tour Stop 🌍 (Road to Devcon 8 Mumbai)**  
-> **Primary Track**: Best Indian Use Case ($2,000 USDC + Devcon 8 Ticket)  
-> **Secondary Track**: Censorship Resistance ($750 USDC + Devcon 8 Ticket)
+> **Open Sanjivni** is a decentralized public goods infrastructure built for the **Arkiv Global Tour Stop (Road to Devcon 8 Mumbai)**.  
+> **Target Tracks**: *Best Indian Use Case* • *Censorship Resistance*  
+> **Core Mission**: Eliminating midnight "phantom stock" crises for rare blood groups, anti-venom, and essential generic medicines across India through Arkiv DB-Chain's native cryptographic auto-expiration and Anon Aadhaar Zero-Knowledge verification.
 
 ---
 
@@ -204,7 +205,7 @@ pnpm start
 * **0:00 - 0:45 (The Crisis)**: *"At 2:00 AM in Raipur or Mumbai, an ICU patient urgently needs O-Negative blood or anti-venom. The family calls 30 numbers on Google Maps, only to hear: 'Stock finished 3 days ago.' Centralized apps show stale data, private hospitals gatekeep stock, and WhatsApp forwards are full of dead numbers. What if medical availability was verified, wallet-owned, and mathematically guaranteed to never be stale?"*
 * **0:45 - 1:25 (Enter Open Sanjivni)**: *"Open Sanjivni runs on the Arkiv DB-Chain. Certified blood banks and Jan Aushadhi stores broadcast stock directly from their wallets with a strict 4-hour expiration. If the facility desk does not actively extend the beacon, the listing automatically vanishes from the query layer. No stale data, no ad-driven bias, and zero commercial gatekeeping."*
 * **1:25 - 2:25 (Live Tiramisu Demo)**: *"Watch our hospital portal on Tiramisu testnet. With one click, AIIMS Raipur broadcasts 4 units of O-Negative blood with `createEntity()` and `ExpirationTime.fromHours(4)`. In 2 seconds, it confirms. Now look at our citizen radar screen: querying `category = BLOOD AND itemCode = O_NEGATIVE AND unitsAvailable > 0` directly fetches live results in 80 milliseconds over RPC—no Subgraph, no centralized Postgres server. When a unit is transfused, the hospital clicks 'Dispense' (`patchEntity()`), or clicks 'Extend (+4h)' (`extendEntity()`)."*
-* **2:25 - 3:00 (Why This Wins)**: *"Open Sanjivni stores zero personal health data, solves a life-or-death challenge for 1.4 billion people in India, and proves why Arkiv's time-scoped DB-Chain is the perfect foundation for decentralized public goods. Thank you!"*
+* **2:25 - 3:00 (Public Goods Impact)**: *"Open Sanjivni stores zero personal health data, solves a life-or-death challenge for 1.4 billion people in India, and proves why Arkiv's time-scoped DB-Chain is the perfect foundation for decentralized public goods. Thank you!"*
 
 ---
 

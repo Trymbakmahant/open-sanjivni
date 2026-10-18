@@ -26,7 +26,6 @@ import { BeaconCategory, MedicalBeacon, EmergencyLock, VolunteerDonor } from '@/
 import { AVAILABLE_ITEM_CODES, calculatePincodeDistance } from '@/data/seedData';
 import { beaconStore } from '@/lib/beaconStore';
 import { playRadarPingSound, playEmergencyChimeSound } from '@/lib/audioAlert';
-import { AnonAadhaarBadge } from '@/components/AnonAadhaarBadge';
 import { useVerifiedCitizen } from '@/hooks/useVerifiedCitizen';
 import { reserveEmergencyStock } from '@/services/reserveStock';
 import { registerStandbyDonor } from '@/services/registerDonor';
@@ -248,9 +247,6 @@ export function CitizenRadar({
 
   return (
     <div className="space-y-6 sm:space-y-8">
-      {/* 0. Anon Aadhaar Zero-Knowledge Identity Verification Status Bar */}
-      <AnonAadhaarBadge />
-
       {/* Sybil Protection Alert / Error Toast */}
       {reservationError && (
         <div className="bg-rose-950/80 border border-rose-500/50 rounded-2xl p-4 flex items-start gap-3 text-rose-200 animate-in fade-in slide-in-from-top-2">
