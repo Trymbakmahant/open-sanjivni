@@ -21,6 +21,8 @@ import {
   Zap,
   Plus,
   Minus,
+  Copy,
+  Globe,
 } from 'lucide-react';
 import { FacilityPreset, BeaconCategory, MedicalBeacon, BroadcastStockParams } from '@/types/beacon';
 import { INDIAN_FACILITIES, AVAILABLE_ITEM_CODES } from '@/data/seedData';
@@ -28,7 +30,7 @@ import { beaconStore, ArkivAuditLog } from '@/lib/beaconStore';
 import { broadcastMedicalStock } from '@/services/broadcastStock';
 import { dispenseUnits, extendStockBeacon, deleteStockBeacon } from '@/services/manageStock';
 import { playEmergencyChimeSound } from '@/lib/audioAlert';
-import { publicClient } from '@/lib/arkiv';
+import { publicClient, ARKIV_CONFIG } from '@/lib/arkiv';
 import { formatEther } from 'viem';
 import {
   isMetaMaskInstalled,
@@ -51,7 +53,24 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
   const [beacons, setBeacons] = useState<MedicalBeacon[]>([]);
   const [auditLogs, setAuditLogs] = useState<ArkivAuditLog[]>([]);
   const [isBroadcasting, setIsBroadcasting] = useState(false);
-  const [broadcastSuccess, setBroadcastSuccess] = useState<string | null>(null);
+  const [broadcastSuccess, setBroadcastSuccess] = useState<{
+    entityKey: string;
+    txHash: string;
+    itemLabel: string;
+    units: number;
+    blockNumber: number;
+    facilityName: string;
+    walletAddress: string;
+    beacon: MedicalBeacon;
+  } | null>(null);
+  const [copiedSuccessField, setCopiedSuccessField] = useState<string | null>(null);
+
+  const handleCopySuccessField = (text: string, field: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopiedSuccessField(field);
+    setTimeout(() => setCopiedSuccessField(null), 2000);
+  };
 
   // MetaMask Web3 State
   const [metaMaskState, setMetaMaskState] = useState<MetaMaskState>({
@@ -281,11 +300,18 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
       const result = await broadcastMedicalStock(walletClient, params, broadcastAddress);
       if (result.success) {
-        setBroadcastSuccess(
-          `Beacon created on Arkiv DB-Chain! Entity Key: ${result.entityKey.slice(0, 14)}... Tx: ${result.txHash.slice(0, 10)}...`
-        );
+        const itemDef = AVAILABLE_ITEM_CODES.find((i) => i.code === params.itemCode);
+        setBroadcastSuccess({
+          entityKey: result.entityKey,
+          txHash: result.txHash,
+          itemLabel: itemDef ? itemDef.label : params.itemCode,
+          units: params.unitsAvailable,
+          blockNumber: result.beacon.blockNumber,
+          facilityName: currentFacility.facilityName,
+          walletAddress: broadcastAddress,
+          beacon: result.beacon,
+        });
         if (soundEnabled) playEmergencyChimeSound();
-        setTimeout(() => setBroadcastSuccess(null), 8000);
       }
     } catch (err: any) {
       console.error('Broadcast failed:', err);
@@ -612,9 +638,123 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
             </p>
 
             {broadcastSuccess && (
-              <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-xs font-bold text-emerald-700 flex items-center gap-2">
-                <Check size={16} />
-                <span>{broadcastSuccess}</span>
+              <div className="bg-emerald-50/90 border-2 border-emerald-500/40 rounded-2xl p-4 sm:p-5 text-xs text-slate-800 space-y-3.5 shadow-md shadow-emerald-500/10 animate-in fade-in slide-in-from-top-2">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                      <Check size={18} />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <strong className="text-sm font-black text-emerald-950">
+                          Broadcast Confirmed On-Chain!
+                        </strong>
+                        <span className="text-[10px] font-mono font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-300 text-emerald-800">
+                          Block #{broadcastSuccess.blockNumber.toLocaleString()}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-emerald-800 font-medium mt-0.5">
+                        {broadcastSuccess.units} Units of {broadcastSuccess.itemLabel} published live.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setBroadcastSuccess(null)}
+                    className="text-slate-400 hover:text-slate-700 text-sm p-1 leading-none rounded-lg hover:bg-emerald-100/60 transition-colors"
+                    aria-label="Dismiss banner"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* On-Chain Hashes & Keys */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                  {/* Entity Key Box */}
+                  <div className="bg-white/80 border border-emerald-200/80 rounded-xl p-2.5 space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
+                      <span>Arkiv Entity Key</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopySuccessField(broadcastSuccess.entityKey, 'entityKey')}
+                        className="text-emerald-700 hover:text-emerald-900 flex items-center gap-1 font-semibold"
+                      >
+                        {copiedSuccessField === 'entityKey' ? (
+                          <>
+                            <Check size={10} className="text-emerald-600" />
+                            <span>Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={10} />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <code className="block font-mono text-[10px] text-slate-800 truncate select-all">
+                      {broadcastSuccess.entityKey}
+                    </code>
+                  </div>
+
+                  {/* Transaction Hash Box */}
+                  <div className="bg-white/80 border border-emerald-200/80 rounded-xl p-2.5 space-y-1">
+                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
+                      <span>Transaction Hash</span>
+                      <button
+                        type="button"
+                        onClick={() => handleCopySuccessField(broadcastSuccess.txHash, 'txHash')}
+                        className="text-emerald-700 hover:text-emerald-900 flex items-center gap-1 font-semibold"
+                      >
+                        {copiedSuccessField === 'txHash' ? (
+                          <>
+                            <Check size={10} className="text-emerald-600" />
+                            <span>Copied</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={10} />
+                            <span>Copy</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                    <code className="block font-mono text-[10px] text-slate-800 truncate select-all">
+                      {broadcastSuccess.txHash}
+                    </code>
+                  </div>
+                </div>
+
+                {/* Direct Explorer Verification Links */}
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  <a
+                    href={`${ARKIV_CONFIG.explorerUrl}/tx/${broadcastSuccess.txHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 min-w-[200px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-2.5 px-3.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all"
+                  >
+                    <ExternalLink size={14} />
+                    <span>View on Arkiv Explorer (TX) ↗</span>
+                  </a>
+
+                  <a
+                    href={`${ARKIV_CONFIG.explorerUrl}/address/${broadcastSuccess.walletAddress}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs py-2.5 px-3 rounded-xl flex items-center gap-1.5 transition-all shadow-2xs"
+                  >
+                    <Globe size={13} className="text-sky-600" />
+                    <span>Facility Wallet ↗</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    onClick={() => onInspectProof(broadcastSuccess.beacon)}
+                    className="bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 font-bold text-xs py-2.5 px-3 rounded-xl flex items-center gap-1.5 transition-all"
+                  >
+                    <ShieldCheck size={14} className="text-sky-600" />
+                    <span>Verify State Proof</span>
+                  </button>
+                </div>
               </div>
             )}
 
@@ -932,10 +1072,21 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
                           <button
                             onClick={() => onInspectProof(beacon)}
-                            className="bg-sky-50 hover:bg-sky-100 text-sky-600 font-bold text-xs px-2.5 py-2 rounded-lg"
+                            className="bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-xs px-2.5 py-2 rounded-lg"
                           >
                             Proof
                           </button>
+
+                          <a
+                            href={`${ARKIV_CONFIG.explorerUrl}/tx/${beacon.txHash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold text-xs px-2.5 py-2 rounded-lg flex items-center gap-1 transition-all"
+                            title="View Transaction on Arkiv Tiramisu Explorer"
+                          >
+                            <ExternalLink size={12} />
+                            <span>Explorer</span>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -969,8 +1120,17 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                       <span className="font-mono text-[10px] text-slate-400">{dateStr}</span>
                     </div>
                     <p className="font-semibold text-slate-800">{log.summary}</p>
-                    <div className="flex justify-between text-[10px] font-mono text-slate-400 pt-0.5">
-                      <span className="truncate max-w-[200px]">TX: {log.txHash}</span>
+                    <div className="flex justify-between items-center text-[10px] font-mono text-slate-400 pt-0.5">
+                      <a
+                        href={`${ARKIV_CONFIG.explorerUrl}/tx/${log.txHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="truncate max-w-[200px] text-sky-600 hover:text-sky-700 hover:underline flex items-center gap-0.5 font-bold"
+                        title="View transaction on Arkiv Explorer"
+                      >
+                        <span>TX: {log.txHash}</span>
+                        <ExternalLink size={10} />
+                      </a>
                       <span>Block #{log.blockNumber}</span>
                     </div>
                   </div>

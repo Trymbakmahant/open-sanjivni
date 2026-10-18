@@ -21,6 +21,7 @@ import {
   ChevronRight,
   Send,
   CheckCircle2,
+  ExternalLink,
 } from 'lucide-react';
 import { BeaconCategory, MedicalBeacon, EmergencyLock, VolunteerDonor } from '@/types/beacon';
 import { AVAILABLE_ITEM_CODES, calculatePincodeDistance } from '@/data/seedData';
@@ -29,6 +30,7 @@ import { playRadarPingSound, playEmergencyChimeSound } from '@/lib/audioAlert';
 import { useVerifiedCitizen } from '@/hooks/useVerifiedCitizen';
 import { reserveEmergencyStock } from '@/services/reserveStock';
 import { registerStandbyDonor } from '@/services/registerDonor';
+import { ARKIV_CONFIG } from '@/lib/arkiv';
 
 interface CitizenRadarProps {
   soundEnabled: boolean;
@@ -341,6 +343,21 @@ export function CitizenRadar({
                 Present this token at the casualty counter. The reservation auto-releases on Arkiv after 60 mins if unclaimed.
               </p>
             </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 mt-1 border-t border-emerald-500/20 text-xs">
+            <span className="text-[11px] font-mono text-emerald-400/80 truncate max-w-sm">
+              Lock Key: {activeTicket.key}
+            </span>
+            <a
+              href={`${ARKIV_CONFIG.explorerUrl}/tx/${activeTicket.txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-300 hover:text-white flex items-center gap-1 font-bold hover:underline transition-colors text-xs"
+            >
+              <span>View Lock TX on Arkiv Explorer</span>
+              <ExternalLink size={12} />
+            </a>
           </div>
         </div>
       )}
