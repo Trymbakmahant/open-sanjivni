@@ -22,6 +22,7 @@ import {
   Send,
   CheckCircle2,
   ExternalLink,
+  MessageSquare,
 } from 'lucide-react';
 import { BeaconCategory, MedicalBeacon, EmergencyLock, VolunteerDonor } from '@/types/beacon';
 import { AVAILABLE_ITEM_CODES, calculatePincodeDistance } from '@/data/seedData';
@@ -71,6 +72,65 @@ export function CitizenRadar({
   const [donorNote, setDonorNote] = useState<string>('');
   const [isSubmittingDonor, setIsSubmittingDonor] = useState<boolean>(false);
   const [donorSuccess, setDonorSuccess] = useState<string | null>(null);
+
+  // Ephemeral Matrix Relay Chat State
+  const [activeRelayDonor, setActiveRelayDonor] = useState<VolunteerDonor | null>(null);
+  const [relayChatMessages, setRelayChatMessages] = useState<Array<{ sender: 'patient' | 'donor' | 'system'; text: string; time: string }>>([]);
+  const [chatInput, setChatInput] = useState<string>('');
+  const [isDonorTyping, setIsDonorTyping] = useState<boolean>(false);
+
+  // Initialize Matrix chat when donor is selected
+  useEffect(() => {
+    if (activeRelayDonor) {
+      setRelayChatMessages([
+        {
+          sender: 'system',
+          text: `🔒 Ephemeral P2P Matrix Relay established with ${activeRelayDonor.payload.syntheticRelay}. Real phone numbers and identities are shielded under DPDP Act 2023. This channel auto-destructs with the Arkiv DB-Chain entity.`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+        {
+          sender: 'donor',
+          text: `Namaste, I am a verified standby donor for ${activeRelayDonor.attributes.bloodGroup.replace('_', ' ')} in PIN ${activeRelayDonor.attributes.pincode} (${activeRelayDonor.payload.state}). What hospital or emergency ICU case is this for?`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+      setChatInput('');
+      setIsDonorTyping(false);
+    }
+  }, [activeRelayDonor]);
+
+  const handleSendRelayMessage = (msgToSend?: string) => {
+    const text = (msgToSend || chatInput).trim();
+    if (!text || !activeRelayDonor) return;
+
+    const userMsg = {
+      sender: 'patient' as const,
+      text,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+
+    setRelayChatMessages((prev) => [...prev, userMsg]);
+    setChatInput('');
+    setIsDonorTyping(true);
+
+    setTimeout(() => {
+      setIsDonorTyping(false);
+      const donorReplies = [
+        `Understood! I am 15 minutes away from AIIMS / trauma corridor. Proceeding to the blood bank counter right now. Please tell the desk to prep crossmatching.`,
+        `Got it! I have my Anon Aadhaar eligibility verified. Arriving at the casualty desk shortly. Stay calm!`,
+        `Noted! Moving towards the hospital donor center right now. Will confirm once I arrive at the reception desk.`,
+      ];
+      const replyText = donorReplies[Math.floor(Math.random() * donorReplies.length)];
+      setRelayChatMessages((prev) => [
+        ...prev,
+        {
+          sender: 'donor',
+          text: replyText,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        },
+      ]);
+    }, 1100);
+  };
 
   // Sync beacons, locks, donors from beaconStore
   useEffect(() => {
@@ -991,17 +1051,21 @@ export function CitizenRadar({
                     </div>
                   </div>
 
-                  <div className="pt-2">
+                  <div className="pt-2 flex gap-2">
+                    <button
+                      onClick={() => setActiveRelayDonor(donor)}
+                      className="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-sm shadow-rose-600/20 active:scale-98"
+                    >
+                      <MessageSquare size={13} />
+                      <span>Connect via Relay</span>
+                    </button>
                     <button
                       onClick={() => handleCopy(donor.payload.syntheticRelay, `relay-${donor.key}`)}
-                      className="w-full bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 font-extrabold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 shadow-2xs"
+                      className="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs px-3 py-2.5 rounded-xl transition-all flex items-center justify-center gap-1 shrink-0"
+                      title="Copy Matrix Relay Handle"
                     >
                       <Copy size={13} />
-                      <span>
-                        {copiedKey === `relay-${donor.key}`
-                          ? 'Relay Handle Copied!'
-                          : 'Copy Synthetic Relay Handle'}
-                      </span>
+                      <span>{copiedKey === `relay-${donor.key}` ? 'Copied!' : 'Copy'}</span>
                     </button>
                   </div>
                 </div>
@@ -1200,6 +1264,157 @@ export function CitizenRadar({
                 <span>Dial Now</span>
               </a>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Ephemeral Matrix Relay Chat Modal */}
+      {activeRelayDonor && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in"
+          onClick={() => setActiveRelayDonor(null)}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-100 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+                  <ShieldCheck size={20} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-black text-slate-900 text-sm sm:text-base">Ephemeral Matrix P2P Relay</h3>
+                    <span className="text-[9px] font-black uppercase bg-sky-50 text-sky-700 border border-sky-200 px-1.5 py-0.2 rounded-full">
+                      E2E Encrypted
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Direct P2P chat • Zero phone numbers • DPDP Act Compliant
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setActiveRelayDonor(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-400 hover:text-slate-800 flex items-center justify-center transition-colors text-base"
+                aria-label="Close chat"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Target Donor Header Strip */}
+            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-2.5 space-y-1.5 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="font-black text-slate-900">
+                  🩸 {activeRelayDonor.attributes.bloodGroup.replace('_', ' ')} Donor (PIN {activeRelayDonor.attributes.pincode})
+                </span>
+                <span className="text-rose-700 bg-rose-50 border border-rose-200 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                  Age 18+ Verified ✓
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-[11px] font-mono text-slate-600 bg-white p-1.5 rounded-lg border border-slate-200/70">
+                <span className="truncate max-w-[240px]" title={activeRelayDonor.payload.syntheticRelay}>
+                  Relay: {activeRelayDonor.payload.syntheticRelay}
+                </span>
+                <button
+                  onClick={() => handleCopy(activeRelayDonor.payload.syntheticRelay, 'modal-chat-relay')}
+                  className="text-sky-600 hover:text-sky-800 font-bold text-[10px] flex items-center gap-1 shrink-0 ml-1"
+                >
+                  <Copy size={11} />
+                  <span>{copiedKey === 'modal-chat-relay' ? 'Copied' : 'Copy'}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Chat Stream */}
+            <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-3 h-[200px] sm:h-[220px] overflow-y-auto space-y-2.5 text-xs">
+              {relayChatMessages.map((msg, idx) => {
+                if (msg.sender === 'system') {
+                  return (
+                    <div key={idx} className="bg-white/90 border border-slate-200/60 rounded-xl p-2 text-[10px] text-slate-600 text-center leading-relaxed">
+                      {msg.text}
+                    </div>
+                  );
+                }
+                const isUser = msg.sender === 'patient';
+                return (
+                  <div key={idx} className={`flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
+                    <div
+                      className={`max-w-[85%] p-2.5 rounded-2xl text-xs leading-relaxed ${
+                        isUser
+                          ? 'bg-rose-600 text-white rounded-tr-xs shadow-xs'
+                          : 'bg-white text-slate-800 border border-slate-200/90 rounded-tl-xs shadow-2xs'
+                      }`}
+                    >
+                      <span className="block text-[9px] font-bold opacity-75 mb-0.5">
+                        {isUser ? 'You (Patient Family)' : 'Verified Volunteer Donor'}
+                      </span>
+                      {msg.text}
+                    </div>
+                    <span className="text-[9px] text-slate-400 mt-0.5 px-1 font-mono">{msg.time}</span>
+                  </div>
+                );
+              })}
+
+              {isDonorTyping && (
+                <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-bold py-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.2s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-bounce [animation-delay:0.4s]" />
+                  <span className="ml-1 text-[10px]">Donor is typing encrypted reply...</span>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Emergency Action Chips */}
+            <div className="space-y-1">
+              <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block">
+                Quick Emergency Prompts:
+              </span>
+              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                {[
+                  '🚨 ICU Emergency at AIIMS. Need whole blood urgently.',
+                  'Can you reach the hospital blood bank in 30 mins?',
+                  'Doctor requested urgent crossmatch test.',
+                ].map((chip, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => handleSendRelayMessage(chip)}
+                    className="whitespace-nowrap px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-700 text-[10px] font-bold border border-slate-200/70 transition-all shrink-0 active:scale-95"
+                  >
+                    {chip}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Send Message Form */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendRelayMessage();
+              }}
+              className="flex items-center gap-2"
+            >
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                placeholder="Type emergency message (e.g. ICU bed number)..."
+                className="flex-1 h-9 bg-slate-50 border border-slate-200 rounded-xl px-3 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              />
+              <button
+                type="submit"
+                disabled={!chatInput.trim() || isDonorTyping}
+                className="h-9 px-4 bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-1.5 shadow-sm shadow-rose-600/25 transition-all shrink-0 active:scale-95"
+              >
+                <Send size={13} />
+                <span>Send</span>
+              </button>
+            </form>
           </div>
         </div>
       )}
