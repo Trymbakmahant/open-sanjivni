@@ -386,20 +386,20 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8">
-      {/* Dynamic Error Banner (Replaces disruptive browser alert) */}
+    <div className="space-y-3 sm:space-y-4">
+      {/* Dynamic Error Banner */}
       {portalError && (
-        <div className="bg-rose-950/90 border border-rose-500/60 rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-3 text-rose-200 shadow-xl animate-in fade-in">
-          <div className="flex items-start gap-3">
-            <AlertCircle size={22} className="text-rose-400 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <strong className="block text-sm font-bold text-rose-300">Action Required:</strong>
-              <p className="text-xs sm:text-sm text-rose-200/90 leading-relaxed break-words">{portalError}</p>
+        <div className="bg-rose-950/95 border border-rose-500/60 rounded-2xl p-3 sm:p-4 flex items-start justify-between gap-3 text-rose-200 shadow-xl animate-in fade-in">
+          <div className="flex items-start gap-2.5">
+            <AlertCircle size={20} className="text-rose-400 shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <strong className="block text-xs font-bold text-rose-300">Action Required:</strong>
+              <p className="text-xs text-rose-200/90 leading-relaxed break-words">{portalError}</p>
             </div>
           </div>
           <button
             onClick={() => setPortalError(null)}
-            className="text-rose-400 hover:text-rose-200 text-lg leading-none p-1 rounded-lg hover:bg-rose-900/50"
+            className="text-rose-400 hover:text-rose-200 text-sm leading-none p-1 rounded-lg hover:bg-rose-900/50"
             title="Dismiss"
           >
             ✕
@@ -409,17 +409,17 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
 
       {/* Dynamic Notice Banner */}
       {portalNotice && (
-        <div className="bg-emerald-950/90 border border-emerald-500/60 rounded-2xl p-4 sm:p-5 flex items-start justify-between gap-3 text-emerald-200 shadow-xl animate-in fade-in">
-          <div className="flex items-start gap-3">
-            <Check size={22} className="text-emerald-400 shrink-0 mt-0.5" />
-            <div className="space-y-1">
-              <strong className="block text-sm font-bold text-emerald-300">Notice:</strong>
-              <p className="text-xs sm:text-sm text-emerald-200/90 leading-relaxed break-words">{portalNotice}</p>
+        <div className="bg-emerald-950/95 border border-emerald-500/60 rounded-2xl p-3 sm:p-4 flex items-start justify-between gap-3 text-emerald-200 shadow-xl animate-in fade-in">
+          <div className="flex items-start gap-2.5">
+            <Check size={20} className="text-emerald-400 shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <strong className="block text-xs font-bold text-emerald-300">Notice:</strong>
+              <p className="text-xs text-emerald-200/90 leading-relaxed break-words">{portalNotice}</p>
             </div>
           </div>
           <button
             onClick={() => setPortalNotice(null)}
-            className="text-emerald-400 hover:text-emerald-200 text-lg leading-none p-1 rounded-lg hover:bg-emerald-900/50"
+            className="text-emerald-400 hover:text-emerald-200 text-sm leading-none p-1 rounded-lg hover:bg-emerald-900/50"
             title="Dismiss"
           >
             ✕
@@ -427,386 +427,278 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
         </div>
       )}
 
-      {/* Top Banner Card */}
-      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0">
-            <Hospital size={26} />
+      {/* UNIFIED COMMAND STRIP: Hospital Desk, Web3 MetaMask & Whitelist Access Hub */}
+      <section className="bg-white rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-2.5 border border-slate-200/90 shadow-2xs flex flex-wrap lg:flex-nowrap items-center justify-between gap-3">
+        {/* Left: Desk Title & Verified Facility Selector */}
+        <div className="flex items-center gap-2.5 min-w-[260px]">
+          <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 border border-rose-100 shadow-2xs">
+            <Hospital size={16} />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900">Open Sanjivni Hospital &amp; Jan Aushadhi Desk Portal</h2>
-            <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
-              Broadcast, dispense, and extend time-scoped inventory directly from verified medical wallets to Arkiv DB-Chain.
-            </p>
-          </div>
-        </div>
-
-        {/* Facility Selector */}
-        <div className="w-full md:w-auto min-w-[280px] bg-slate-50 border border-slate-200/80 rounded-2xl p-3 space-y-1.5">
-          <label htmlFor="facility-dropdown" className="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400">
-            Active Verified Desk
-          </label>
-          <select
-            id="facility-dropdown"
-            value={selectedFacilityId}
-            onChange={(e) => setSelectedFacilityId(e.target.value)}
-            className="w-full bg-transparent font-bold text-slate-800 text-xs focus:outline-none cursor-pointer"
-          >
-            {INDIAN_FACILITIES.map((f) => (
-              <option key={f.id} value={f.id}>
-                {f.facilityName} ({f.districtCode} - PIN {f.pincode})
-              </option>
-            ))}
-          </select>
-          <div className="flex items-center gap-1.5 text-[10px] font-mono text-slate-400 truncate">
-            <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isAuthorized ? 'bg-emerald-500' : 'bg-rose-500 animate-ping'}`} />
-            <span className="truncate">
-              {useMetaMaskBroadcast && metaMaskState.account ? metaMaskState.account : currentFacility.walletAddress}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Live Web3 MetaMask Connection Bar */}
-      <section className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 border border-orange-200/80 rounded-3xl p-5 sm:p-6 shadow-sm space-y-3">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-orange-500/25 shrink-0">
-              🦊
+            <div className="flex items-center gap-1.5">
+              <h2 className="text-xs sm:text-sm font-black text-slate-900 tracking-tight">Hospital &amp; Jan Aushadhi Desk</h2>
+              <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-slate-100 text-slate-600 border border-slate-200 font-mono hidden md:inline">
+                Arkiv DB-Chain
+              </span>
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h3 className="font-extrabold text-sm sm:text-base text-slate-900">
-                  MetaMask Web3 Mode: Live On-Chain Signatures
-                </h3>
-                {metaMaskState.isConnected ? (
-                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
-                    Wallet Connected
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                    Not Connected
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-slate-600 mt-0.5">
-                {metaMaskState.isConnected
-                  ? `Connected: ${metaMaskState.account?.slice(0, 8)}...${metaMaskState.account?.slice(-6)} • Balance: ${metaMaskState.balanceGlm} GLM`
-                  : 'Connect your MetaMask extension to broadcast real on-chain medical beacons directly to the Arkiv Tiramisu DB-Chain with wallet signatures.'}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2 self-stretch md:self-auto flex-wrap">
-            {!metaMaskState.isConnected ? (
-              <button
-                type="button"
-                onClick={handleConnectMetaMask}
-                disabled={isConnectingMetaMask}
-                className="bg-orange-600 hover:bg-orange-700 text-white font-extrabold text-xs px-4 py-2.5 rounded-xl shadow-md shadow-orange-600/25 transition-all flex items-center gap-2"
+            <div className="flex items-center gap-2 mt-0.5">
+              <label htmlFor="facility-dropdown" className="sr-only">Active Verified Desk</label>
+              <select
+                id="facility-dropdown"
+                value={selectedFacilityId}
+                onChange={(e) => setSelectedFacilityId(e.target.value)}
+                className="text-xs font-bold text-slate-800 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg px-2 py-0.5 focus:outline-none cursor-pointer max-w-[220px] sm:max-w-[250px] truncate"
               >
-                <Wallet size={15} />
-                <span>{isConnectingMetaMask ? 'Connecting MetaMask...' : 'Connect MetaMask (Real Signing)'}</span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-2 flex-wrap">
-                {!metaMaskState.isCorrectNetwork ? (
-                  <button
-                    type="button"
-                    onClick={handleSwitchNetwork}
-                    className="bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-xs px-3.5 py-2 rounded-xl transition-all shadow-sm flex items-center gap-1.5"
-                  >
-                    <Zap size={14} />
-                    <span>Switch to Arkiv Tiramisu</span>
-                  </button>
-                ) : (
-                  <span className="text-[11px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Tiramisu Testnet (7738577)
-                  </span>
-                )}
+                {INDIAN_FACILITIES.map((f) => (
+                  <option key={f.id} value={f.id}>
+                    {f.facilityName} ({f.districtCode})
+                  </option>
+                ))}
+              </select>
+              <div className="flex items-center gap-1 text-[10px] font-mono text-slate-500">
+                <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isAuthorized ? 'bg-emerald-500' : 'bg-rose-500 animate-ping'}`} />
+                <span className="truncate max-w-[90px] sm:max-w-[120px]" title={useMetaMaskBroadcast && metaMaskState.account ? metaMaskState.account : currentFacility.walletAddress}>
+                  {useMetaMaskBroadcast && metaMaskState.account ? metaMaskState.account : currentFacility.walletAddress}
+                </span>
+                <span className={`text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded ${
+                  isAuthorized ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200'
+                }`}>
+                  {isAuthorized ? 'Verified' : 'Blocked'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-                <a
-                  href="https://hub.arkiv.network/faucet"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs px-3 py-2 rounded-xl border border-slate-200 transition-all flex items-center gap-1"
-                  title="Claim free test GLM tokens to pay for Arkiv gas"
-                >
-                  <ExternalLink size={13} />
-                  <span>Get Free GLM (Faucet)</span>
-                </a>
+        {/* Right: MetaMask & Judge Simulator Controls */}
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+          {/* MetaMask Web3 Control */}
+          {!metaMaskState.isConnected ? (
+            <button
+              type="button"
+              onClick={handleConnectMetaMask}
+              disabled={isConnectingMetaMask}
+              className="bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-700 font-extrabold text-xs px-2.5 py-1 rounded-xl transition-all flex items-center gap-1.5 shadow-2xs"
+            >
+              <span className="text-sm">🦊</span>
+              <span>{isConnectingMetaMask ? 'Connecting...' : 'Connect MetaMask'}</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 bg-orange-50/70 border border-orange-200/80 rounded-xl px-2 py-1 text-xs">
+              <span className="text-sm">🦊</span>
+              <span className="font-mono font-bold text-slate-800 text-[11px]" title={metaMaskState.account || ''}>
+                {metaMaskState.account?.slice(0, 6)}...{metaMaskState.account?.slice(-4)}
+              </span>
+              <span className="text-[10px] text-slate-600 font-mono font-semibold pl-1.5 border-l border-orange-200">
+                {metaMaskState.balanceGlm} GLM
+              </span>
 
+              {!metaMaskState.isCorrectNetwork ? (
                 <button
                   type="button"
-                  onClick={() => setUseMetaMaskBroadcast((prev) => !prev)}
-                  className={`text-xs font-extrabold px-3 py-2 rounded-xl border transition-all ${
-                    useMetaMaskBroadcast
-                      ? 'bg-slate-900 text-white border-slate-900'
-                      : 'bg-white text-slate-700 border-slate-200'
-                  }`}
+                  onClick={handleSwitchNetwork}
+                  className="bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md transition-colors ml-0.5"
                 >
-                  {useMetaMaskBroadcast ? '✓ Using MetaMask Signing' : 'Using Desk Simulation'}
+                  Switch Chain
                 </button>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+              ) : (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 ml-0.5" title="Connected to Arkiv Tiramisu (7738577)" />
+              )}
 
-      {/* Security & Access Control Banner */}
-      <div className={`rounded-2xl p-4 sm:p-5 border transition-all ${
-        isAuthorized
-          ? 'bg-slate-900 border-slate-800 text-white shadow-md'
-          : 'bg-rose-950/90 border-rose-800 text-rose-50 shadow-md'
-      }`}>
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${
-              isAuthorized ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-300 animate-pulse'
-            }`}>
-              {isAuthorized ? <ShieldCheck size={24} /> : <ShieldAlert size={24} />}
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-sm sm:text-base">
-                  Institutional Access Control (EIP-712 Registry Whitelist)
-                </span>
-                <span className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full ${
-                  isAuthorized
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                    : 'bg-rose-500/30 text-rose-200 border border-rose-400/40'
-                }`}>
-                  {isAuthorized ? 'Verified Desk' : 'Access Restricted'}
-                </span>
-              </div>
-              <p className="text-xs text-slate-300 mt-0.5">
-                {isAuthorized
-                  ? 'Only whitelisted medical authority wallets can broadcast, dispense, or mutate beacons on Arkiv DB-Chain.'
-                  : 'Simulated unauthorized caller. Mutation transactions are blocked by consensus whitelist to prevent spoofed stock.'}
-              </p>
-            </div>
-          </div>
+              <a
+                href="https://hub.arkiv.network/faucet"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] font-bold text-slate-500 hover:text-slate-900 ml-1 underline decoration-slate-300"
+                title="Claim free test GLM tokens for Arkiv gas"
+              >
+                Faucet ↗
+              </a>
 
-          {/* 1-Click Simulation Buttons for Hackathon Judges */}
-          <div className="flex items-center gap-2 self-stretch md:self-auto bg-black/30 p-1.5 rounded-xl border border-white/10 shrink-0">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 pl-2">
-              Judge Test:
+              <button
+                type="button"
+                onClick={() => setUseMetaMaskBroadcast((prev) => !prev)}
+                className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded transition-all ml-1 ${
+                  useMetaMaskBroadcast
+                    ? 'bg-slate-900 text-white'
+                    : 'bg-white text-slate-700 border border-slate-200'
+                }`}
+                title="Toggle between MetaMask signing and Simulated Desk signing"
+              >
+                {useMetaMaskBroadcast ? 'MetaMask' : 'Simulated'}
+              </button>
+            </div>
+          )}
+
+          {/* Hackathon Judge Simulation Toggle */}
+          <div className="flex items-center gap-1 bg-slate-100 border border-slate-200/90 p-0.5 rounded-xl text-xs">
+            <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-400 px-1 hidden sm:inline">
+              Test:
             </span>
             <button
               onClick={() => setSelectedFacilityId('aiims-raipur')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all ${
                 selectedFacilityId === 'aiims-raipur'
-                  ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                  : 'text-slate-300 hover:text-white'
+                  ? 'bg-emerald-600 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              AIIMS Desk (Authorized)
+              AIIMS (Authorized)
             </button>
             <button
               onClick={() => setSelectedFacilityId('unauthorized-citizen')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+              className={`px-2 py-1 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all ${
                 selectedFacilityId === 'unauthorized-citizen'
-                  ? 'bg-rose-600 text-white shadow-sm'
-                  : 'text-slate-300 hover:text-white'
+                  ? 'bg-rose-600 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Unauthorized Attendant (Blocked)
+              Blocked
             </button>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Grid: Broadcast Form & Active Beacons */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Left: Broadcast Form */}
+      {/* Grid: Broadcast Form & Active Beacons (Single-Screen Cockpit) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-4 items-start">
+        {/* Left: Broadcast Form (5 cols) */}
         <div className="lg:col-span-5">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-6">
+          <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/90 shadow-2xs space-y-2.5">
+            {/* Header */}
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <PlusCircle size={20} className="text-rose-600" />
-                <h3 className="font-extrabold text-lg text-slate-900">1-Click Broadcast Medical Beacon</h3>
+              <div className="flex items-center gap-2">
+                <PlusCircle size={16} className="text-rose-600" />
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900">1-Click Broadcast Medical Beacon</h3>
               </div>
-              <span className="bg-sky-50 text-sky-600 text-[10px] font-extrabold px-2.5 py-1 rounded font-mono">
+              <span className="bg-sky-50 text-sky-700 text-[10px] font-extrabold px-1.5 py-0.5 rounded font-mono">
                 createEntity()
               </span>
             </div>
 
-            <p className="text-xs text-slate-500 leading-relaxed">
-              Publishes live availability directly to the Arkiv DB engine. Signed with{' '}
-              <strong className="text-slate-800">ExpirationTime.fromHours(4)</strong> to mathematically eliminate phantom stock.
-            </p>
-
+            {/* Broadcast Success Box (Compact) */}
             {broadcastSuccess && (
-              <div className="bg-emerald-50/90 border-2 border-emerald-500/40 rounded-2xl p-4 sm:p-5 text-xs text-slate-800 space-y-3.5 shadow-md shadow-emerald-500/10 animate-in fade-in slide-in-from-top-2">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                      <Check size={18} />
+              <div className="bg-emerald-50/95 border border-emerald-400 rounded-xl p-2.5 text-xs text-slate-800 space-y-2 shadow-xs animate-in fade-in">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 rounded bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                      <Check size={12} />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <strong className="text-sm font-black text-emerald-950">
-                          Broadcast Confirmed On-Chain!
-                        </strong>
-                        <span className="text-[10px] font-mono font-bold bg-white px-2 py-0.5 rounded-full border border-emerald-300 text-emerald-800">
-                          Block #{broadcastSuccess.blockNumber.toLocaleString()}
-                        </span>
-                      </div>
-                      <p className="text-[11px] text-emerald-800 font-medium mt-0.5">
-                        {broadcastSuccess.units} Units of {broadcastSuccess.itemLabel} published live.
-                      </p>
+                      <strong className="text-xs font-black text-emerald-950">
+                        Broadcast Confirmed On-Chain!
+                      </strong>
+                      <span className="text-[10px] font-mono text-emerald-800 ml-1.5">
+                        Block #{broadcastSuccess.blockNumber.toLocaleString()} • {broadcastSuccess.units} Units of {broadcastSuccess.itemLabel}
+                      </span>
                     </div>
                   </div>
                   <button
                     onClick={() => setBroadcastSuccess(null)}
-                    className="text-slate-400 hover:text-slate-700 text-sm p-1 leading-none rounded-lg hover:bg-emerald-100/60 transition-colors"
+                    className="text-slate-400 hover:text-slate-700 text-xs p-0.5 leading-none rounded hover:bg-emerald-100"
                     aria-label="Dismiss banner"
                   >
                     ✕
                   </button>
                 </div>
 
-                {/* On-Chain Hashes & Keys */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-                  {/* Entity Key Box */}
-                  <div className="bg-white/80 border border-emerald-200/80 rounded-xl p-2.5 space-y-1">
-                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                      <span>Arkiv Entity Key</span>
-                      <button
-                        type="button"
-                        onClick={() => handleCopySuccessField(broadcastSuccess.entityKey, 'entityKey')}
-                        className="text-emerald-700 hover:text-emerald-900 flex items-center gap-1 font-semibold"
-                      >
-                        {copiedSuccessField === 'entityKey' ? (
-                          <>
-                            <Check size={10} className="text-emerald-600" />
-                            <span>Copied</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={10} />
-                            <span>Copy</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                    <code className="block font-mono text-[10px] text-slate-800 truncate select-all">
-                      {broadcastSuccess.entityKey}
-                    </code>
+                <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono">
+                  <div className="bg-white/90 border border-emerald-200 rounded-lg p-1.5 flex items-center justify-between">
+                    <span className="truncate text-slate-700" title={broadcastSuccess.entityKey}>
+                      Key: {broadcastSuccess.entityKey.slice(0, 10)}...
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopySuccessField(broadcastSuccess.entityKey, 'entityKey')}
+                      className="text-emerald-700 hover:text-emerald-900 font-bold shrink-0 ml-1"
+                      title="Copy Entity Key"
+                    >
+                      {copiedSuccessField === 'entityKey' ? '✓' : <Copy size={11} />}
+                    </button>
                   </div>
-
-                  {/* Transaction Hash Box */}
-                  <div className="bg-white/80 border border-emerald-200/80 rounded-xl p-2.5 space-y-1">
-                    <div className="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase">
-                      <span>Transaction Hash</span>
-                      <button
-                        type="button"
-                        onClick={() => handleCopySuccessField(broadcastSuccess.txHash, 'txHash')}
-                        className="text-emerald-700 hover:text-emerald-900 flex items-center gap-1 font-semibold"
-                      >
-                        {copiedSuccessField === 'txHash' ? (
-                          <>
-                            <Check size={10} className="text-emerald-600" />
-                            <span>Copied</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy size={10} />
-                            <span>Copy</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-                    <code className="block font-mono text-[10px] text-slate-800 truncate select-all">
-                      {broadcastSuccess.txHash}
-                    </code>
+                  <div className="bg-white/90 border border-emerald-200 rounded-lg p-1.5 flex items-center justify-between">
+                    <span className="truncate text-slate-700" title={broadcastSuccess.txHash}>
+                      TX: {broadcastSuccess.txHash.slice(0, 10)}...
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopySuccessField(broadcastSuccess.txHash, 'txHash')}
+                      className="text-emerald-700 hover:text-emerald-900 font-bold shrink-0 ml-1"
+                      title="Copy Transaction Hash"
+                    >
+                      {copiedSuccessField === 'txHash' ? '✓' : <Copy size={11} />}
+                    </button>
                   </div>
                 </div>
 
-                {/* Direct Explorer Verification Links */}
-                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                <div className="flex items-center gap-1.5 pt-0.5">
                   <a
                     href={`${ARKIV_CONFIG.explorerUrl}/tx/${broadcastSuccess.txHash}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 min-w-[200px] bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs py-2.5 px-3.5 rounded-xl flex items-center justify-center gap-2 shadow-sm transition-all"
+                    className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-[11px] py-1.5 px-2 rounded-lg flex items-center justify-center gap-1.5 transition-colors"
                   >
-                    <ExternalLink size={14} />
-                    <span>View on Arkiv Explorer (TX) ↗</span>
+                    <ExternalLink size={12} />
+                    <span>View on Arkiv Explorer ↗</span>
                   </a>
-
-                  <a
-                    href={`${ARKIV_CONFIG.explorerUrl}/address/${broadcastSuccess.walletAddress}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold text-xs py-2.5 px-3 rounded-xl flex items-center gap-1.5 transition-all shadow-2xs"
-                  >
-                    <Globe size={13} className="text-sky-600" />
-                    <span>Facility Wallet ↗</span>
-                  </a>
-
                   <button
                     type="button"
                     onClick={() => onInspectProof(broadcastSuccess.beacon)}
-                    className="bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 font-bold text-xs py-2.5 px-3 rounded-xl flex items-center gap-1.5 transition-all"
+                    className="bg-white hover:bg-slate-50 text-sky-700 border border-sky-200 font-bold text-[11px] py-1.5 px-2 rounded-lg flex items-center gap-1 transition-colors"
                   >
-                    <ShieldCheck size={14} className="text-sky-600" />
-                    <span>Verify State Proof</span>
+                    <ShieldCheck size={12} className="text-sky-600" />
+                    <span>State Proof</span>
                   </button>
                 </div>
               </div>
             )}
 
+            {/* Unauthorized Alert */}
             {!isAuthorized && (
-              <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex gap-3 text-xs text-rose-800">
-                <Lock size={18} className="text-rose-600 shrink-0 mt-0.5" />
-                <div>
-                  <strong className="block font-bold">Write Access Denied</strong>
-                  <p className="text-rose-600 mt-0.5">
-                    Wallet <code className="font-mono">{currentFacility.walletAddress.slice(0, 10)}...</code> is not in the authorized hospital registry. Switch to a verified desk above to test Arkiv broadcast.
-                  </p>
-                </div>
+              <div className="bg-rose-50 border border-rose-200 rounded-xl p-2 flex items-center gap-2 text-xs text-rose-800">
+                <Lock size={14} className="text-rose-600 shrink-0" />
+                <span className="text-[11px]">
+                  <strong>Write Blocked:</strong> Whitelist required. Switch to AIIMS Desk in header.
+                </span>
               </div>
             )}
 
-            <form onSubmit={handleBroadcast} className="space-y-4">
-              {/* Category */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-extrabold text-slate-700">Supply Category</label>
-                <div className="grid grid-cols-2 gap-2">
+            <form onSubmit={handleBroadcast} className="space-y-2.5">
+              {/* Category Segmented Pills */}
+              <div className="space-y-1">
+                <label className="text-[11px] font-extrabold text-slate-700">Supply Category</label>
+                <div className="grid grid-cols-4 gap-1">
                   {(['BLOOD', 'ANTI_VENOM', 'RABIES_VACCINE', 'JAN_AUSHADHI'] as BeaconCategory[]).map(
                     (cat) => (
                       <button
                         type="button"
                         key={cat}
                         onClick={() => setFormCategory(cat)}
-                        className={`p-2.5 rounded-xl text-xs font-bold transition-all ${
+                        className={`py-1.5 px-0.5 rounded-xl text-[10px] sm:text-[11px] font-bold transition-all text-center truncate ${
                           formCategory === cat
-                            ? 'bg-rose-50 text-rose-600 border border-rose-200'
-                            : 'bg-slate-50 text-slate-600 border border-slate-100 hover:bg-slate-100'
+                            ? 'bg-rose-50 text-rose-600 border border-rose-200 shadow-2xs font-black'
+                            : 'bg-slate-50 text-slate-600 border border-slate-200/70 hover:bg-slate-100'
                         }`}
                       >
-                        {cat === 'BLOOD' && '🩸 Blood Group'}
-                        {cat === 'ANTI_VENOM' && '🐍 Anti-Venom'}
-                        {cat === 'RABIES_VACCINE' && '💉 Rabies Vac'}
-                        {cat === 'JAN_AUSHADHI' && '💊 Jan Aushadhi'}
+                        {cat === 'BLOOD' && '🩸 Blood'}
+                        {cat === 'ANTI_VENOM' && '🐍 Venom'}
+                        {cat === 'RABIES_VACCINE' && '💉 Rabies'}
+                        {cat === 'JAN_AUSHADHI' && '💊 Pharmacy'}
                       </button>
                     )
                   )}
                 </div>
               </div>
 
-              {/* Item Code */}
-              <div className="space-y-1.5">
-                <label htmlFor="form-item-code" className="text-xs font-extrabold text-slate-700">
+              {/* Specific Item Select */}
+              <div className="space-y-1">
+                <label htmlFor="form-item-code" className="text-[11px] font-extrabold text-slate-700">
                   Specific Item
                 </label>
                 <select
                   id="form-item-code"
                   value={formItemCode}
                   onChange={(e) => setFormItemCode(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-bold text-slate-800 focus:outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900 cursor-pointer"
                 >
                   {AVAILABLE_ITEM_CODES.filter((i) => i.category === formCategory).map((i) => (
                     <option key={i.code} value={i.code}>
@@ -816,65 +708,53 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                 </select>
               </div>
 
-              {/* Units & Price */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Units Available with +1 / -1 Stepper and Backspace Fix */}
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between">
-                    <label htmlFor="form-units" className="text-xs font-extrabold text-slate-700">
+              {/* Units & Price in 1 row */}
+              <div className="grid grid-cols-2 gap-2">
+                {/* Units with Stepper */}
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-[11px]">
+                    <label htmlFor="form-units" className="font-extrabold text-slate-700">
                       Units Available
                     </label>
-                    <span className="text-[10px] text-slate-400 font-semibold font-mono">1 - 500</span>
+                    <span className="text-[9px] text-slate-400 font-mono">1-500</span>
                   </div>
-
-                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-slate-900 focus-within:border-transparent transition-all">
+                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-1 focus-within:ring-slate-900 h-8 sm:h-8.5">
                     <button
                       type="button"
                       onClick={() => setFormUnits((prev) => Math.max(1, (Number(prev) || 1) - 1))}
-                      className="w-10 h-11 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 active:scale-95 transition-all font-bold text-lg border-r border-slate-200/80 shrink-0"
-                      aria-label="Decrease units"
+                      className="w-7 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 active:scale-95 transition-all font-bold border-r border-slate-200/80 shrink-0"
                     >
-                      <Minus size={15} />
+                      <Minus size={12} />
                     </button>
-
                     <input
                       id="form-units"
                       type="text"
                       inputMode="numeric"
-                      pattern="[0-9]*"
                       value={formUnits}
                       onChange={(e) => {
                         const val = e.target.value;
-                        if (val === '') {
-                          setFormUnits('');
-                        } else {
-                          const cleaned = val.replace(/[^0-9]/g, '');
-                          setFormUnits(cleaned === '' ? '' : parseInt(cleaned, 10));
-                        }
+                        if (val === '') setFormUnits('');
+                        else setFormUnits(parseInt(val.replace(/[^0-9]/g, '') || '0', 10));
                       }}
                       onBlur={() => {
-                        if (formUnits === '' || Number(formUnits) < 1) {
-                          setFormUnits(1);
-                        } else if (Number(formUnits) > 500) {
-                          setFormUnits(500);
-                        }
+                        if (formUnits === '' || Number(formUnits) < 1) setFormUnits(1);
+                        else if (Number(formUnits) > 500) setFormUnits(500);
                       }}
-                      className="w-full bg-transparent p-2.5 text-center text-sm font-black font-mono text-slate-900 focus:outline-none"
+                      className="w-full bg-transparent text-center text-xs font-black font-mono text-slate-900 focus:outline-none"
                     />
-
                     <button
                       type="button"
                       onClick={() => setFormUnits((prev) => Math.min(500, (Number(prev) || 0) + 1))}
-                      className="w-10 h-11 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 active:scale-95 transition-all font-bold text-lg border-l border-slate-200/80 shrink-0"
-                      aria-label="Increase units"
+                      className="w-7 h-full flex items-center justify-center text-slate-500 hover:text-slate-900 hover:bg-slate-200 active:scale-95 transition-all font-bold border-l border-slate-200/80 shrink-0"
                     >
-                      <Plus size={15} />
+                      <Plus size={12} />
                     </button>
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <label htmlFor="form-price" className="text-xs font-extrabold text-slate-700">
+                {/* Price (INR) */}
+                <div className="space-y-1">
+                  <label htmlFor="form-price" className="text-[11px] font-extrabold text-slate-700 block">
                     Price (INR)
                   </label>
                   <input
@@ -882,40 +762,37 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                     type="text"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
-                    className="w-full h-11 bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-extrabold text-slate-800 focus:outline-none"
+                    className="w-full h-8 sm:h-8.5 bg-slate-50 border border-slate-200 rounded-xl px-2.5 text-xs font-black font-mono text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
                     placeholder="0.00"
                   />
                 </div>
               </div>
 
-              {/* Category-Adaptive TTL Expiration Model */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-extrabold text-slate-700">
-                    Protocol TTL Lifespan (Arkiv Auto-Purge)
+              {/* Lifespan Presets */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-[11px]">
+                  <label className="font-extrabold text-slate-700">
+                    Lifespan TTL (Arkiv Auto-Purge)
                   </label>
-                  <span className="text-[10px] font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded">
+                  <span className="text-[10px] font-bold text-sky-700 bg-sky-50 px-1.5 py-0.2 rounded font-mono">
                     {formTtlHours >= 24 ? `${Math.round(formTtlHours / 24)} Days` : `${formTtlHours} Hours`}
                   </span>
                 </div>
-                <div className="grid grid-cols-4 gap-1.5 text-xs">
+                <div className="grid grid-cols-4 gap-1">
                   {[
-                    { label: '4h (Trauma)', hours: 4 },
-                    { label: '8h (Shift)', hours: 8 },
-                    { label: '24h (Daily)', hours: 24 },
-                    { label: '48h (Antidote)', hours: 48 },
-                    { label: '7 Days', hours: 168 },
-                    { label: '14 Days (Quota)', hours: 336 },
-                    { label: '30 Days', hours: 720 },
+                    { label: '4h Trauma', hours: 4 },
+                    { label: '8h Shift', hours: 8 },
+                    { label: '24h Daily', hours: 24 },
+                    { label: '48h Antidote', hours: 48 },
                   ].map((preset) => (
                     <button
                       key={preset.label}
                       type="button"
                       onClick={() => setFormTtlHours(preset.hours)}
-                      className={`p-2 rounded-xl text-[11px] font-bold transition-all ${
+                      className={`py-1 rounded-lg text-[10px] font-bold transition-all text-center truncate ${
                         formTtlHours === preset.hours
-                          ? 'bg-sky-600 text-white shadow-sm'
-                          : 'bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100'
+                          ? 'bg-sky-600 text-white shadow-2xs font-black'
+                          : 'bg-slate-50 text-slate-600 border border-slate-200/70 hover:bg-slate-100'
                       }`}
                     >
                       {preset.label}
@@ -924,55 +801,45 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                 </div>
               </div>
 
-              {/* Notes */}
-              <div className="space-y-1.5">
-                <label htmlFor="form-notes" className="text-xs font-extrabold text-slate-700">
-                  Desk Priority &amp; Instructions (No PHI)
+              {/* Priority Notes */}
+              <div className="space-y-1">
+                <label htmlFor="form-notes" className="text-[11px] font-extrabold text-slate-700 block">
+                  Desk Priority Notes
                 </label>
-                <textarea
+                <input
                   id="form-notes"
-                  rows={2}
+                  type="text"
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-medium text-slate-800 focus:outline-none resize-none"
+                  placeholder="Emergency ICU cases prioritized. Immediate crossmatch active."
+                  className="w-full h-8 bg-slate-50 border border-slate-200 rounded-xl px-2.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-slate-900"
                 />
               </div>
 
-              {/* Protocol Expiry Notice */}
-              <div className="bg-sky-50 border border-sky-100 rounded-xl p-3 flex items-center gap-2.5 text-xs text-sky-800 font-semibold">
-                <Clock size={16} className="text-sky-600 shrink-0" />
-                <span>
-                  Arkiv Protocol: Listing automatically vanishes in{' '}
-                  <strong className="text-sky-950 font-bold">
-                    {formTtlHours >= 24 ? `${Math.round(formTtlHours / 24)} Days` : `${formTtlHours} Hours`}
-                  </strong>{' '}
-                  unless actively extended by hospital desk.
-                </span>
-              </div>
-
+              {/* Submit Broadcast Button */}
               <button
                 type="submit"
                 disabled={isBroadcasting || !isAuthorized}
-                className={`w-full font-extrabold text-xs py-4 rounded-xl flex items-center justify-center gap-2 shadow-lg tracking-wider transition-all ${
+                className={`w-full font-black text-xs py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-sm tracking-wide transition-all ${
                   !isAuthorized
                     ? 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300'
-                    : 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/10'
+                    : 'bg-slate-900 hover:bg-slate-800 text-white shadow-slate-900/10 active:scale-[0.99]'
                 }`}
               >
                 {!isAuthorized ? (
                   <>
-                    <Lock size={16} />
+                    <Lock size={14} />
                     <span>Action Blocked — Whitelist Required</span>
                   </>
                 ) : isBroadcasting ? (
                   <>
-                    <RefreshCw className="animate-spin" size={16} />
-                    <span>{useMetaMaskBroadcast ? 'Prompting MetaMask Signature...' : 'Signing Transaction on Arkiv...'}</span>
+                    <RefreshCw className="animate-spin" size={14} />
+                    <span>{useMetaMaskBroadcast ? 'Prompting MetaMask...' : 'Broadcasting on Arkiv...'}</span>
                   </>
                 ) : (
                   <>
-                    <Send size={16} />
-                    <span>{useMetaMaskBroadcast ? 'Broadcast via MetaMask Signature' : 'Broadcast Beacon to DB-Chain'}</span>
+                    <Send size={14} />
+                    <span>{useMetaMaskBroadcast ? 'Broadcast via MetaMask' : 'Broadcast Beacon to DB-Chain ↗'}</span>
                   </>
                 )}
               </button>
@@ -980,99 +847,95 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
           </div>
         </div>
 
-        {/* Right: Active Beacons & Audit Log */}
-        <div className="lg:col-span-7 space-y-8">
-          {/* Active Beacons */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-4">
+        {/* Right: Active Beacons & Audit Log (7 cols) */}
+        <div className="lg:col-span-7 space-y-3">
+          {/* Active Beacons Card */}
+          <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/90 shadow-2xs space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <Activity size={20} className="text-rose-600" />
-                <h3 className="font-extrabold text-lg text-slate-900">
+              <div className="flex items-center gap-2">
+                <Activity size={16} className="text-rose-600" />
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900">
                   Active Facility Beacons ({facilityBeacons.length})
                 </h3>
               </div>
-              <span className="text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded">
+              <span className="text-[10px] font-extrabold uppercase bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.2 rounded">
                 Live State
               </span>
             </div>
 
             {facilityBeacons.length === 0 ? (
-              <div className="bg-slate-50 rounded-2xl p-8 text-center space-y-2 border border-slate-100">
-                <AlertCircle size={28} className="text-slate-400 mx-auto" />
+              <div className="bg-slate-50 rounded-xl p-5 text-center space-y-1 border border-slate-100">
+                <AlertCircle size={20} className="text-slate-400 mx-auto" />
                 <p className="text-xs font-bold text-slate-700">No active beacons registered for this desk.</p>
-                <p className="text-[11px] text-slate-400">Use the broadcast form on the left to publish live stock.</p>
+                <p className="text-[11px] text-slate-400">Use the form on the left to broadcast live stock.</p>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-1.5 max-h-[220px] sm:max-h-[240px] overflow-y-auto pr-1">
                 {facilityBeacons.map((beacon) => {
                   const itemDef = AVAILABLE_ITEM_CODES.find((i) => i.code === beacon.attributes.itemCode);
 
                   return (
                     <div
                       key={beacon.key}
-                      className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                      className="bg-slate-50/80 hover:bg-slate-50 border border-slate-200/70 rounded-xl p-2 sm:p-2.5 flex flex-wrap sm:flex-nowrap items-center justify-between gap-2 transition-colors"
                     >
-                      <div className="space-y-1">
-                        <strong className="block font-bold text-sm text-slate-900">
+                      <div className="min-w-0 space-y-0.5">
+                        <strong className="block font-bold text-xs text-slate-900 truncate">
                           {itemDef ? itemDef.label : beacon.attributes.itemCode}
                         </strong>
-                        <span className="block font-mono text-[10px] text-slate-400 truncate max-w-xs">
+                        <span className="block font-mono text-[9px] text-slate-400 truncate max-w-[180px] sm:max-w-[240px]">
                           Key: {beacon.key}
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2.5 shrink-0 ml-auto sm:ml-0">
                         <div className="text-right">
-                          <span className="text-xl font-black font-mono text-slate-900">
+                          <span className="text-sm sm:text-base font-black font-mono text-slate-900">
                             {beacon.attributes.unitsAvailable}
                           </span>
-                          <span className="text-[10px] text-slate-400 block font-bold">units left</span>
+                          <span className="text-[9px] text-slate-400 block font-bold leading-none">units</span>
                         </div>
 
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1">
                           <button
                             onClick={() => handleDispense(beacon)}
                             disabled={!isAuthorized || beacon.attributes.unitsAvailable <= 0}
-                            className={`bg-white text-rose-600 border border-slate-200 font-extrabold text-xs px-3 py-2 rounded-lg flex items-center gap-1 transition-all ${
+                            className={`bg-white text-rose-600 border border-slate-200 font-extrabold text-[10px] px-2 py-1 rounded-lg flex items-center gap-1 transition-all ${
                               !isAuthorized || beacon.attributes.unitsAvailable <= 0
                                 ? 'opacity-40 cursor-not-allowed'
-                                : 'hover:bg-rose-50'
+                                : 'hover:bg-rose-50 shadow-2xs'
                             }`}
-                            title={!isAuthorized ? 'Whitelist required to dispense' : 'Dispense 1 Unit (-1 via patchEntity)'}
+                            title={!isAuthorized ? 'Whitelist required' : 'Dispense 1 Unit'}
                           >
-                            <MinusCircle size={14} />
-                            <span>-1 Unit</span>
+                            <MinusCircle size={12} />
+                            <span>-1</span>
                           </button>
 
                           <button
                             onClick={() => handleExtend(beacon)}
                             disabled={!isAuthorized}
-                            className={`bg-white text-slate-700 border border-slate-200 font-bold text-xs px-2.5 py-2 rounded-lg transition-all ${
-                              !isAuthorized
-                                ? 'opacity-40 cursor-not-allowed'
-                                : 'hover:bg-slate-100'
+                            className={`bg-white text-slate-700 border border-slate-200 font-bold text-[10px] px-2 py-1 rounded-lg transition-all ${
+                              !isAuthorized ? 'opacity-40 cursor-not-allowed' : 'hover:bg-slate-100 shadow-2xs'
                             }`}
-                            title={!isAuthorized ? 'Whitelist required to extend' : 'Extend TTL by 4 Hours (+4h via extendEntity)'}
+                            title="Extend TTL by 4h"
                           >
-                            <RefreshCw size={14} />
+                            <RefreshCw size={11} />
                           </button>
 
                           <button
                             onClick={() => handleDelete(beacon)}
                             disabled={!isAuthorized}
-                            className={`bg-white text-slate-400 border border-slate-200 p-2 rounded-lg transition-all ${
-                              !isAuthorized
-                                ? 'opacity-40 cursor-not-allowed'
-                                : 'hover:bg-rose-50 hover:text-rose-600'
+                            className={`bg-white text-slate-400 border border-slate-200 p-1 rounded-lg transition-all ${
+                              !isAuthorized ? 'opacity-40 cursor-not-allowed' : 'hover:bg-rose-50 hover:text-rose-600'
                             }`}
-                            title={!isAuthorized ? 'Whitelist required to recall' : 'Recall / Purge'}
+                            title="Recall / Purge"
                           >
-                            <Trash2 size={14} />
+                            <Trash2 size={12} />
                           </button>
 
                           <button
                             onClick={() => onInspectProof(beacon)}
-                            className="bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-xs px-2.5 py-2 rounded-lg"
+                            className="bg-sky-50 hover:bg-sky-100 text-sky-700 font-bold text-[10px] px-2 py-1 rounded-lg transition-colors"
                           >
                             Proof
                           </button>
@@ -1081,11 +944,11 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                             href={`${ARKIV_CONFIG.explorerUrl}/tx/${beacon.txHash}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold text-xs px-2.5 py-2 rounded-lg flex items-center gap-1 transition-all"
-                            title="View Transaction on Arkiv Tiramisu Explorer"
+                            className="bg-white hover:bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200 font-bold text-[10px] px-2 py-1 rounded-lg flex items-center gap-1 transition-all"
+                            title="View Transaction on Arkiv Explorer"
                           >
-                            <ExternalLink size={12} />
-                            <span>Explorer</span>
+                            <ExternalLink size={10} />
+                            <span className="hidden sm:inline">Explorer</span>
                           </a>
                         </div>
                       </div>
@@ -1096,31 +959,31 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
             )}
           </div>
 
-          {/* Mutation Audit Stream */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-100 shadow-sm space-y-4">
+          {/* Mutation Audit Stream Card */}
+          <div className="bg-white rounded-2xl p-3.5 sm:p-4 border border-slate-200/90 shadow-2xs space-y-2">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <History size={20} className="text-slate-700" />
-                <h3 className="font-extrabold text-lg text-slate-900">Arkiv DB-Chain Mutation Audit Stream</h3>
+              <div className="flex items-center gap-2">
+                <History size={16} className="text-slate-700" />
+                <h3 className="font-extrabold text-xs sm:text-sm text-slate-900">Arkiv DB-Chain Mutation Stream</h3>
               </div>
-              <span className="flex items-center gap-1.5 text-[10px] font-extrabold text-sky-600 bg-sky-50 px-2.5 py-1 rounded">
+              <span className="flex items-center gap-1.5 text-[10px] font-extrabold text-sky-700 bg-sky-50 px-2 py-0.2 rounded border border-sky-200">
                 <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse" /> Live Stream
               </span>
             </div>
 
-            <div className="space-y-2.5 max-h-80 overflow-y-auto">
+            <div className="space-y-1 max-h-[170px] sm:max-h-[190px] overflow-y-auto pr-1">
               {auditLogs.slice(0, 8).map((log) => {
                 const dateStr = new Date(log.timestamp).toLocaleTimeString();
                 return (
-                  <div key={log.id} className="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs space-y-1">
-                    <div className="flex items-center justify-between">
-                      <span className="font-extrabold text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200/60">
+                  <div key={log.id} className="bg-slate-50/80 border border-slate-200/70 rounded-xl p-2 text-xs space-y-0.5">
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="font-extrabold uppercase font-mono px-1.5 py-0.2 rounded bg-white text-slate-700 border border-slate-200">
                         {log.action}
                       </span>
-                      <span className="font-mono text-[10px] text-slate-400">{dateStr}</span>
+                      <span className="font-mono text-slate-400">{dateStr}</span>
                     </div>
-                    <p className="font-semibold text-slate-800">{log.summary}</p>
-                    <div className="flex justify-between items-center text-[10px] font-mono text-slate-400 pt-0.5">
+                    <p className="font-semibold text-slate-800 text-[11px] truncate">{log.summary}</p>
+                    <div className="flex justify-between items-center text-[9px] font-mono text-slate-400 pt-0.5">
                       <a
                         href={`${ARKIV_CONFIG.explorerUrl}/tx/${log.txHash}`}
                         target="_blank"
@@ -1128,8 +991,8 @@ export function HospitalPortal({ soundEnabled, onInspectProof }: HospitalPortalP
                         className="truncate max-w-[200px] text-sky-600 hover:text-sky-700 hover:underline flex items-center gap-0.5 font-bold"
                         title="View transaction on Arkiv Explorer"
                       >
-                        <span>TX: {log.txHash}</span>
-                        <ExternalLink size={10} />
+                        <span>TX: {log.txHash.slice(0, 16)}...</span>
+                        <ExternalLink size={9} />
                       </a>
                       <span>Block #{log.blockNumber}</span>
                     </div>
